@@ -38,8 +38,8 @@ to legalize it, such as California.
 
 ## Anticipated Data Sources
 
-- US sports betting revenue\[<https://rg.org/statistics/us>\]
-- NHANES for demographic data
+- [US sports betting revenue](https://rg.org/statistics/us)
+- NHANES or Census for demographic data
 
 ## Planned Analyses/Visualizations/Coding Challenges
 
@@ -47,4 +47,6 @@ to legalize it, such as California.
 
 - Scrape data from the betting revenue website
 - Compile and clean relevant NHANES demographic data
-- Create a model that predicts
+- Exploratory analyses of
+- Create a model that predicts gambling revenue across states, based on
+  demographics
