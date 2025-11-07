@@ -33,7 +33,7 @@ to legalize it, such as California.
 ## Intended Final Products
 
 - Website detailing the market size of sports gambling by state
-- Model predicting odds of gambling based on demographics (education &
+- Model predicting gambling revenue based on demographics (education &
   income status, age, and proximity to a major sports team)
 
 ## Anticipated Data Sources
@@ -43,10 +43,18 @@ to legalize it, such as California.
 
 ## Planned Analyses/Visualizations/Coding Challenges
 
+- Exploratory analyses of demographic data
+- Mapping gambling revenue across states, across time (pre and
+  post-legality)
+- Challenges:
+  - Getting reliable betting data (often is proprietary for obvious
+    reasons)
+  - Making causal conclusions
+
 ## Planned Timeline
 
 - Scrape data from the betting revenue website
 - Compile and clean relevant NHANES demographic data
-- Exploratory analyses of
+- Exploratory analyses of relevant variables
 - Create a model that predicts gambling revenue across states, based on
   demographics
