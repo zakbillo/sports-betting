@@ -80,7 +80,7 @@ state_revenue_23  = read_csv("./gambling_revenue_data/2023_state_revenue.csv")
 # 2024 Data
 revenue_growth_24 = read_csv("./gambling_revenue_data/2024_monthly_revenue.csv")
 ```
-### cleaning the url scraped data so that it matches data types with the manually scarped data
+### cleaning the url scraped data so that it matches data types with the manually scraped data
 
 ```{r cleaning}
 # --- Clean Scraped Data to match CSV format ---
@@ -109,12 +109,12 @@ revenue_growth_25_clean = revenue_growth_25 |>
 ```{r merging}
 # --- Create Master State Revenue File ---
 total_state_revenue_raw = bind_rows(
-  state_revenue_18 |> mutate(Year = 2018),
-  state_revenue_19 |> mutate(Year = 2019),
-  state_revenue_20 |> mutate(Year = 2020),
-  state_revenue_21 |> mutate(Year = 2021),
-  state_revenue_22 |> mutate(Year = 2022),
-  state_revenue_23 |> mutate(Year = 2023),
+  state_revenue_18 |> mutate(Year = 2018, Hold = Hold * 100),
+  state_revenue_19 |> mutate(Year = 2019, Hold = Hold * 100),
+  state_revenue_20 |> mutate(Year = 2020, Hold = Hold * 100),
+  state_revenue_21 |> mutate(Year = 2021, Hold = Hold * 100),
+  state_revenue_22 |> mutate(Year = 2022, Hold = Hold * 100),
+  state_revenue_23 |> mutate(Year = 2023, Hold = Hold * 100),
   state_revenue_24_clean |> mutate(Year = 2024)
 ) |> 
   relocate(Year, .before = State) # Move Year to the front
@@ -140,13 +140,13 @@ final_state_revenue = bind_rows(total_state_revenue, state_grand_total)
 
 # --- Create Master Monthly Revenue File ---
 total_revenue_growth_raw = bind_rows(
-  revenue_growth_18,
-  revenue_growth_19,
-  revenue_growth_20,
-  revenue_growth_21,
-  revenue_growth_22,
-  revenue_growth_23,
-  revenue_growth_24,
+  revenue_growth_18 |> mutate(Hold = Hold * 100),
+  revenue_growth_19 |> mutate(Hold = Hold * 100),
+  revenue_growth_20 |> mutate(Hold = Hold * 100),
+  revenue_growth_21 |> mutate(Hold = Hold * 100),
+  revenue_growth_22 |> mutate(Hold = Hold * 100),
+  revenue_growth_23 |> mutate(Hold = Hold * 100),
+  revenue_growth_24 |> mutate(Hold = Hold * 100),
   revenue_growth_25_clean
 )
 
@@ -161,7 +161,7 @@ monthly_grand_total = total_revenue_growth |>
     Handle = sum(Handle, na.rm = TRUE),
     Revenue = sum(Revenue, na.rm = TRUE),
     Taxes = sum(Taxes, na.rm = TRUE),
-    Hold = sum(Revenue, na.rm = TRUE) / sum(Handle, na.rm = TRUE) # Recalculate true Hold %
+    Hold = (sum(Revenue, na.rm = TRUE) / sum(Handle, na.rm = TRUE)) * 100
   )
 
 # Bind the Grand Total to the clean data
