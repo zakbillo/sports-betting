@@ -56,27 +56,7 @@ library(glmnet)
 
 ``` r
 library(dplyr)
-
-
 library(webshot2)
-
-
-
-knitr::opts_chunk$set(
-fig.width = 6,
-fig.asp = .6,
-out.width = "90%"
-)
-
-theme_set(theme_minimal() + theme(legend.position = "bottom"))
-
-options(
-ggplot2.continuous.colour = "viridis",
-ggplot2.continuous.fill = "viridis"
-)
-
-scale_colour_discrete = scale_color_viridis_d
-scale_fill_discrete = scale_fill_viridis_d
 ```
 
 ## Data scraping gambling revenue and growth
@@ -764,6 +744,8 @@ internet_clean_2024 =
 ```
 
 ``` r
+# here is the def if you do not know what this is: The Gini index, or Gini coefficient, is a measure of income, wealth, or consumption inequality within a population, ranging from 0 (perfect equality) to 1 (perfect inequality)
+
 gini_2024 = get_acs(
   geography = "state",
   variables = c(gini = "B19083_001"),
@@ -2324,7 +2306,7 @@ ggplot(pred_illegal_lasso_plot, aes(x = State, y = predicted_revenue_lasso)) +
   theme_minimal(base_size = 13)
 ```
 
-<img src="gambling_revenue-_sukhman_files/figure-gfm/Bar Plot-1.png" width="90%" />
+![](gambling_revenue-_sukhman_files/figure-gfm/Bar%20Plot-1.png)<!-- -->
 
 ``` r
 compare_df <- tibble(
@@ -2346,7 +2328,7 @@ ggplot(compare_df, aes(x = revenue, fill = group)) +
   theme_minimal(base_size = 13)
 ```
 
-<img src="gambling_revenue-_sukhman_files/figure-gfm/unnamed-chunk-9-1.png" width="90%" />
+![](gambling_revenue-_sukhman_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 ``` r
 scatter_df <- bind_rows(
@@ -2370,7 +2352,7 @@ ggplot(scatter_df, aes(x = total_pop, y = Revenue, color = type)) +
   theme_minimal(base_size = 13)
 ```
 
-<img src="gambling_revenue-_sukhman_files/figure-gfm/unnamed-chunk-10-1.png" width="90%" />
+![](gambling_revenue-_sukhman_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ``` r
 summary_table <- tibble(

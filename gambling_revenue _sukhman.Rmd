@@ -15,27 +15,8 @@ library(httr)
 library(jsonlite)
 library(glmnet)
 library(dplyr)
-
-
 library(webshot2)
 
-
-
-knitr::opts_chunk$set(
-fig.width = 6,
-fig.asp = .6,
-out.width = "90%"
-)
-
-theme_set(theme_minimal() + theme(legend.position = "bottom"))
-
-options(
-ggplot2.continuous.colour = "viridis",
-ggplot2.continuous.fill = "viridis"
-)
-
-scale_colour_discrete = scale_color_viridis_d
-scale_fill_discrete = scale_fill_viridis_d
 ```
 ## Data scraping gambling revenue and growth
 ```{r scraping}
@@ -273,7 +254,6 @@ median_age_2024 = get_acs(
 ```
 
 ```{r Urbanization (% living in urban areas)}
-
 urban_raw <-read_csv("Census_Urbanization_Data/DECENNIALDHC2020.P2-Data.csv")
 
 urban_clean_2020 =
@@ -419,6 +399,8 @@ internet_clean_2024 =
 ```
 
 ```{r GINI Index}
+# here is the def if you do not know what this is: The Gini index, or Gini coefficient, is a measure of income, wealth, or consumption inequality within a population, ranging from 0 (perfect equality) to 1 (perfect inequality)
+
 gini_2024 = get_acs(
   geography = "state",
   variables = c(gini = "B19083_001"),
