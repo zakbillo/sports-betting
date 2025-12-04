@@ -1,5 +1,5 @@
 ---
-title: "gambling_rev"
+title: "Prediction Model Sukhman"
 output:
   github_document:
     df_print: default
