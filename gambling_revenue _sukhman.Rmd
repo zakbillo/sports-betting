@@ -1,0 +1,852 @@
+---
+title: "gambling_rev"
+output:
+  github_document:
+    df_print: default
+  html_document:
+    df_print: paged
+always_allow_html: true
+date: "2025-11-30"
+---
+```{r packages}
+library(tidyverse)
+library(rvest)
+library(httr)
+library(jsonlite)
+library(glmnet)
+library(dplyr)
+
+
+library(webshot2)
+
+
+
+knitr::opts_chunk$set(
+fig.width = 6,
+fig.asp = .6,
+out.width = "90%"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+ggplot2.continuous.colour = "viridis",
+ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_color_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
+## Data scraping gambling revenue and growth
+```{r scraping}
+url = "https://rg.org/statistics/us"
+gambling_html = read_html(url)
+```
+
+```{r}
+gambling_html |>
+  html_table()
+```
+### pull in 2024 revenue by state table 
+```{r state revenue}
+state_revenue_24 = 
+  gambling_html |> 
+  html_table() |> 
+  first() 
+```
+### pull in 2025 revenue growth by month
+```{r monthly growth}
+revenue_growth_25= 
+  gambling_html |> 
+  html_table() |> 
+  purrr::pluck(2)
+```
+
+The website that was scrapped to obtain this data had dynamic filters that switched the year of the displayed data. Due to a lack fo static data, we manually scraped the tables for previous years and saved the data in a CSV format
+
+```{r importing csv}
+# 2018 Data
+revenue_growth_18 = read_csv("./gambling_revenue_data/2018_monthly_revenue.csv")
+state_revenue_18  = read_csv("./gambling_revenue_data/2018_state_revenue.csv")
+
+# 2019 Data
+revenue_growth_19 = read_csv("./gambling_revenue_data/2019_monthly_revenue.csv")
+state_revenue_19  = read_csv("./gambling_revenue_data/2019_state_revenue.csv")
+
+# 2020 Data
+revenue_growth_20 = read_csv("./gambling_revenue_data/2020_monthly_revenue.csv")
+state_revenue_20  = read_csv("./gambling_revenue_data/2020_state_revenue.csv")
+
+# 2021 Data
+revenue_growth_21 = read_csv("./gambling_revenue_data/2021_monthly_revenue.csv")
+state_revenue_21  = read_csv("./gambling_revenue_data/2021_state_revenue.csv")
+
+# 2022 Data
+revenue_growth_22 = read_csv("./gambling_revenue_data/2022_monthly_revenue.csv")
+state_revenue_22  = read_csv("./gambling_revenue_data/2022_state_revenue.csv")
+
+# 2023 Data
+revenue_growth_23 = read_csv("./gambling_revenue_data/2023_monthly_revenue.csv")
+state_revenue_23  = read_csv("./gambling_revenue_data/2023_state_revenue.csv")
+
+# 2024 Data
+revenue_growth_24 = read_csv("./gambling_revenue_data/2024_monthly_revenue.csv")
+```
+### cleaning the url scraped data so that it matches data types with the manually scraped data
+
+```{r cleaning}
+# --- Clean Scraped Data to match CSV format ---
+# Function to remove '$', ',' and '%', convert to numeric and to handle '-' corresponding to missing data
+clean_money_col = function(x) {
+  # Remove currency symbols
+  x_clean = gsub("[$,%]", "", x)
+  # Replace dashes or empty strings with NA explicitly
+  x_clean[x_clean == "-" | x_clean == ""] = NA
+  as.numeric(x_clean)
+}
+
+# Clean the Scraped 2024 State Data to match CSV data types
+state_revenue_24_clean = state_revenue_24 |> 
+  mutate(
+    across(c(Handle, Revenue, Taxes, Hold), clean_money_col), # Convert money columns
+  )
+
+# Clean the Scraped 2025 Monthly Data to match CSV data types
+revenue_growth_25_clean = revenue_growth_25 |> 
+  mutate(
+    across(c(Handle, Revenue, Taxes, Hold), clean_money_col)
+  )
+```
+
+```{r merging}
+# --- Create Master State Revenue File ---
+total_state_revenue_raw = bind_rows(
+  state_revenue_18 |> mutate(Year = 2018, Hold = Hold * 100),
+  state_revenue_19 |> mutate(Year = 2019, Hold = Hold * 100),
+  state_revenue_20 |> mutate(Year = 2020, Hold = Hold * 100),
+  state_revenue_21 |> mutate(Year = 2021, Hold = Hold * 100),
+  state_revenue_22 |> mutate(Year = 2022, Hold = Hold * 100),
+  state_revenue_23 |> mutate(Year = 2023, Hold = Hold * 100),
+  state_revenue_24_clean |> mutate(Year = 2024)
+) |> 
+  relocate(Year, .before = State) # Move Year to the front
+
+# Filter out individual yearly "Total" rows
+total_state_revenue = total_state_revenue_raw |> 
+  filter(State != "Total") |> 
+  relocate(Year, .before = State)
+
+# Calculate the True Grand Total
+state_grand_total = total_state_revenue |> 
+  summarize(
+    Year = NA, # Grand total spans all years
+    State = "Total",
+    Handle = sum(Handle, na.rm = TRUE),
+    Revenue = sum(Revenue, na.rm = TRUE),
+    Taxes = sum(Taxes, na.rm = TRUE),
+    Hold = sum(Revenue, na.rm = TRUE) / sum(Handle, na.rm = TRUE)
+  )
+
+# Bind the Grand Total to the clean data
+final_state_revenue = bind_rows(total_state_revenue, state_grand_total)
+
+# --- Create Master Monthly Revenue File ---
+total_revenue_growth_raw = bind_rows(
+  revenue_growth_18 |> mutate(Hold = Hold * 100),
+  revenue_growth_19 |> mutate(Hold = Hold * 100),
+  revenue_growth_20 |> mutate(Hold = Hold * 100),
+  revenue_growth_21 |> mutate(Hold = Hold * 100),
+  revenue_growth_22 |> mutate(Hold = Hold * 100),
+  revenue_growth_23 |> mutate(Hold = Hold * 100),
+  revenue_growth_24 |> mutate(Hold = Hold * 100),
+  revenue_growth_25_clean
+)
+
+# Filter out individual yearly "Total" rows
+total_revenue_growth = total_revenue_growth_raw |> 
+  filter(Month != "Total")
+
+# Calculate the True Grand Total
+monthly_grand_total = total_revenue_growth |> 
+  summarize(
+    Month = "Total",
+    Handle = sum(Handle, na.rm = TRUE),
+    Revenue = sum(Revenue, na.rm = TRUE),
+    Taxes = sum(Taxes, na.rm = TRUE),
+    Hold = (sum(Revenue, na.rm = TRUE) / sum(Handle, na.rm = TRUE)) * 100
+  )
+
+# Bind the Grand Total to the clean data
+final_revenue_growth = bind_rows(total_revenue_growth, monthly_grand_total)
+```
+
+## Census Info
+
+```{r}
+library(tidycensus)
+library(janitor)
+```
+
+```{r Income and Population}
+vars_base = c(
+  median_income = "B19013_001",
+  total_pop = "B01003_001"
+)
+
+acs_base_2024 =
+  get_acs(
+    geography = "state",
+    variables = vars_base,
+    year = 2024,
+    survey = "acs1"
+  ) |>
+  select(NAME, variable, estimate) |>
+  pivot_wider(names_from = variable, values_from = estimate) |>
+  clean_names()
+```
+
+
+```{r Education (% with bachelor’s degree or higher)}
+# Pull raw ACS education data
+educ_2024 = get_acs(
+  geography = "state",
+  variables = c(
+    total = "B15003_001",    # total population age 25+
+    ba1 = "B15003_022",      # BA degree
+    ba2 = "B15003_023",      # Master's
+    ba3 = "B15003_024",      # Professional degree
+    ba4 = "B15003_025"       # Doctorate
+  ),
+  survey = "acs1",
+  year = 2024
+)
+
+# Clean + compute % bachelor’s degree or higher
+educ_clean_2024 =
+  educ_2024 |>
+  group_by(NAME) |>
+  summarize(
+    total = estimate[variable == "total"],
+    ba_plus = sum(estimate[variable %in% c("ba1", "ba2", "ba3", "ba4")]),
+    .groups = "drop"
+  ) |>
+  mutate(pct_bachelors = ba_plus / total)
+
+```
+
+```{r Age}
+age_2024 = get_acs(
+  geography = "state",
+  variables = c(
+    total = "B01001_001",
+    male_20_34 = paste0("B01001_", sprintf("%03d", 8:10)),
+    female_20_34 = paste0("B01001_", sprintf("%03d", 32:34))
+  ),
+  survey = "acs1",
+  year = 2024
+)
+
+age_clean_2024 =
+  age_2024 |>
+  mutate(
+    group = case_when(
+      variable == "total" ~ "total",
+      str_starts(variable, "male_20_34") ~ "young",
+      str_starts(variable, "female_20_34") ~ "young",
+      TRUE ~ NA_character_
+    )
+  ) |>
+  filter(!is.na(group)) |>
+  group_by(NAME, group) |>
+  summarize(estimate = sum(estimate), .groups = "drop") |>
+  pivot_wider(names_from = group, values_from = estimate) |>
+  mutate(pct_age_20_34 = young / total)
+
+median_age_2024 = get_acs(
+  geography = "state",
+  variables = c(median_age = "B01002_001"),
+  survey = "acs1",
+  year = 2024
+) |>
+  select(NAME, median_age = estimate)
+
+```
+
+```{r Urbanization (% living in urban areas)}
+
+urban_raw <- read_csv("DECENNIALDHC2020.P2_2025-12-03T233707/DECENNIALDHC2020.P2-Data.csv")
+
+urban_clean_2020 =
+  urban_raw |>
+  filter(str_detect(GEO_ID, "^040")) |>                      # keep States only
+  transmute(
+    State = NAME,
+    total = as.numeric(P2_001N),
+    urban = as.numeric(P2_002N),
+    rural = as.numeric(P2_003N),
+    pct_urban = urban / total,
+    pct_rural = rural / total
+  )
+#need this double checked
+```
+
+```{r Poverty (% of population below poverty line)}
+poverty_2024 =
+  get_acs(
+    geography = "state",
+    variables = c(total = "B17001_001",
+                  below_pov = "B17001_002"),
+    survey = "acs1",
+    year = 2024
+  )
+
+poverty_clean_2024 =
+  poverty_2024 |>
+  group_by(NAME) |>
+  summarize(
+    total = sum(estimate[variable == "total"]),
+    poverty = sum(estimate[variable == "below_pov"]),
+    .groups = "drop"
+  ) |>
+  mutate(
+    pct_poverty = poverty / total
+  )
+```
+
+```{r % Male}
+# % Male
+sex_2024 = get_acs(
+  geography = "state",
+  variables = c(
+    male = "B01001_002",
+    total = "B01001_001"
+  ),
+  survey = "acs1",
+  year = 2024
+)
+
+sex_clean_2024 =
+  sex_2024 |>
+  group_by(NAME) |>
+  summarize(
+    male = sum(estimate[variable == "male"]),
+    total = sum(estimate[variable == "total"]),
+    .groups = "drop"
+  ) |>
+  mutate(pct_male = male / total)
+
+```
+
+```{r Unemployment Rate}
+# Unemployment rate
+unemp_2024 = get_acs(
+  geography = "state",
+  variables = c(
+    labor_force = "B23025_003",   # In labor force
+    unemployed = "B23025_005"     # Unemployed
+  ),
+  survey = "acs1",
+  year = 2024
+)
+
+unemp_clean_2024 =
+  unemp_2024 |>
+  group_by(NAME) |>
+  summarize(
+    labor_force = sum(estimate[variable == "labor_force"]),
+    unemployed = sum(estimate[variable == "unemployed"]),
+    .groups = "drop"
+  ) |>
+  mutate(unemployment_rate = unemployed / labor_force)
+
+```
+
+```{r Race}
+race_2024 = get_acs(
+  geography = "state",
+  variables = c(
+    total = "B02001_001",
+    white = "B02001_002",
+    black = "B02001_003",
+    asian = "B02001_005",
+    hispanic = "B03003_003"
+  ),
+  survey = "acs1",
+  year = 2024
+)
+
+race_clean_2024 =
+  race_2024 |>
+  group_by(NAME) |>
+  summarize(
+    total = sum(estimate[variable == "total"]),
+    white = sum(estimate[variable == "white"]),
+    black = sum(estimate[variable == "black"]),
+    asian = sum(estimate[variable == "asian"]),
+    hispanic = sum(estimate[variable == "hispanic"]),
+    .groups = "drop"
+  ) |>
+  mutate(
+    pct_white = white / total,
+    pct_black = black / total,
+    pct_asian = asian / total,
+    pct_hispanic = hispanic / total
+  )
+
+```
+
+```{r Internet Access}
+internet_2024 = get_acs(
+  geography = "state",
+  variables = c(
+    total = "B28002_001",
+    broadband = "B28002_004"
+  ),
+  survey = "acs1",
+  year = 2024
+)
+
+internet_clean_2024 =
+  internet_2024 |>
+  group_by(NAME) |>
+  summarize(
+    total = sum(estimate[variable == "total"]),
+    broadband = sum(estimate[variable == "broadband"]),
+    .groups = "drop"
+  ) |>
+  mutate(pct_broadband = broadband / total)
+
+```
+
+```{r GINI Index}
+gini_2024 = get_acs(
+  geography = "state",
+  variables = c(gini = "B19083_001"),
+  survey = "acs1",
+  year = 2024
+) |>
+  select(NAME, gini = estimate)
+
+```
+
+```{r Renting}
+rent_2024 = get_acs(
+  geography = "state",
+  variables = c(
+    total = "B25003_001",
+    owner = "B25003_002",
+    renter = "B25003_003"
+  ),
+  survey = "acs1",
+  year = 2024
+)
+
+rent_clean_2024 =
+  rent_2024 |>
+  group_by(NAME) |>
+  summarize(
+    total = sum(estimate[variable == "total"]),
+    owner = sum(estimate[variable == "owner"]),
+    renter = sum(estimate[variable == "renter"]),
+    .groups = "drop"
+  ) |>
+  mutate(
+    pct_rent = renter / total,
+    pct_own = owner / total
+  )
+```
+
+
+```{r Merge All Demographics + Gambling Revenue Together}
+#Rename so all are State
+acs_base_2024 = acs_base_2024 |> rename(State = name)
+educ_clean_2024 = educ_clean_2024 |> rename(State = NAME)
+age_clean_2024 = age_clean_2024 |> rename(State = NAME)
+poverty_clean_2024 = poverty_clean_2024 |> rename(State = NAME)
+sex_clean_2024 = sex_clean_2024 |> rename(State = NAME)
+unemp_clean_2024 = unemp_clean_2024 |> rename(State = NAME)
+race_clean_2024 = race_clean_2024 |> rename(State = NAME)
+median_age_2024 = median_age_2024 |> rename(State = NAME)
+internet_clean_2024 = internet_clean_2024 |> rename(State = NAME)
+gini_2024 = gini_2024 |> rename(State = NAME)
+rent_clean_2024 = rent_clean_2024 |> rename(State = NAME)
+
+# Final combined demographic dataset
+demographics_2024 =
+  acs_base_2024 |> 
+  left_join(educ_clean_2024 |> 
+              select(State, pct_bachelors), 
+            by = "State") |>
+  left_join(age_clean_2024 |> 
+              select(State, pct_age_20_34), 
+            by = "State") |>
+  left_join(urban_clean_2020 |> 
+              select(State, pct_urban, pct_rural), 
+            by = "State") |>
+  left_join(poverty_clean_2024 |> 
+              select(State, pct_poverty), 
+            by = "State") |>
+  left_join(sex_clean_2024 |> 
+              select(State, pct_male), 
+            by = "State") |>
+  left_join(unemp_clean_2024 |> 
+              select(State, unemployment_rate), 
+            by = "State") |>
+  left_join(race_clean_2024 |> 
+              select(State, pct_white, pct_black, pct_asian, pct_hispanic), 
+            by = "State") |>
+  left_join(median_age_2024 |> 
+              select(State, median_age), 
+            by = "State") |>
+  left_join(internet_clean_2024 |> 
+              select(State, pct_broadband), 
+            by = "State") |>
+  left_join(gini_2024 |> 
+              select(State, gini), 
+            by = "State") |>
+  left_join(rent_clean_2024 |> 
+              select(State, pct_rent, pct_own), 
+            by = "State")
+
+# Merge with gambling revenue
+revenue_2024 =
+  final_state_revenue |>
+  filter(Year == 2024, State != "Total") |>
+  select(State, Revenue, Handle, Taxes, Hold)
+
+model_data_2024 =
+  revenue_2024 |>
+  left_join(demographics_2024, by = "State")
+```
+
+```{r Look at Final Dataset}
+#view(demographics_2024)
+summary(demographics_2024)
+glimpse(demographics_2024)
+
+#view(model_data_2024)
+summary(model_data_2024)
+glimpse(model_data_2024)
+```
+
+```{r Clean Final Dataset}
+model_clean_2024 <-
+  model_data_2024 |>
+  drop_na(Revenue, Handle, Taxes, Hold)
+
+#See final Amount
+nrow(model_clean_2024)
+unique(model_clean_2024$State)
+
+#See who was dropped
+anti_join(model_data_2024, model_clean_2024, by = "State") |>
+  select(State)
+```
+
+## Building predictive model
+
+```{r}
+# -----------------------------
+# 1) Build training dataset
+# -----------------------------
+# Start from legal-gambling states with actual Revenue
+# model_clean_2024 should already have:
+#   State, Revenue, total_pop, median_income, pct_bachelors, 
+#   pct_age_20_34, pct_urban, pct_poverty, etc.
+
+training_data <- model_clean_2024 |>
+  select(
+    State,
+    Revenue,
+    total_pop,
+    median_income,
+    pct_bachelors,
+    pct_age_20_34,
+    pct_urban,
+    pct_poverty
+  ) |>
+  drop_na()   # make sure no missing values in predictors or Revenue
+
+```
+
+```{r}
+# -----------------------------
+# 2) Fit linear regression model
+# -----------------------------
+# Model: Revenue = β0 + β1 * total_pop + β2 * median_income + ... + error
+fit_lm <- lm(
+  Revenue ~ total_pop + median_income + pct_bachelors +
+    pct_age_20_34 + pct_urban + pct_poverty,
+  data = training_data
+)
+
+summary(fit_lm)
+
+```
+
+```{r}
+library(dplyr)
+
+states_no_gambling <-
+  demographics_2024 |>
+  anti_join(training_data, by = "State")
+
+newdata_illegal <-
+  states_no_gambling |>
+  select(
+    State,
+    total_pop,
+    median_income,
+    pct_bachelors,
+    pct_age_20_34,
+    pct_urban,
+    pct_poverty
+  ) |>
+  drop_na()  # just in case a state is missing some demographic
+
+```
+
+```{r}
+# -----------------------------
+# 3) Predict revenue if these states legalized gambling
+# -----------------------------
+pred_illegal <-
+  newdata_illegal |>
+  mutate(
+    predicted_revenue = predict(fit_lm, newdata = newdata_illegal)
+  ) |>
+  arrange(desc(predicted_revenue))
+
+#view(pred_illegal)
+
+```
+
+```{r}
+# Compare distribution of real vs predicted
+summary(training_data$Revenue)
+summary(pred_illegal$predicted_revenue)
+
+```
+
+```{r}
+# -----------------------------
+# 2b) Fit LASSO regression model
+# -----------------------------
+# LASSO requires glmnet + matrix inputs
+library(glmnet)
+
+# Build design matrix (same predictors as your LM model)
+X_train <- model.matrix(
+  Revenue ~ total_pop + median_income + pct_bachelors +
+    pct_age_20_34 + pct_urban + pct_poverty,
+  data = training_data
+)[, -1]   # remove intercept column (glmnet adds its own)
+
+# Outcome vector
+y_train <- training_data$Revenue
+
+set.seed(123)
+
+# Cross-validated LASSO to choose lambda
+lasso_cv <- cv.glmnet(
+  X_train,
+  y_train,
+  alpha = 1,          # LASSO penalty
+  nfolds = 5,
+  standardize = TRUE  # recommended because predictors differ in scale
+)
+
+# Final LASSO model at best lambda
+lasso_model <- glmnet(
+  X_train,
+  y_train,
+  alpha = 1,
+  lambda = lasso_cv$lambda.min,
+  standardize = TRUE
+)
+
+lasso_cv$lambda.min #This is the penalty 
+
+```
+
+```{r Predictive model}
+# Build the prediction matrix for the non-gambling states
+X_new <- model.matrix(
+  ~ total_pop + median_income + pct_bachelors +
+    pct_age_20_34 + pct_urban + pct_poverty,
+  data = newdata_illegal
+)[, -1]   # remove intercept column
+
+# -----------------------------
+# LASSO predictions
+# -----------------------------
+pred_illegal_lasso <-
+  newdata_illegal |>
+  mutate(
+    predicted_revenue_lasso = as.numeric(
+      predict(lasso_model, newx = X_new)
+    )
+  ) |>
+  arrange(desc(predicted_revenue_lasso))
+
+pred_illegal_lasso <- pred_illegal_lasso |> 
+  mutate(predicted_revenue_lasso = pmax(predicted_revenue_lasso, 0))
+
+
+#View(pred_illegal_lasso)
+
+```
+
+```{r Compare models}
+summary(training_data$Revenue)
+summary(pred_illegal$predicted_revenue)          # from LM model
+summary(pred_illegal_lasso$predicted_revenue_lasso)  # from LASSO model
+
+#LASSO better
+```
+
+## Some tables and Figures
+
+```{r Tables}
+library(scales)
+library(knitr)
+library(kableExtra)
+library(dplyr)
+
+# Clean negative values
+pred_illegal_lasso <- pred_illegal_lasso |>
+  mutate(predicted_revenue_lasso = pmax(predicted_revenue_lasso, 0))
+
+# Clean and format final table
+pred_table <- pred_illegal_lasso |>
+  mutate(
+    Predicted_Revenue = dollar(predicted_revenue_lasso),
+    Population = comma(total_pop),
+    Median_Income = dollar(median_income)
+  ) |>
+  select(
+    State,
+    Population,
+    Median_Income,
+    pct_bachelors,
+    pct_age_20_34,
+    pct_urban,
+    pct_poverty,
+    Predicted_Revenue
+  )
+
+kable(pred_table, format = "html", caption = "Predicted Annual Gambling Revenue for Non-Legal States (LASSO Model)") |>
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover"))
+
+```
+
+```{r Bar Plot}
+library(ggplot2)
+
+pred_illegal_lasso_plot <- pred_illegal_lasso |>
+  mutate(predicted_revenue_lasso = pmax(predicted_revenue_lasso, 0)) |>
+  arrange(predicted_revenue_lasso) |>
+  mutate(State = factor(State, levels = State))
+
+ggplot(pred_illegal_lasso_plot, aes(x = State, y = predicted_revenue_lasso)) +
+  geom_col(fill = "steelblue") +
+  coord_flip() +
+  scale_y_continuous(labels = dollar) +
+  labs(
+    title = "Predicted Annual Gambling Revenue (if legalized)",
+    subtitle = "LASSO model predictions for states without legal sports gambling",
+    x = "",
+    y = "Predicted Revenue"
+  ) +
+  theme_minimal(base_size = 13)
+
+```
+
+```{r}
+compare_df <- tibble(
+  group = c(rep("Actual Revenue (Legal States)", nrow(training_data)),
+            rep("Predicted Revenue (Non-Legal States)", nrow(pred_illegal_lasso))),
+  revenue = c(training_data$Revenue,
+              pred_illegal_lasso$predicted_revenue_lasso)
+)
+
+ggplot(compare_df, aes(x = revenue, fill = group)) +
+  geom_density(alpha = 0.4) +
+  scale_x_continuous(labels = dollar) +
+  labs(
+    title = "Distribution of Actual vs Predicted Gambling Revenue",
+    x = "Revenue",
+    y = "Density",
+    fill = ""
+  ) +
+  theme_minimal(base_size = 13)
+
+```
+
+```{r}
+scatter_df <- bind_rows(
+  training_data |> mutate(type = "Actual Revenue"),
+  pred_illegal_lasso |> 
+    mutate(Revenue = predicted_revenue_lasso,
+           type = "Predicted Revenue")
+)
+
+ggplot(scatter_df, aes(x = total_pop, y = Revenue, color = type)) +
+  geom_point(size = 3, alpha = 0.7) +
+  scale_x_continuous(labels = comma) +
+  scale_y_continuous(labels = dollar) +
+  labs(
+    title = "Population vs Gambling Revenue",
+    subtitle = "Comparing actual and predicted states",
+    x = "Total Population",
+    y = "Revenue",
+    color = ""
+  ) +
+  theme_minimal(base_size = 13)
+
+```
+
+```{r}
+summary_table <- tibble(
+  Metric = c("Min", "1st Quartile", "Median", "Mean", "3rd Quartile", "Max"),
+  Actual_Revenue = summary(training_data$Revenue)[c(1,2,3,4,5,6)],
+  Predicted_Revenue = summary(pred_illegal_lasso$predicted_revenue_lasso)[c(1,2,3,4,5,6)]
+)
+
+kable(summary_table, format = "html", caption = "Distribution Comparison: Actual vs Predicted Revenue") |>
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover"))
+
+```
+
+```{r}
+library(dplyr)
+
+# 1. Prepare actual revenue table
+actual_table <- training_data %>%
+  select(State, Revenue) %>%
+  mutate(
+    revenue_source = "Actual (Legal States)",
+    Revenue = as.numeric(Revenue)
+  )
+
+# 2. Prepare predicted revenue table (LASSO)
+predicted_table <- pred_illegal_lasso %>%
+  select(State, predicted_revenue_lasso) %>%
+  rename(Revenue = predicted_revenue_lasso) %>%
+  mutate(
+    revenue_source = "Predicted (Non-Legal States)"
+  )
+
+# 3. Combine both tables
+ranked_table <- bind_rows(actual_table, predicted_table) %>%
+  arrange(desc(Revenue)) %>%
+  mutate(
+    Rank = row_number(),
+    Revenue = scales::dollar(Revenue)
+  ) %>%
+  select(Rank, State, Revenue, revenue_source)
+
+#view(ranked_table)
+
+```
+
