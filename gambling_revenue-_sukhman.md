@@ -2545,3 +2545,104 @@ ranked_table <- bind_rows(actual_table, predicted_table) %>%
 
 #view(ranked_table)
 ```
+
+``` r
+plot(lasso_cv)
+```
+
+![](gambling_revenue-_sukhman_files/figure-gfm/LASSO%20Cross-Validation%20Plot%20(λ%20vs%20CV%20error)-1.png)<!-- -->
+
+``` r
+plot(lasso_cv$glmnet.fit, xvar = "lambda", label = TRUE)
+```
+
+![](gambling_revenue-_sukhman_files/figure-gfm/LASSO%20Coefficient%20Path%20Plot-1.png)<!-- -->
+
+``` r
+coef_mat <- as.matrix(coef(lasso_cv, s = "lambda.min"))
+coef_df <- tibble(
+  variable = rownames(coef_mat),
+  coefficient = coef_mat[, 1]
+) %>%
+  filter(variable != "(Intercept)")
+```
+
+``` r
+pred_lasso_train <- as.numeric(predict(lasso_model, newx = X_train))
+
+training_data_lasso <- training_data %>%
+mutate(pred_lasso = pred_lasso_train)
+
+ggplot(training_data_lasso, aes(x = Revenue, y = pred_lasso)) +
+geom_point(alpha = 0.7, color = "darkgreen") +
+geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "red") +
+scale_x_continuous(labels = dollar) +
+scale_y_continuous(labels = dollar) +
+labs(
+title = "Actual vs Predicted Revenue (LASSO)",
+x = "Actual Revenue",
+y = "Predicted Revenue"
+) +
+theme_minimal(base_size = 13)
+```
+
+![](gambling_revenue-_sukhman_files/figure-gfm/Acual%20vs%20Predicted-1.png)<!-- -->
+
+``` r
+library(viridis)
+```
+
+    ## Loading required package: viridisLite
+
+    ## 
+    ## Attaching package: 'viridis'
+
+    ## The following object is masked from 'package:scales':
+    ## 
+    ##     viridis_pal
+
+``` r
+library(corrplot)
+```
+
+    ## corrplot 0.95 loaded
+
+``` r
+predictor_mat <- training_data %>%
+  select(total_pop, median_income, pct_bachelors, pct_age_20_34,
+         pct_urban, pct_poverty) %>%
+  as.matrix()
+
+corr_mat <- cor(predictor_mat)
+
+corrplot(
+  corr_mat,
+  method = "color",
+  type = "upper",
+  col = viridis(200),   # <-- viridis palette applied here
+  tl.col = "black",
+  tl.srt = 45
+)
+```
+
+![](gambling_revenue-_sukhman_files/figure-gfm/CORR%20Map-1.png)<!-- -->
+
+``` r
+plot_df <- training_data %>%
+select(Revenue, total_pop, median_income, pct_bachelors,
+pct_age_20_34, pct_urban, pct_poverty) %>%
+pivot_longer(-Revenue, names_to = "predictor", values_to = "value")
+
+ggplot(plot_df, aes(x = value, y = Revenue)) +
+geom_point(alpha = 0.7) +
+facet_wrap(~ predictor, scales = "free_x") +
+scale_y_continuous(labels = dollar) +
+labs(
+title = "Revenue vs Key Demographic Predictors (Legal States)",
+x = "Predictor Value",
+y = "Revenue"
+) +
+theme_minimal(base_size = 13)
+```
+
+![](gambling_revenue-_sukhman_files/figure-gfm/Rev%20vs%20each%20predictor%20scatter%20plot-1.png)<!-- -->

@@ -8,6 +8,7 @@ output:
 always_allow_html: true
 date: "2025-11-30"
 ---
+
 ```{r packages}
 library(tidyverse)
 library(rvest)
@@ -18,7 +19,9 @@ library(dplyr)
 library(webshot2)
 
 ```
+
 ## Data scraping gambling revenue and growth
+
 ```{r scraping}
 url = "https://rg.org/statistics/us"
 gambling_html = read_html(url)
@@ -28,14 +31,18 @@ gambling_html = read_html(url)
 gambling_html |>
   html_table()
 ```
-### pull in 2024 revenue by state table 
+
+### pull in 2024 revenue by state table
+
 ```{r state revenue}
 state_revenue_24 = 
   gambling_html |> 
   html_table() |> 
   first() 
 ```
+
 ### pull in 2025 revenue growth by month
+
 ```{r monthly growth}
 revenue_growth_25= 
   gambling_html |> 
@@ -73,6 +80,7 @@ state_revenue_23  = read_csv("./gambling_revenue_data/2023_state_revenue.csv")
 # 2024 Data
 revenue_growth_24 = read_csv("./gambling_revenue_data/2024_monthly_revenue.csv")
 ```
+
 ### cleaning the url scraped data so that it matches data types with the manually scraped data
 
 ```{r cleaning}
@@ -185,7 +193,6 @@ acs_base_2024 =
   pivot_wider(names_from = variable, values_from = estimate) |>
   clean_names()
 ```
-
 
 ```{r Education (% with bachelor’s degree or higher)}
 # Pull raw ACS education data
@@ -437,7 +444,6 @@ rent_clean_2024 =
     pct_own = owner / total
   )
 ```
-
 
 ```{r Merge All Demographics + Gambling Revenue Together}
 #Rename so all are State
@@ -824,3 +830,84 @@ ranked_table <- bind_rows(actual_table, predicted_table) %>%
 
 ```
 
+```{r LASSO Cross-Validation Plot (λ vs CV error)}
+plot(lasso_cv)
+
+```
+
+```{r LASSO Coefficient Path Plot}
+plot(lasso_cv$glmnet.fit, xvar = "lambda", label = TRUE)
+```
+
+```{r}
+coef_mat <- as.matrix(coef(lasso_cv, s = "lambda.min"))
+coef_df <- tibble(
+  variable = rownames(coef_mat),
+  coefficient = coef_mat[, 1]
+) %>%
+  filter(variable != "(Intercept)")
+
+```
+
+```{r Acual vs Predicted}
+pred_lasso_train <- as.numeric(predict(lasso_model, newx = X_train))
+
+training_data_lasso <- training_data %>%
+mutate(pred_lasso = pred_lasso_train)
+
+ggplot(training_data_lasso, aes(x = Revenue, y = pred_lasso)) +
+geom_point(alpha = 0.7, color = "darkgreen") +
+geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "red") +
+scale_x_continuous(labels = dollar) +
+scale_y_continuous(labels = dollar) +
+labs(
+title = "Actual vs Predicted Revenue (LASSO)",
+x = "Actual Revenue",
+y = "Predicted Revenue"
+) +
+theme_minimal(base_size = 13)
+
+
+```
+
+```{r CORR Map}
+library(viridis)
+library(corrplot)
+
+predictor_mat <- training_data %>%
+  select(total_pop, median_income, pct_bachelors, pct_age_20_34,
+         pct_urban, pct_poverty) %>%
+  as.matrix()
+
+corr_mat <- cor(predictor_mat)
+
+corrplot(
+  corr_mat,
+  method = "color",
+  type = "upper",
+  col = viridis(200),   # <-- viridis palette applied here
+  tl.col = "black",
+  tl.srt = 45
+)
+
+```
+
+
+```{r Rev vs each predictor scatter plot}
+plot_df <- training_data %>%
+select(Revenue, total_pop, median_income, pct_bachelors,
+pct_age_20_34, pct_urban, pct_poverty) %>%
+pivot_longer(-Revenue, names_to = "predictor", values_to = "value")
+
+ggplot(plot_df, aes(x = value, y = Revenue)) +
+geom_point(alpha = 0.7) +
+facet_wrap(~ predictor, scales = "free_x") +
+scale_y_continuous(labels = dollar) +
+labs(
+title = "Revenue vs Key Demographic Predictors (Legal States)",
+x = "Predictor Value",
+y = "Revenue"
+) +
+theme_minimal(base_size = 13)
+
+```
