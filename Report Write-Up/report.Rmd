@@ -14,9 +14,9 @@ output: github_document
 
 **Overview of project goals and overall motivation**
 
-Sports gambling has been on the rise in recent years. Whether you are watching sports, TV with ads, social media content, or even just taking the subway, you are being exposed in one way or another to sports betting advertisements. With little regulation and large-scale scandals surrounding sports betting in recent months, an analysis of the key demographics of who partakes the most in sports gambling will be critical in understanding how to create and implement programs to effectively reduce the burden of gambling addictions that are surely to be on the rise in the upcoming years. 
+Sports gambling has been on the rise in recent years. Whether you are watching sports, TV with ads, social media content, or even just taking the subway, you are being exposed in one way or another to sports betting advertisements. With little regulation and large-scale scandals surrounding sports betting in recent months, an analysis of how key demographic factors inform sports gambling will be critical in understanding how to create and implement programs to effectively reduce the burden of gambling addictions that are surely to be on the rise in the upcoming years. 
 
-Assessing education & income status, age, and proximity to a major sports team are among the demographic factors we wanted to investigate. Additionally, we aimed to predict gambling revenue in states that have yet to legalize it, such as California. 
+We sought out to assess the nature of gambling revenue growth and shifts in gambling markets in the United States over the past few years, as well as what the distribution of demographic factors in relevant gambling states looks like. Additionally, we aimed to predict gambling revenue in states that have yet to legalize it, such as California, using 2024 gambling revenue and demographic data. 
 
 ## Related Work
 
@@ -24,17 +24,25 @@ Assessing education & income status, age, and proximity to a major sports team a
 
 ## Initial Questions
 
-We initially wanted to answer whether any demographic characteristics are associated with higher amounts of sports gambling, such as age, sex, educations status, income level, and proximity to a major sports team. We also considered trying to project gambling revenue based on demographics (education & income status, age, and proximity to a major sports team), as well as the market sizes of sports gambling in states that have yet to legalize it, such as California. 
+We initially wanted to answer whether any demographic characteristics are associated with higher amounts of sports gambling, such as age, sex, education status, income level, and proximity to a major sports team. We also considered trying to project gambling revenue based on demographics (education & income status, age, and proximity to a major sports team), as well as the market sizes of sports gambling in states that have yet to legalize it, such as California. 
 
-As we began to explore data sources and develop an analysis plan, we found it more feasible to focus on an exploratory data analysis of gambling revenue by state, as well as demographic characteristics by state. We further decided to examine and execute a predictive model of sports gambling revenue in states that have yet to legalize it. The nature of the data on hand, due to misalignment between gambling revenue data and available census demographic data per state, informed our decision to focus on predictive modeling rather than an exploration of demographic predictors of sports gambling. **KIMIA EDIT THIS TO BE MORE CLEAR**
+As we began to explore data sources and develop an analysis plan, we found it more feasible to focus on an exploratory data analysis of gambling revenue by state, as well as demographic characteristics by state. We further decided to examine and execute a predictive model of sports gambling revenue in states that have yet to legalize it. 
+
+Due to the lack of granularity in gambling revenue data, we found it unrealistic to conduct an analysis as detailed as we had initially intended, with data informing proximity to major sports teams. Additionally, for the purposes of feasibility, we decided to focus on the relationship between 2024 census demographic data and gambling revenue data. For these reasons, we found it more worthwhile to focus on predictive modeling rather than an exploration of demographic predictors of sports gambling. 
 
 ## Data
 
 **Source, scraping method, cleaning**
 
+Gambling data was obtained from [Research Ground's US sports betting data](https://rg.org/statistics/us). The gambling revenue and growth data per state per month was manually pulled in from 2018-2025, since the website that was scrapped to obtain this data had dynamic filters that switched the year of the displayed data. From here, the data were compiled into a data set for total revenue per state per year and total revenue growth per state per year. 
+
+Demographic data was obtained from publicly available [American Community Survey data](https://www.census.gov/programs-surveys/acs/data.html) from 2024. Data was pulled using a Census API code, for each state for each demographic variable of interest. The following demographic factors were pulled or subsequently calculated: median income, total population, % with a bachelor's degree, % aged 20-34, % urban, % rural, % in poverty, % male, unemployment rate, % white, % Black, % Asian, % Hispanic, median age, % with broadband internet access, GINI coefficient, % who are renters, and % who are owners. From here, each demographic characteristic was compiled into a larger dataset that including all characteristics per state. This dataset was joined with the gambling dataset created (detailed in the paragraph above). All states with NA values for gambling data were dropped from the dataset, leaving 31 states and Washington D.C. 
+
 ## Exploratory analysis
 
 **Visualizations of gambling revenue data**
+
+
 
 **Visualizations of census demographic data**
 
