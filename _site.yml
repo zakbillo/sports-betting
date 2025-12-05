@@ -1,0 +1,26 @@
+name: "All In! Forecasting Sports Gambling Revenue in Illegal Markets"
+output_dir: "."
+navbar:
+  title: "Home"
+  left:
+    - text: ""
+      href: home.html
+  right:
+    - text: "Data Processing"
+      href: data.html
+    - text: "Analysis"
+      href: analysis.html
+    - text: "Shiny"
+      href: flexdashboard.html      
+    - text: "Project Report"
+      href: report.html
+    - text: "About Us"
+      href: about.html
+    - icon: fa-github fa-lg
+      href: http://github.com/<https://github.com/kimiafaroughi/final_project_proposal>/
+output:
+  html_document:
+    theme: cosmo  
+    css: styles.css
+    includes:
+      after_body: [footer.html]

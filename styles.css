@@ -1,0 +1,95 @@
+/* 1. Import the same fonts as the landing page */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap');
+
+/* 2. Main Body Styling - Dark Slate Background */
+body {
+  background-color: #0f172a; /* Matches landing page background */
+  color: #e2e8f0; /* Light gray text for readability */
+  font-family: 'Roboto Mono', 'Courier New', monospace;
+  font-size: 16px;
+}
+
+/* 3. Headers - Gold & Retro-Futuristic */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Orbitron', sans-serif;
+  color: #eab308; /* Gold/Yellow accent */
+  letter-spacing: 1px;
+  margin-top: 1.5em;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+h1 {
+  border-bottom: 2px solid #ca8a04;
+  padding-bottom: 10px;
+}
+
+/* 4. Navigation Bar Overrides (For Cosmo Theme) */
+.navbar-default {
+  background-color: #1e293b !important; /* Slightly lighter slate */
+  border-bottom: 3px solid #eab308 !important; /* Gold border bottom */
+}
+
+.navbar-default .navbar-brand {
+  color: #eab308 !important; /* Gold Title */
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+}
+
+.navbar-default .navbar-nav > li > a {
+  color: #cbd5e1 !important; /* Light text for links */
+  transition: all 0.3s ease;
+}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > .active > a {
+  color: #ffffff !important;
+  background-color: #334155 !important; /* Highlight on hover */
+  text-shadow: 0 0 8px #eab308;
+}
+
+/* 5. Code Chunks & Output */
+pre {
+  background-color: #1e293b; /* Dark block background */
+  border: 1px solid #475569;
+  color: #f1f5f9;
+  border-radius: 8px;
+}
+
+code {
+  background-color: rgba(234, 179, 8, 0.2); /* Subtle gold tint */
+  color: #fcd34d; /* Bright gold text */
+  font-family: 'Roboto Mono', monospace;
+}
+
+/* 6. Tables (Kable / DT) */
+.table {
+  color: #e2e8f0;
+  background-color: #1e293b;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: #0f172a; /* Alternating dark rows */
+}
+
+.table-hover > tbody > tr:hover {
+  background-color: #334155; /* Highlight row on hover */
+}
+
+/* 7. Links */
+a {
+  color: #38bdf8; /* Cyan/Light Blue for visibility */
+  text-decoration: none;
+}
+
+a:hover {
+  color: #eab308; /* Turn gold on hover */
+  text-decoration: underline;
+}
+
+/* 8. Blockquotes */
+blockquote {
+  border-left: 5px solid #eab308;
+  font-style: italic;
+  color: #94a3b8;
+  font-size: 0.9em;
+}

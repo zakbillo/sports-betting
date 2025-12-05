@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Gambling Revenue Project</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto+Mono:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Roboto Mono', monospace;
+            background-color: #0f172a;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .neon-text {
+            text-shadow: 
+                0 0 5px #fff,
+                0 0 10px #fff,
+                0 0 20px #eab308,
+                0 0 30px #eab308,
+                0 0 40px #eab308;
+        }
+
+        .slot-machine-frame {
+            background: linear-gradient(135deg, #333 0%, #000 100%);
+            box-shadow: 
+                0 0 20px rgba(0,0,0,0.8),
+                inset 0 0 20px rgba(255,255,255,0.1);
+            border: 4px solid #444;
+            border-radius: 20px;
+            position: relative;
+        }
+
+        /* The gold trim */
+        .slot-machine-frame::before {
+            content: '';
+            position: absolute;
+            top: -10px; left: -10px; right: -10px; bottom: -10px;
+            border-radius: 25px;
+            background: linear-gradient(45deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+            z-index: -1;
+        }
+
+        .reel-container {
+            background: #fff;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            border-radius: 8px;
+            position: relative;
+        }
+
+        /* Gradient overlay to give depth to reels */
+        .reel-container::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(to bottom, 
+                rgba(0,0,0,0.6) 0%, 
+                rgba(0,0,0,0) 20%, 
+                rgba(0,0,0,0) 80%, 
+                rgba(0,0,0,0.6) 100%);
+            pointer-events: none;
+        }
+
+        .reel {
+            display: flex;
+            flex-direction: column;
+            transition: transform 3s cubic-bezier(0.1, 0.9, 0.2, 1);
+            will-change: transform;
+        }
+
+        .symbol {
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+            filter: blur(0px);
+        }
+
+        /* Blur animation for spinning */
+        .blur-spin {
+            animation: blurEffect 0.2s infinite;
+        }
+
+        @keyframes blurEffect {
+            0% { filter: blur(2px); }
+            50% { filter: blur(4px); transform: translateY(-5px); }
+            100% { filter: blur(2px); transform: translateY(5px); }
+        }
+
+        .lever-base {
+            position: absolute;
+            right: -60px;
+            top: 100px;
+            width: 40px;
+            height: 100px;
+            background: #333;
+            border-radius: 0 10px 10px 0;
+            border: 2px solid #555;
+            z-index: -2;
+        }
+
+        .lever-arm {
+            position: absolute;
+            right: -50px;
+            top: 130px;
+            width: 20px;
+            height: 120px;
+            background: linear-gradient(to right, #ccc, #fff, #ccc);
+            transform-origin: bottom center;
+            transition: transform 0.5s ease;
+            z-index: -1;
+            border-radius: 10px;
+        }
+
+        .lever-knob {
+            position: absolute;
+            top: -30px;
+            left: -15px;
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle at 30% 30%, #ff4d4d, #990000);
+            border-radius: 50%;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        
+        .lever-knob:active {
+            transform: scale(0.95);
+        }
+
+        .lever-arm.pulled {
+            transform: scaleY(-1) translateY(100px); /* Simple flip visual */
+        }
+
+        .jackpot-text {
+            font-family: 'Orbitron', sans-serif;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .jackpot-text.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .enter-btn {
+            background: linear-gradient(45deg, #eab308, #ca8a04);
+            transition: all 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(20px);
+        }
+
+        .enter-btn.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .enter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px #eab308;
+        }
+
+        /* Sound Toggle */
+        .sound-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background 0.3s;
+            z-index: 50;
+        }
+        .sound-toggle:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen text-white">
+
+    <!-- Sound Toggle Button -->
+    <button id="sound-btn" class="sound-toggle" title="Toggle Sound">
+        <svg id="icon-sound-on" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-400"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+        <svg id="icon-sound-off" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400 hidden"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+    </button>
+
+    <!-- Header / Title -->
+    <div class="text-center mb-10 z-10 px-4">
+        <h1 class="text-4xl md:text-6xl font-bold mb-4 font-[Orbitron] tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-200 to-yellow-400 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
+            ODDS ON
+        </h1>
+        <p class="text-gray-300 text-sm md:text-lg tracking-widest uppercase">
+            Sports Gambling Revenue Prediction in Illegal States
+        </p>
+    </div>
+
+    <!-- Main Slot Machine Area -->
+    <div class="relative">
+        
+        <!-- The Machine Frame -->
+        <div class="slot-machine-frame p-6 md:p-8 w-[320px] md:w-[600px]">
+            
+            <!-- Result Display (Win/Lose Text) -->
+            <div class="h-16 flex items-center justify-center mb-4 bg-black/50 rounded border border-gray-700 overflow-hidden">
+                <div id="status-text" class="text-yellow-400 font-[Orbitron] text-xl tracking-widest">
+                    PULL TO PLAY
+                </div>
+            </div>
+
+            <!-- Reels Row -->
+            <div class="grid grid-cols-3 gap-2 md:gap-4 h-[120px] md:h-[150px] mb-6">
+                
+                <!-- Reel 1 -->
+                <div class="reel-container">
+                    <div class="reel" id="reel1">
+                        <!-- Symbols injected by JS -->
+                    </div>
+                </div>
+
+                <!-- Reel 2 -->
+                <div class="reel-container">
+                    <div class="reel" id="reel2">
+                        <!-- Symbols injected by JS -->
+                    </div>
+                </div>
+
+                <!-- Reel 3 -->
+                <div class="reel-container">
+                    <div class="reel" id="reel3">
+                        <!-- Symbols injected by JS -->
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Spin Button (Mobile Friendly alternative to lever) -->
+            <button id="spin-btn-main" class="w-full bg-red-700 hover:bg-red-600 text-white font-bold py-4 rounded border-b-4 border-red-900 active:border-b-0 active:mt-1 transition-all md:hidden">
+                SPIN!
+            </button>
+            
+            <!-- Decorative Lights -->
+            <div class="flex justify-between mt-4 md:mt-0">
+                <div class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
+                <div class="w-3 h-3 rounded-full bg-yellow-500 animate-pulse delay-75"></div>
+                <div class="w-3 h-3 rounded-full bg-green-500 animate-pulse delay-150"></div>
+                <div class="w-3 h-3 rounded-full bg-blue-500 animate-pulse delay-200"></div>
+                <div class="w-3 h-3 rounded-full bg-purple-500 animate-pulse delay-300"></div>
+            </div>
+
+        </div>
+
+        <!-- Desktop Lever (Visual) -->
+        <div class="hidden md:block lever-base"></div>
+        <div class="hidden md:block lever-arm" id="lever-arm">
+            <div class="lever-knob" id="lever-knob"></div>
+        </div>
+
+    </div>
+
+    <!-- Enter Button (Appears after win) -->
+    <div id="enter-container" class="mt-12 text-center h-20">
+        <button id="enter-btn" class="enter-btn px-10 py-4 rounded-full text-black font-bold text-xl uppercase tracking-wider">
+            Enter Analysis
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="absolute bottom-4 text-gray-500 text-xs">
+        <p>Data Science Final Project • [Zakari, Kimia, Law & Sukhman]</p>
+    </footer>
+
+    <script>
+        // Configuration
+        const symbols = ['🍒', '🍋', '🍇', '💎', '7️⃣', '💰', '🏈', '🏀'];
+        const winningSymbol = '7️⃣'; // We force this result
+        const reelHeight = 100; // Height of one symbol in px (matches CSS)
+        const totalSymbolsInReel = 20; // Number of symbols to generate per reel for the animation strip
+        
+        // DOM Elements
+        const reels = [document.getElementById('reel1'), document.getElementById('reel2'), document.getElementById('reel3')];
+        const leverKnob = document.getElementById('lever-knob');
+        const leverArm = document.getElementById('lever-arm');
+        const spinBtnMain = document.getElementById('spin-btn-main');
+        const statusText = document.getElementById('status-text');
+        const enterBtn = document.getElementById('enter-btn');
+        const soundBtn = document.getElementById('sound-btn');
+        const iconSoundOn = document.getElementById('icon-sound-on');
+        const iconSoundOff = document.getElementById('icon-sound-off');
+        
+        let isSpinning = false;
+        let soundEnabled = true;
+
+        /* --- AUDIO SYSTEM (Web Audio API) --- */
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        // Helper to create oscillators
+        function playTone(freq, type, duration, startTime = 0, vol = 0.1) {
+            if (!soundEnabled) return;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime + startTime);
+            
+            gainNode.gain.setValueAtTime(vol, audioCtx.currentTime + startTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + startTime + duration);
+
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            osc.start(audioCtx.currentTime + startTime);
+            osc.stop(audioCtx.currentTime + startTime + duration);
+        }
+
+        // Sound: Mechanical Lever Pull / Click
+        function playClickSound() {
+            playTone(150, 'square', 0.1, 0, 0.1);
+            playTone(100, 'sawtooth', 0.1, 0.05, 0.1);
+        }
+
+        // Sound: Spinning Reel (Looping Ticking)
+        let spinInterval;
+        function startSpinSound() {
+            if (!soundEnabled) return;
+            // Play a tick every 100ms
+            spinInterval = setInterval(() => {
+                playTone(800, 'square', 0.05, 0, 0.02);
+            }, 80);
+        }
+
+        function stopSpinSound() {
+            clearInterval(spinInterval);
+        }
+
+        // Sound: Reel Stop (Thud)
+        function playStopSound() {
+            playTone(100, 'triangle', 0.2, 0, 0.3); // Low thud
+        }
+
+        // Sound: Win (Arcade Coin Shower)
+        function playWinSound() {
+            if (!soundEnabled) return;
+            const now = 0;
+            // Arpeggio
+            [523.25, 659.25, 783.99, 1046.50, 523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+                playTone(freq, 'sine', 0.2, i * 0.1, 0.1);
+            });
+            // Final High Ping
+            playTone(1567.98, 'square', 0.8, 0.8, 0.1);
+        }
+
+        // Toggle Sound UI
+        soundBtn.addEventListener('click', () => {
+            soundEnabled = !soundEnabled;
+            if(soundEnabled) {
+                iconSoundOn.classList.remove('hidden');
+                iconSoundOff.classList.add('hidden');
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+            } else {
+                iconSoundOn.classList.add('hidden');
+                iconSoundOff.classList.remove('hidden');
+                stopSpinSound();
+            }
+        });
+
+
+        /* --- GAME LOGIC --- */
+
+        // Initialize Reels
+        function initReels() {
+            reels.forEach(reel => {
+                reel.innerHTML = '';
+                let html = '';
+                for(let i=0; i<totalSymbolsInReel; i++) {
+                    const randomSym = symbols[Math.floor(Math.random() * symbols.length)];
+                    html += `<div class="symbol">${randomSym}</div>`;
+                }
+                reel.innerHTML = html;
+            });
+        }
+
+        initReels();
+
+        // Spin Logic
+        function spin() {
+            if (isSpinning) return;
+            isSpinning = true;
+
+            // 1. UI Updates
+            statusText.innerText = "SPINNING...";
+            statusText.classList.remove('neon-text', 'text-yellow-400');
+            statusText.classList.add('text-gray-400');
+            enterBtn.classList.remove('visible');
+
+            // 2. Audio & Visuals
+            playClickSound(); // Sound 1: Click
+            startSpinSound(); // Sound 2: Spinning loop
+
+            leverArm.classList.add('pulled');
+            setTimeout(() => leverArm.classList.remove('pulled'), 500);
+
+            // 3. Animate Reels
+            reels.forEach((reel, index) => {
+                const targetSymbol = '💰'; 
+                
+                reel.classList.add('blur-spin');
+
+                reel.style.transition = 'none';
+                reel.style.transform = 'translateY(0)';
+                void reel.offsetWidth;
+
+                const duration = 2 + (index * 0.5); 
+                reel.style.transition = `transform ${duration}s cubic-bezier(0.15, 0.9, 0.3, 1)`;
+
+                const currentContent = reel.innerHTML;
+                let appendHtml = '';
+                for(let i=0; i<20; i++) {
+                   appendHtml += `<div class="symbol">${symbols[Math.floor(Math.random() * symbols.length)]}</div>`; 
+                }
+                appendHtml += `<div class="symbol">${targetSymbol}</div>`;
+                
+                reel.innerHTML = currentContent + appendHtml;
+
+                const totalHeight = reel.scrollHeight;
+                const targetY = -(totalHeight - 100); 
+
+                requestAnimationFrame(() => {
+                    reel.style.transform = `translateY(${targetY}px)`;
+                });
+
+                // Cleanup after spin finishes
+                setTimeout(() => {
+                    reel.classList.remove('blur-spin');
+                    playStopSound(); // Sound 3: Thud per reel
+                    
+                    if (index === 2) {
+                        gameFinished();
+                    }
+                }, duration * 1000);
+            });
+        }
+
+        function gameFinished() {
+            isSpinning = false;
+            stopSpinSound(); // Stop the ticking loop
+            
+            playWinSound(); // Sound 4: Win Music!
+
+            statusText.innerText = "JACKPOT! BAG SECURED🤑";
+            statusText.classList.add('neon-text', 'text-yellow-400');
+            statusText.classList.remove('text-gray-400');
+            
+            setTimeout(() => {
+                enterBtn.classList.add('visible');
+            }, 500);
+        }
+
+        // Event Listeners
+        leverKnob.addEventListener('click', spin);
+        spinBtnMain.addEventListener('click', spin);
+        
+        enterBtn.addEventListener('click', () => {
+            window.location.href = 'home.html'; 
+        });
+
+    </script>
+</body>
+</html>
