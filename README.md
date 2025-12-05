@@ -1,3 +1,3 @@
-# final_project_proposal
+# All In! Forecasting Sports Gambling Revenue in Illegal Markets
 
-This repository contains the figures, data, analyses, report write-up, and other materials for Kimia, Zakari, Lawrence, and Sukhman's final project for P8105. 
+This repository contains all of the Data Science I (P8105) final report and website components for Zakari, Kimia, Law & Sukhman. Enjoy!

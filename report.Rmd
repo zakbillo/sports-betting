@@ -2,4 +2,59 @@
 title: "Project Report"
 ---
 
-Go back to [home](home.html)
+## Group Members
+
+* Kimia Faroughi (UNI: ksf2129)
+* Lawrence Zicari (UNI: lz3015)
+* Sukhman Parhar (UNI: sp4436)
+* Zakari Billo (UNI: zlb2008)
+
+## Motivation
+
+**Overview of project goals and overall motivation**
+
+Sports gambling has been on the rise in recent years. Whether you are watching sports, TV with ads, social media content, or even just taking the subway, you are being exposed in one way or another to sports betting advertisements. With little regulation and large-scale scandals surrounding sports betting in recent months, an analysis of how key demographic factors inform sports gambling will be critical in understanding how to create and implement programs to effectively reduce the burden of gambling addictions that are surely to be on the rise in the upcoming years. 
+
+We sought out to assess the nature of gambling revenue growth and shifts in gambling markets in the United States over the past few years, as well as what the distribution of demographic factors in relevant gambling states looks like. Additionally, we aimed to predict gambling revenue in states that have yet to legalize it, such as California, using 2024 gambling revenue and demographic data. 
+
+## Related Work
+
+**Anything that inspired us**
+
+## Initial Questions
+
+We initially wanted to answer whether any demographic characteristics are associated with higher amounts of sports gambling, such as age, sex, education status, income level, and proximity to a major sports team. We also considered trying to project gambling revenue based on demographics (education & income status, age, and proximity to a major sports team), as well as the market sizes of sports gambling in states that have yet to legalize it, such as California. 
+
+As we began to explore data sources and develop an analysis plan, we found it more feasible to focus on an exploratory data analysis of gambling revenue by state, as well as demographic characteristics by state. We further decided to examine and execute a predictive model of sports gambling revenue in states that have yet to legalize it. 
+
+Due to the lack of granularity in gambling revenue data, we found it unrealistic to conduct an analysis as detailed as we had initially intended, with data informing proximity to major sports teams. Additionally, for the purposes of feasibility, we decided to focus on the relationship between 2024 census demographic data and gambling revenue data. For these reasons, we found it more worthwhile to focus on predictive modeling rather than an exploration of demographic predictors of sports gambling. 
+
+## Data
+
+**Source, scraping method, cleaning**
+
+Gambling data was obtained from [Research Ground's US sports betting data](https://rg.org/statistics/us). The gambling revenue and growth data per state per month was manually pulled in from 2018-2025, since the website that was scrapped to obtain this data had dynamic filters that switched the year of the displayed data. From here, the data were compiled into a data set for total revenue per state per year and total revenue growth per state per year. States which have not legalized sports betting and therefore did not have any available gambling revenue available were not included. 
+
+Demographic data was obtained from publicly available [American Community Survey data](https://www.census.gov/programs-surveys/acs/data.html) from 2024. Data was pulled using a Census API code, for each state for each demographic variable of interest. The following demographic factors were pulled or subsequently calculated: median income, total population, % with a bachelor's degree, % aged 20-34, % urban, % rural, % in poverty, % male, unemployment rate, % white, % Black, % Asian, % Hispanic, median age, % with broadband internet access, GINI coefficient, % who are renters, and % who are owners. From here, each demographic characteristic was compiled into a larger dataset that including all characteristics per state. This dataset was joined with the gambling dataset created (detailed in the paragraph above). All states with NA values for gambling data were dropped from the dataset, leaving 31 states and Washington D.C.
+
+## Exploratory analysis
+
+**Visualizations of gambling revenue data**
+
+Preliminary visualizations of the gambling revenue data were generated. First, a column chart of total US gambling revenue from 2018-2024 was generated, aggregating revenue across all states, showing a steep increase in gambling revenue data from 2018 to 2024. Then a column chart of gambling revenue from 2018-2024 was generated, color coded by state, with each of the top 5 states in gambling revenue in 2024 in their own categories and all other states in a sixth category. Once again, this plot showed a steep increase in gambling revenue data from 2018 to 2024 across all states, with the largest (other than the compiled other category) in gambling revenue being New Jersey across all years, followed by Pennsylvania, Indiana, Arkansas, and Mississippi. 
+
+Finally, among the states that were in the top 5 in gambling revenue at any point across 2018 - 2024, their rankings in gambling revenue were mapping against year, showing how top gambling markets shifted from 2018 - 2024. We see that as some states began to legalize sports gambling over this time period, such as New York in 2022, they emerged as top gambling revenue states up until 2024. We also see that New Jersey and Pennsylvania have consistently remained in the top 5 gambling revenue states from 2018 to 2024. There is a steady decline in ranking of gambling revenue in Mississippi, Rhode Island, and Arkansas from 2018 or 2019 to 2024. Finally, we see a unique trend in Michigan, which was first ranked in 2020, spiked in 2021, before declining to rank 13 by 2024. 
+
+**Visualizations of census demographic data**
+
+Preliminary visualizations of the census demographic data were generated. Two column charts of total population and total gambling revenue in 2024 by state were compared side by side. The plot of the gambling revenue by state showed that arranging states by descending population size did not yield the same pattern for gambling revenue. For example, while New Jersey is the 7th largest state by population size, it is the third largest in gambling revenue. This suggests there are other factors at play in predicting states' gambling revenue. 
+
+A line chart of the racial makeup of each state in 2024, with the percentage of white, Black, Asian, and Hispanic people represented was also generated, and states were arranged in descending order of gambling revenue. Racial distributions vary across states, with no discernable pattern between gambling revenue and racial makeup of these states. A similar plot of the percentage of the population who are in poverty and the unemployment rate of each state in 2024, in descending order of gambling revenue, was also created, with no apparent pattern between gambling revenue and economic measures. 
+
+## Additional analysis
+
+**Predictive modeling of sports gambling revenue**
+
+## Discussion
+
+**Findings, expectations, insights**
