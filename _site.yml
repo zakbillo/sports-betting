@@ -1,7 +1,7 @@
 name: "All In! Forecasting Sports Gambling Revenue in Illegal Markets"
 output_dir: "."
 navbar:
-  title: "All In!"
+  title: "ODDS ON"
   left:
     - text: "Home"
       href: home.html
@@ -22,6 +22,7 @@ output:
   html_document:
     theme: cosmo  
     css: styles.css
+    code_folding: hide
     includes:
       in_header: header.html
       after_body: [footer.html]

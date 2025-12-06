@@ -40,7 +40,7 @@ Here's a high-level overview of our project:
 sf_use_s2(FALSE)
 
 # Import states' revenue data 
-final_state_revenue <- read_csv("data/final_state_revenue.csv")
+total_state_revenue <- read_csv("data/total_state_revenue.csv")
 
 # Get US State boundaries (Shapes)
 # Set the CRS to 4326 (Lat/Lon) to ensure Leaflet renders it correctly
@@ -50,7 +50,7 @@ us_states_sf <- st_as_sf(map("state", plot = FALSE, fill = TRUE)) %>%
 
 # 2. Prepare Data
 # Create a match_name column to join with the state shapes
-revenue_map_data <- final_state_revenue %>%
+revenue_map_data <- total_state_revenue %>%
   mutate(match_name = tolower(State))
 
 # Join Shapes with Data
