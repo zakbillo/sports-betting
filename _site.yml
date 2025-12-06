@@ -1,9 +1,9 @@
 name: "All In! Forecasting Sports Gambling Revenue in Illegal Markets"
 output_dir: "."
 navbar:
-  title: "Home"
+  title: "All In!"
   left:
-    - text: ""
+    - text: "Home"
       href: home.html
   right:
     - text: "Data Processing"

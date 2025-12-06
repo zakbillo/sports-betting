@@ -35,7 +35,7 @@ scale_fill_discrete = scale_fill_viridis_d
 
 ### Exploratory Data Analysis
 
-## Import Data
+Import Data
 
 ```{r, message = FALSE}
 total_state_revenue = read_csv("data/total_state_revenue.csv")
@@ -45,7 +45,7 @@ demographics_2024 = read_csv("data/demographics_2024.csv")
 
 ## Gambling visuals
 
-# Plot gambling revenue by year
+Plot gambling revenue by year
 
 ```{r Plotting gambling revenue by Year}
 # Aggregate total revenue by year
@@ -68,7 +68,7 @@ yearly_revenue_summary |>
   )
 ```
  
-# Plotting gambling revenue by state over time
+Plotting gambling revenue by state over time
 
 ```{r Plotting gambling revenue by State Over time}
 # Identify top 5 states by 2024 revenue to keep things looking clean
@@ -98,7 +98,7 @@ ggplot(state_growth_plot_data, aes(x = Year, y = Revenue, fill = State_Group)) +
   )
 ```
 
-# Plotting revenue rank: top 5 gambling markets by year since 2018
+Plotting revenue rank: top 5 gambling markets by year since 2018
 
 ```{r plotting revenue rank: top 5 gambling markets by year since 2018}
 # Calculate Ranks for every state, every year
@@ -144,7 +144,7 @@ plot_data |>
 
 ## Demographic visuals
 
-# Plot of Total Population in 2024 by State
+Plot of Total Population in 2024 by State
 
 ```{r}
 population_plot = 
@@ -165,7 +165,7 @@ population_plot =
       )
 ```
 
-# Plot of Gambling Revenue in 2024 by State
+Plot of Gambling Revenue in 2024 by State
 
 ```{r}
 revenue_plot = 
@@ -187,7 +187,7 @@ revenue_plot =
       )
 ```
 
-# Patchwork Plot of Total Population and Gambling Revenue in 2024 by State
+Patchwork Plot of Total Population and Gambling Revenue in 2024 by State
 
 ```{r, fig.width = 10}
 combined_revenue_population = (population_plot + revenue_plot)
@@ -195,7 +195,7 @@ combined_revenue_population = (population_plot + revenue_plot)
 combined_revenue_population
 ```
 
-# Racial Makeup of States in 2024
+Racial Makeup of States in 2024
 
 ```{r}
 model_clean_2024 |> 
@@ -225,7 +225,7 @@ model_clean_2024 |>
     ) 
 ```
 
-# Poverty % and Unemployment Rate by State in 2024
+Poverty % and Unemployment Rate by State in 2024
 
 ```{r}
 model_clean_2024 |> 
@@ -257,7 +257,7 @@ model_clean_2024 |>
 
 ### Let's build a predictive model!
 
-# Build training dataset 
+Build training dataset 
 
 ```{r}
 # Build training dataset
@@ -275,7 +275,7 @@ training_data <- model_clean_2024 |>
   drop_na()   # make sure no missing values in predictors or Revenue
 ```
 
-# Fit linear regression model
+Fit linear regression model
 
 ```{r}
 # Fit linear regression model
@@ -309,7 +309,7 @@ newdata_illegal <-
   drop_na()  # just in case a state is missing some demographic
 ```
 
-# Predict revenue if illegal states legalized gambling
+Predict revenue if illegal states legalized gambling
 
 ```{r}
 # Predict revenue if these states legalized gambling
@@ -322,7 +322,7 @@ pred_illegal <-
   arrange(desc(predicted_revenue))
 ```
 
-# Compare distribution of real vs predicted
+Compare distribution of real vs predicted
 
 ```{r}
 # Compare distribution of real vs predicted
@@ -330,7 +330,7 @@ summary(training_data$Revenue)
 summary(pred_illegal$predicted_revenue)
 ```
 
-# Fit a LASSO regression model
+Fit a LASSO regression model
 
 ```{r}
 # Fit LASSO regression model
@@ -367,7 +367,7 @@ lasso_model <- glmnet(
 lasso_cv$lambda.min #This is the penalty 
 ```
 
-# Build the prediction matrix for the non-gambling states
+Build the prediction matrix for the non-gambling states
 
 ```{r Predictive model}
 # Build the prediction matrix for the non-gambling states
@@ -390,7 +390,7 @@ pred_illegal_lasso <- pred_illegal_lasso |>
   mutate(predicted_revenue_lasso = pmax(predicted_revenue_lasso, 0))
 ```
 
-# Compare models 
+Compare models 
 
 ```{r Compare models}
 summary(training_data$Revenue)
@@ -431,7 +431,7 @@ kable(pred_table, format = "html", caption = "Predicted Annual Gambling Revenue 
   kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover"))
 ```
 
-# Bar plot of predicted annual gambling revenue (if legalized)
+Bar plot of predicted annual gambling revenue (if legalized)
 
 ```{r Bar Plot}
 pred_illegal_lasso_plot <- pred_illegal_lasso |>
@@ -452,7 +452,7 @@ ggplot(pred_illegal_lasso_plot, aes(x = State, y = predicted_revenue_lasso)) +
   theme_minimal(base_size = 13)
 ```
 
-# Density plot of distribution of actual vs predicted gambling revenue
+Density plot of distribution of actual vs predicted gambling revenue
 
 ```{r}
 compare_df <- tibble(
@@ -474,7 +474,7 @@ ggplot(compare_df, aes(x = revenue, fill = group)) +
   theme_minimal(base_size = 13)
 ```
 
-# Scatterplot of population vs gambling revenue comparing actual and predicted states
+Scatterplot of population vs gambling revenue comparing actual and predicted states
 
 ```{r}
 scatter_df <- bind_rows(
@@ -498,7 +498,7 @@ ggplot(scatter_df, aes(x = total_pop, y = Revenue, color = type)) +
   theme_minimal(base_size = 13)
 ```
 
-# Table of distribution comparison of actual vs. predicted revenue
+Table of distribution comparison of actual vs. predicted revenue
 
 ```{r}
 summary_table <- tibble(
@@ -538,13 +538,13 @@ ranked_table <- bind_rows(actual_table, predicted_table) %>%
   select(Rank, State, Revenue, revenue_source)
 ```
 
-# LASSO cross-validation plot (lamda vs. cross-validation error)
+LASSO cross-validation plot (lamda vs. cross-validation error)
 
 ```{r LASSO Cross-Validation Plot (λ vs CV error)}
 plot(lasso_cv)
 ```
 
-# LASSO coefficient path plot
+LASSO coefficient path plot
 
 ```{r LASSO Coefficient Path Plot}
 plot(lasso_cv$glmnet.fit, xvar = "lambda", label = TRUE)
@@ -559,7 +559,7 @@ coef_df <- tibble(
   filter(variable != "(Intercept)")
 ```
 
-# Plot of actual vs. predicted revenue (LASSO)
+Plot of actual vs. predicted revenue (LASSO)
 
 ```{r Actual vs Predicted}
 pred_lasso_train <- as.numeric(predict(lasso_model, newx = X_train))
@@ -581,7 +581,7 @@ theme_minimal(base_size = 13)
 
 ```
 
-# Correlation map of potential predictors (upper triangle only)
+Correlation map of potential predictors (upper triangle only)
 
 ```{r CORR Map}
 predictor_mat <- training_data %>%
@@ -601,7 +601,7 @@ corrplot(
 )
 ```
 
-# Scatterplot of revenue vs. each predictor
+Scatterplot of revenue vs. each predictor
 
 ```{r Rev vs each predictor scatter plot}
 plot_df <- training_data %>%
@@ -621,7 +621,7 @@ y = "Revenue"
 theme_minimal(base_size = 13)
 ```
 
-# Table of model performance comparison between linear model and LASSO
+Table of model performance comparison between linear model and LASSO
 
 ```{r}
 # --- Linear Model Predictions ---
@@ -656,7 +656,7 @@ model_metrics %>%
   kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover"))
 ```
 
-# Column chart of LASSO coefficients at lambda min
+Column chart of LASSO coefficients at lambda min
 
 ```{r}
 coef_mat <- as.matrix(coef(lasso_cv, s = "lambda.min"))

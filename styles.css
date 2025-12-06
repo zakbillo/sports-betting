@@ -1,21 +1,21 @@
-/* Import the same fonts as the landing page */
+/* 1. Import Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap');
 
-/* Main Body Styling - Dark Slate Background */
-body {
-  background-color: #0f172a; /* Matches landing page background */
-  color: #e2e8f0; /* Light gray text for readability */
+/* 2. Global Reset for Dark Mode */
+body, .main-container, .container-fluid {
+  background-color: #0f172a !important; /* Deep Slate Background */
+  color: #f1f5f9 !important;            /* High-Contrast White/Silver Text */
   font-family: 'Roboto Mono', 'Courier New', monospace;
   font-size: 16px;
 }
 
-/* Headers - Gold & Retro-Futuristic */
+/* 3. Typography - Make it Pop */
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Orbitron', sans-serif;
-  color: #eab308; /* Gold/Yellow accent */
+  color: #fbbf24 !important; /* Brighter Gold */
   letter-spacing: 1px;
   margin-top: 1.5em;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.2); /* Slight glow */
 }
 
 h1 {
@@ -23,73 +23,91 @@ h1 {
   padding-bottom: 10px;
 }
 
-/* Navigation Bar Overrides (For Cosmo Theme) */
+/* 4. Links - Bright Cyan for Visibility */
+a {
+  color: #38bdf8 !important; /* Bright Cyan */
+  text-decoration: none;
+  font-weight: bold;
+}
+
+a:hover {
+  color: #fbbf24 !important; /* Turn Gold on hover */
+  text-decoration: underline;
+}
+
+/* 5. Navigation Bar (Overrides Cosmo) */
 .navbar-default {
-  background-color: #1e293b !important; /* Slightly lighter slate */
-  border-bottom: 3px solid #eab308 !important; /* Gold border bottom */
+  background-color: #1e293b !important; /* Lighter Slate */
+  border-bottom: 3px solid #fbbf24 !important;
 }
 
 .navbar-default .navbar-brand {
-  color: #eab308 !important; /* Gold Title */
+  color: #fbbf24 !important;
   font-family: 'Orbitron', sans-serif;
   font-weight: 700;
 }
 
 .navbar-default .navbar-nav > li > a {
-  color: #cbd5e1 !important; /* Light text for links */
-  transition: all 0.3s ease;
+  color: #e2e8f0 !important; /* White-ish text */
 }
 
-.navbar-default .navbar-nav > li > a:hover,
-.navbar-default .navbar-nav > .active > a {
-  color: #ffffff !important;
-  background-color: #334155 !important; /* Highlight on hover */
-  text-shadow: 0 0 8px #eab308;
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:hover {
+  background-color: #fbbf24 !important; /* Gold Background */
+  color: #000 !important;               /* Black Text for Contrast */
 }
 
-/* Code Chunks & Output */
+/* 6. Tables - Fix the "White Box" Issue */
+.table {
+  color: #f1f5f9 !important;
+  background-color: transparent !important;
+}
+
+/* Fix Striped Rows (Make them dark grey, not white) */
+.table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.table-hover > tbody > tr:hover {
+  background-color: rgba(251, 191, 36, 0.1) !important; /* Gold Tint on Hover */
+}
+
+/* 7. Code Blocks */
 pre {
-  background-color: #1e293b; /* Dark block background */
-  border: 1px solid #475569;
-  color: #f1f5f9;
+  background-color: #020617 !important; /* Almost Black */
+  border: 1px solid #334155;
+  color: #cbd5e1 !important;
   border-radius: 8px;
 }
 
 code {
-  background-color: rgba(234, 179, 8, 0.2); /* Subtle gold tint */
-  color: #fcd34d; /* Bright gold text */
+  background-color: rgba(251, 191, 36, 0.15); /* Gold Highlight */
+  color: #fbbf24; /* Gold Text */
   font-family: 'Roboto Mono', monospace;
+  padding: 2px 4px;
+  border-radius: 4px;
 }
 
-/* Tables (Kable / DT) */
-.table {
-  color: #e2e8f0;
-  background-color: #1e293b;
+/* 8. Table of Contents (Sidebar) */
+.list-group-item {
+  background-color: #0f172a !important;
+  border: 1px solid #334155 !important;
+  color: #cbd5e1 !important;
 }
 
-.table-striped > tbody > tr:nth-of-type(odd) {
-  background-color: #0f172a; /* Alternating dark rows */
+.list-group-item.active, 
+.list-group-item.active:hover {
+  background-color: #fbbf24 !important;
+  color: #000 !important; /* Black text on Gold */
+  border-color: #fbbf24 !important;
 }
 
-.table-hover > tbody > tr:hover {
-  background-color: #334155; /* Highlight row on hover */
-}
-
-/* Links */
-a {
-  color: #38bdf8; /* Cyan/Light Blue for visibility */
-  text-decoration: none;
-}
-
-a:hover {
-  color: #eab308; /* Turn gold on hover */
-  text-decoration: underline;
-}
-
-/* Blockquotes */
-blockquote {
-  border-left: 5px solid #eab308;
-  font-style: italic;
-  color: #94a3b8;
+/* 9. Footer Alignment */
+footer {
+  text-align: center;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #334155;
   font-size: 0.9em;
+  color: #94a3b8;
 }
