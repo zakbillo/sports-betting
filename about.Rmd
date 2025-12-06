@@ -65,8 +65,8 @@ font-size: 1.2rem; /* Larger Description Font */
 </div>
 
 <!-- Kimia -->
-
 <div class="team-member">
+<a href="https://kimiafaroughi.github.io/" class="team-member-link" target="_blank">
 <img src="images/20250204_Dini_5344.jpg" alt="Kimia">
 <h3>Kimia</h3>
 <p>Kimia is a second year Epidemiology MPH student (‘26) with an interest in biostatistics and data science, as well as humanitarian work.</p>
@@ -75,6 +75,7 @@ font-size: 1.2rem; /* Larger Description Font */
 <!-- Sukhman -->
 
 <div class="team-member">
+<a href="suparhar.github.io" class="team-member-link" target="_blank">
 <img src="images/IMG_1642.jpg" alt="Sukhman">
 <h3>Sukhman</h3>
 <p>Sukhman is a second-year Epidemiology MPH student (’26) focused on biostatistics, computational methods, and cancer epidemiology.</p>
@@ -83,6 +84,7 @@ font-size: 1.2rem; /* Larger Description Font */
 <!-- Lawrence -->
 
 <div class="team-member">
+<a href="https://lzicari.github.io/" class="team-member-link" target="_blank">
 <img src="images/Headshot-2025.jpg" alt="Lawrence">
 <h3>Law</h3>
 <p>Lawrence is a second-year Epidemiology MPH student (‘26) with a focus on biostatistics, policy research and spatial analysis.</p>

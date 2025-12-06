@@ -37,6 +37,14 @@
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="site_libs/plotly-binding-4.11.0/plotly.js"></script>
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="site_libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
+<link href="site_libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="site_libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
 <script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
@@ -381,32 +389,32 @@ div.tocify {
 
 
 <style type="text/css">
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  h1, h2, h3 {
-    color: #2c3e50;
-    font-weight: 600;
-  }
-  .main-container {
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
-  }
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+h1, h2, h3 {
+  color: #2c3e50;
+  font-weight: 600;
+}
+.main-container {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
 </style>
-<div id="exploratory-data-analysis" class="section level2">
-<h2>Exploratory Data Analysis</h2>
-<div id="import-data" class="section level3">
-<h3>Import Data</h3>
+<div id="exploratory-data-analysis" class="section level1">
+<h1>Exploratory Data Analysis</h1>
+<div id="import-data" class="section level2">
+<h2>Import Data</h2>
 <pre class="r"><code>total_state_revenue = read_csv(&quot;data/total_state_revenue.csv&quot;)
 model_clean_2024 = read_csv(&quot;data/model_clean_2024.csv&quot;)
 demographics_2024 = read_csv(&quot;data/demographics_2024.csv&quot;)</code></pre>
 </div>
 </div>
-<div id="gambling-visuals" class="section level2 tabset">
-<h2 class="tabset">Gambling Visuals</h2>
-<div id="revenue-by-year" class="section level3">
-<h3>Revenue by Year</h3>
+<div id="gambling-visuals" class="section level1 tabset">
+<h1 class="tabset">Gambling Visuals</h1>
+<div id="revenue-by-year" class="section level2">
+<h2>Revenue by Year</h2>
 <pre class="r"><code># Aggregate total revenue by year
 yearly_revenue_summary = total_state_revenue |&gt; 
   group_by(Year) |&gt; 
@@ -425,11 +433,50 @@ yearly_revenue_summary |&gt;
     x = &quot;Year&quot;,
     y = &quot;Total Revenue&quot;
   )</code></pre>
-<p><img src="analysis_files/figure-html/revenue_by_year-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<p><img src="analysis_files/figure-html/revenue-by-year-1.png" width="90%" style="display: block; margin: auto;" /></p>
 </div>
-<div id="growth-by-state" class="section level3">
-<h3>Growth by State</h3>
-<pre class="r"><code># Identify top 5 states by 2024 revenue to keep things looking clean
+<div id="growth-by-state" class="section level2">
+<h2>Growth by State</h2>
+<pre class="r"><code># Aggregate total revenue by year
+yearly_revenue_summary = total_state_revenue |&gt; 
+  group_by(Year) |&gt; 
+  summarize(Total_Revenue = sum(Revenue, na.rm = TRUE))
+
+# Create the plot
+plot_ly(
+  data = yearly_revenue_summary |&gt; mutate(Year = as.factor(Year)),
+  x = ~Year,
+  y = ~Total_Revenue, 
+  type = &quot;bar&quot;, 
+  color = ~Year,
+  text = ~scales::dollar(Total_Revenue / 1e9, scale = 1, suffix = &quot;B&quot;),
+  textposition = &quot;outside&quot;,
+  hoverinfo = &quot;x+y+text&quot;
+) |&gt; 
+  layout(
+    title = &quot;Total US Gambling Revenue (2018-2024)&quot;,
+    xaxis = list(
+      title = &quot;Year&quot;
+    ),
+    yaxis = list(
+      title = &quot;Total Revenue&quot;,
+      tickformat = &quot;$,&quot;,
+      tickprefix = &quot;$&quot;
+    ),
+    showlegend = FALSE
+  )</code></pre>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-b7c1a91114976e9bc123" style="width:90%;height:460.8px;"></div>
+<script type="application/json" data-for="htmlwidget-b7c1a91114976e9bc123">{"x":{"visdat":{"1fda6ebb8a0":["function () ","plotlyVisDat"]},"cur_data":"1fda6ebb8a0","attrs":{"1fda6ebb8a0":{"x":{},"y":{},"text":{},"textposition":"outside","hoverinfo":"x+y+text","color":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Total US Gambling Revenue (2018-2024)","xaxis":{"domain":[0,1],"automargin":true,"title":"Year","type":"category","categoryorder":"array","categoryarray":["2018","2019","2020","2021","2022","2023","2024"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"Total Revenue","tickformat":"$,","tickprefix":"$"},"showlegend":false,"hovermode":"closest"},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["2018"],"y":[112745560],"text":"$0.11B","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"2018","marker":{"color":"rgba(102,194,165,1)","line":{"color":"rgba(102,194,165,1)"}},"textfont":{"color":"rgba(102,194,165,1)"},"error_y":{"color":"rgba(102,194,165,1)"},"error_x":{"color":"rgba(102,194,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["2019"],"y":[558594169],"text":"$0.56B","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"2019","marker":{"color":"rgba(252,141,98,1)","line":{"color":"rgba(252,141,98,1)"}},"textfont":{"color":"rgba(252,141,98,1)"},"error_y":{"color":"rgba(252,141,98,1)"},"error_x":{"color":"rgba(252,141,98,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["2020"],"y":[1541789027],"text":"$1.54B","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"2020","marker":{"color":"rgba(141,160,203,1)","line":{"color":"rgba(141,160,203,1)"}},"textfont":{"color":"rgba(141,160,203,1)"},"error_y":{"color":"rgba(141,160,203,1)"},"error_x":{"color":"rgba(141,160,203,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["2021"],"y":[4291686811],"text":"$4.29B","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"2021","marker":{"color":"rgba(231,138,195,1)","line":{"color":"rgba(231,138,195,1)"}},"textfont":{"color":"rgba(231,138,195,1)"},"error_y":{"color":"rgba(231,138,195,1)"},"error_x":{"color":"rgba(231,138,195,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["2022"],"y":[7603794087],"text":"$7.60B","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"2022","marker":{"color":"rgba(166,216,84,1)","line":{"color":"rgba(166,216,84,1)"}},"textfont":{"color":"rgba(166,216,84,1)"},"error_y":{"color":"rgba(166,216,84,1)"},"error_x":{"color":"rgba(166,216,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["2023"],"y":[11121558986],"text":"$11.12B","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"2023","marker":{"color":"rgba(255,217,47,1)","line":{"color":"rgba(255,217,47,1)"}},"textfont":{"color":"rgba(255,217,47,1)"},"error_y":{"color":"rgba(255,217,47,1)"},"error_x":{"color":"rgba(255,217,47,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["2024"],"y":[13924115452],"text":"$13.92B","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"2024","marker":{"color":"rgba(229,196,148,1)","line":{"color":"rgba(229,196,148,1)"}},"textfont":{"color":"rgba(229,196,148,1)"},"error_y":{"color":"rgba(229,196,148,1)"},"error_x":{"color":"rgba(229,196,148,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="market-rank-shifts" class="section level2">
+<h2>Market Rank Shifts</h2>
+<pre class="r"><code># Calculate Ranks for every state, every year
+ranked_data = total_state_revenue |&gt; 
+  group_by(Year) |&gt; 
+  mutate(Rank = min_rank(desc(Revenue))) |&gt; 
+  ungroup()
+
+# Identify top 5 states by 2024 revenue to keep things looking clean
 top_states = total_state_revenue |&gt; 
   filter(Year == 2019) |&gt; 
   slice_max(Revenue, n = 5) |&gt; 
@@ -443,115 +490,146 @@ state_growth_plot_data = total_state_revenue |&gt;
   summarize(Revenue = sum(Revenue, na.rm = TRUE), .groups = &quot;drop&quot;) |&gt; 
   mutate(State_Group = fct_reorder(State_Group, Revenue, .desc = TRUE))
 
-
-ggplot(state_growth_plot_data, aes(x = Year, y = Revenue, fill = State_Group)) +
-  geom_col() +
-  scale_y_continuous(labels = scales::dollar_format()) +
-  scale_x_continuous(breaks = 2018:2024) +
-  labs(
+state_growth_plot_data |&gt; 
+  plot_ly(
+    x = ~Year,
+    y = ~Revenue, 
+    type = &quot;bar&quot;, 
+    color = ~State_Group,
+    text = ~scales::dollar(Revenue),
+    textposition = &quot;outside&quot;,
+    hoverinfo = &quot;x+y+text&quot;
+  ) |&gt; 
+  layout(
     title = &quot;US Gambling Revenue Growth by State&quot;,
-    x = &quot;Year&quot;,
-    y = &quot;Revenue&quot;,
-    fill = &quot;State&quot;
+    xaxis = list(
+      title = &quot;Year&quot;,
+      tickvals = 2018:2024
+    ),
+    yaxis = list(
+      title = &quot;Revenue&quot;,
+      tickformat = &quot;$,&quot;
+    ),
+    barmode = &quot;stack&quot;,
+    showlegend = TRUE 
   )</code></pre>
-<p><img src="analysis_files/figure-html/revenue_by_state_growth-1.png" width="90%" style="display: block; margin: auto;" /></p>
-</div>
-<div id="market-rank-shifts" class="section level3">
-<h3>Market Rank Shifts</h3>
-<pre class="r"><code># Calculate Ranks for every state, every year
-ranked_data = total_state_revenue |&gt; 
-  group_by(Year) |&gt; 
-  mutate(Rank = min_rank(desc(Revenue))) |&gt; 
-  ungroup()
-
-# Identify &quot;States of Interest&quot; - Top 5 at any point
-focus_states = ranked_data |&gt; 
-  filter(Rank &lt;= 5) |&gt; 
-  pull(State) |&gt; 
-  unique()
-
-# Filter the dataset to just those states
-plot_data = ranked_data |&gt; 
-  filter(State %in% focus_states)
-
-plot_data |&gt; 
-  ggplot(aes(x = Year, y = Rank, color = State, group = State)) +
-  geom_point(size = 3) +
-  geom_line(linewidth = 1.2) + 
-  scale_y_reverse(breaks = 1:max(plot_data$Rank, na.rm = TRUE)) + 
-  scale_x_continuous(breaks = 2018:2024) +
-  geom_text(data = plot_data |&gt; filter(Year == 2018), 
-            aes(label = paste(Rank, State)), x = 2017.8, hjust = 1, size = 3) +
-  geom_text(data = plot_data |&gt; filter(Year == 2024), 
-            aes(label = paste(Rank, State)), x = 2024.2, hjust = 0, size = 3) +
-  labs(
-    title = &quot;Shift in Top Gambling Markets (2018 vs 2024)&quot;,
-    subtitle = &quot;Tracking rank of states that were in top 5 in 2018 or 2024&quot;,
-    y = &quot;Revenue Rank&quot;,
-    x = &quot;Year&quot;
-  ) +
-  theme(
-    legend.position = &quot;none&quot;,        
-    panel.grid.minor = element_blank()
-  ) +
-  coord_cartesian(xlim = c(2017, 2025))</code></pre>
-<p><img src="analysis_files/figure-html/market_rank_shift-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-b95c236b4017e02dab0c" style="width:90%;height:460.8px;"></div>
+<script type="application/json" data-for="htmlwidget-b95c236b4017e02dab0c">{"x":{"visdat":{"1fda3d75b872":["function () ","plotlyVisDat"]},"cur_data":"1fda3d75b872","attrs":{"1fda3d75b872":{"x":{},"y":{},"text":{},"textposition":"outside","hoverinfo":"x+y+text","color":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"US Gambling Revenue Growth by State","xaxis":{"domain":[0,1],"automargin":true,"title":"Year","tickvals":[2018,2019,2020,2021,2022,2023,2024]},"yaxis":{"domain":[0,1],"automargin":true,"title":"Revenue","tickformat":"$,"},"barmode":"stack","showlegend":true,"hovermode":"closest"},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[2018,2019,2020,2021,2022,2023,2024],"y":[1030910,37135143,642379345,2518245391,5707321191,8869185121,11416166574],"text":["$1,030,910","$37,135,143","$642,379,345","$2,518,245,391","$5,707,321,191","$8,869,185,121","$11,416,166,574"],"textposition":["outside","outside","outside","outside","outside","outside","outside"],"hoverinfo":["x+y+text","x+y+text","x+y+text","x+y+text","x+y+text","x+y+text","x+y+text"],"type":"bar","name":"All Other","marker":{"color":"rgba(102,194,165,1)","line":{"color":"rgba(102,194,165,1)"}},"textfont":{"color":"rgba(102,194,165,1)"},"error_y":{"color":"rgba(102,194,165,1)"},"error_x":{"color":"rgba(102,194,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[2018,2019,2020,2021,2022,2023,2024],"y":[94022393,299398035,398231302,814981641,762954971,1006681602,1094630610],"text":["$94,022,393","$299,398,035","$398,231,302","$814,981,641","$762,954,971","$1,006,681,602","$1,094,630,610"],"textposition":["outside","outside","outside","outside","outside","outside","outside"],"hoverinfo":["x+y+text","x+y+text","x+y+text","x+y+text","x+y+text","x+y+text","x+y+text"],"type":"bar","name":"New Jersey","marker":{"color":"rgba(252,141,98,1)","line":{"color":"rgba(252,141,98,1)"}},"textfont":{"color":"rgba(252,141,98,1)"},"error_y":{"color":"rgba(252,141,98,1)"},"error_x":{"color":"rgba(252,141,98,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[2018,2019,2020,2021,2022,2023,2024],"y":[2516589,111726711,269903946,505523748,597364960,686915514,778420570],"text":["$2,516,589","$111,726,711","$269,903,946","$505,523,748","$597,364,960","$686,915,514","$778,420,570"],"textposition":["outside","outside","outside","outside","outside","outside","outside"],"hoverinfo":["x+y+text","x+y+text","x+y+text","x+y+text","x+y+text","x+y+text","x+y+text"],"type":"bar","name":"Pennsylvania","marker":{"color":"rgba(141,160,203,1)","line":{"color":"rgba(141,160,203,1)"}},"textfont":{"color":"rgba(141,160,203,1)"},"error_y":{"color":"rgba(141,160,203,1)"},"error_x":{"color":"rgba(141,160,203,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[2018,2019,2020,2021,2022,2023,2024],"y":[0,41576946,136395416,308304353,386888311,404363766,484278308],"text":["$0","$41,576,946","$136,395,416","$308,304,353","$386,888,311","$404,363,766","$484,278,308"],"textposition":["outside","outside","outside","outside","outside","outside","outside"],"hoverinfo":["x+y+text","x+y+text","x+y+text","x+y+text","x+y+text","x+y+text","x+y+text"],"type":"bar","name":"Indiana","marker":{"color":"rgba(231,138,195,1)","line":{"color":"rgba(231,138,195,1)"}},"textfont":{"color":"rgba(231,138,195,1)"},"error_y":{"color":"rgba(231,138,195,1)"},"error_x":{"color":"rgba(231,138,195,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[2018,2019,2020,2021,2022,2023,2024],"y":[0,24305962,51013027,78763591,88448329,103188842,107275202],"text":["$0","$24,305,962","$51,013,027","$78,763,591","$88,448,329","$103,188,842","$107,275,202"],"textposition":["outside","outside","outside","outside","outside","outside","outside"],"hoverinfo":["x+y+text","x+y+text","x+y+text","x+y+text","x+y+text","x+y+text","x+y+text"],"type":"bar","name":"Arkansas","marker":{"color":"rgba(166,216,84,1)","line":{"color":"rgba(166,216,84,1)"}},"textfont":{"color":"rgba(166,216,84,1)"},"error_y":{"color":"rgba(166,216,84,1)"},"error_x":{"color":"rgba(166,216,84,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[2018,2019,2020,2021,2022,2023,2024],"y":[15175668,44451372,43865991,65868087,60816325,51224141,43344188],"text":["$15,175,668","$44,451,372","$43,865,991","$65,868,087","$60,816,325","$51,224,141","$43,344,188"],"textposition":["outside","outside","outside","outside","outside","outside","outside"],"hoverinfo":["x+y+text","x+y+text","x+y+text","x+y+text","x+y+text","x+y+text","x+y+text"],"type":"bar","name":"Mississippi","marker":{"color":"rgba(255,217,47,1)","line":{"color":"rgba(255,217,47,1)"}},"textfont":{"color":"rgba(255,217,47,1)"},"error_y":{"color":"rgba(255,217,47,1)"},"error_x":{"color":"rgba(255,217,47,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
-<div id="demographic-visuals" class="section level2 tabset">
-<h2 class="tabset">Demographic Visuals</h2>
-<div id="population" class="section level3">
-<h3>Population</h3>
-<pre class="r"><code>population_plot = 
+<div id="demographic-visuals" class="section level1 tabset">
+<h1 class="tabset">Demographic Visuals</h1>
+<div id="population" class="section level2">
+<h2>Population</h2>
+<pre class="r"><code># Population plot:
+population_plot = 
   model_clean_2024 |&gt; 
-    filter(State != &quot;Washington D.C.&quot;) |&gt; 
+  filter(State != &quot;Washington D.C.&quot;) |&gt; 
     mutate(
       State = as.factor(State),
       State = fct_reorder(State, total_pop, .desc = TRUE)
+    )
+
+ordered_states = as.character(population_plot$State)
+
+population_plot = 
+  population_plot |&gt; 
+  plot_ly(
+    x = ~State,
+    y = ~total_pop, 
+    type = &quot;bar&quot;, 
+    color = ~State,
+    text = ~scales::comma(total_pop),
+    textposition = &quot;outside&quot;,
+    hoverinfo = &quot;x+y+text&quot;
     ) |&gt; 
-    ggplot(aes(x = State, y = total_pop)) +
-    geom_col(aes(fill = State)) +
-    theme(
-      axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1),
-      legend.position = &quot;none&quot;) +
-    labs(
-        y = &quot;Total Population&quot;,
-        title = &quot;Total Population by State (2024)&quot;
-      )
+  layout(
+    title = &quot;Total Population by State (2024)&quot;,
+    xaxis = list(
+      title = &quot;State&quot;,
+      tickangle = 90,        
+      tickmode = &quot;array&quot;,           
+      tickvals = ordered_states,  
+      ticktext = ordered_states
+      ),
+    yaxis = list(
+      title = &quot;Total Population&quot;
+    ),
+    showlegend = FALSE
+  )
+
 population_plot</code></pre>
-<p><img src="analysis_files/figure-html/pop_plot-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-890582f021fdb59f92fe" style="width:90%;height:460.8px;"></div>
+<script type="application/json" data-for="htmlwidget-890582f021fdb59f92fe">{"x":{"visdat":{"1fda78a46c43":["function () ","plotlyVisDat"]},"cur_data":"1fda78a46c43","attrs":{"1fda78a46c43":{"x":{},"y":{},"text":{},"textposition":"outside","hoverinfo":"x+y+text","color":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Total Population by State (2024)","xaxis":{"domain":[0,1],"automargin":true,"title":"State","tickangle":90,"tickmode":"array","tickvals":["Arizona","Colorado","Connecticut","Delaware","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Mississippi","Montana","Nevada","New Hampshire","New Jersey","New York","North Carolina","Ohio","Oregon","Pennsylvania","Rhode Island","South Dakota","Tennessee","Vermont","Virginia","West Virginia","Wyoming"],"ticktext":["Arizona","Colorado","Connecticut","Delaware","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Mississippi","Montana","Nevada","New Hampshire","New Jersey","New York","North Carolina","Ohio","Oregon","Pennsylvania","Rhode Island","South Dakota","Tennessee","Vermont","Virginia","West Virginia","Wyoming"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"Total Population"},"showlegend":false,"hovermode":"closest"},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["New York"],"y":[19867248],"text":"19,867,248","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"New York","marker":{"color":"rgba(102,194,165,1)","line":{"color":"rgba(102,194,165,1)"}},"textfont":{"color":"rgba(102,194,165,1)"},"error_y":{"color":"rgba(102,194,165,1)"},"error_x":{"color":"rgba(102,194,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Pennsylvania"],"y":[13078751],"text":"13,078,751","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Pennsylvania","marker":{"color":"rgba(153,184,149,1)","line":{"color":"rgba(153,184,149,1)"}},"textfont":{"color":"rgba(153,184,149,1)"},"error_y":{"color":"rgba(153,184,149,1)"},"error_x":{"color":"rgba(153,184,149,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Illinois"],"y":[12710158],"text":"12,710,158","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Illinois","marker":{"color":"rgba(189,173,133,1)","line":{"color":"rgba(189,173,133,1)"}},"textfont":{"color":"rgba(189,173,133,1)"},"error_y":{"color":"rgba(189,173,133,1)"},"error_x":{"color":"rgba(189,173,133,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Ohio"],"y":[11883304],"text":"11,883,304","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Ohio","marker":{"color":"rgba(219,161,118,1)","line":{"color":"rgba(219,161,118,1)"}},"textfont":{"color":"rgba(219,161,118,1)"},"error_y":{"color":"rgba(219,161,118,1)"},"error_x":{"color":"rgba(219,161,118,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["North Carolina"],"y":[11046024],"text":"11,046,024","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"North Carolina","marker":{"color":"rgba(245,146,102,1)","line":{"color":"rgba(245,146,102,1)"}},"textfont":{"color":"rgba(245,146,102,1)"},"error_y":{"color":"rgba(245,146,102,1)"},"error_x":{"color":"rgba(245,146,102,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Michigan"],"y":[10140459],"text":"10,140,459","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Michigan","marker":{"color":"rgba(238,145,116,1)","line":{"color":"rgba(238,145,116,1)"}},"textfont":{"color":"rgba(238,145,116,1)"},"error_y":{"color":"rgba(238,145,116,1)"},"error_x":{"color":"rgba(238,145,116,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["New Jersey"],"y":[9500851],"text":"9,500,851","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"New Jersey","marker":{"color":"rgba(217,150,141,1)","line":{"color":"rgba(217,150,141,1)"}},"textfont":{"color":"rgba(217,150,141,1)"},"error_y":{"color":"rgba(217,150,141,1)"},"error_x":{"color":"rgba(217,150,141,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Virginia"],"y":[8811195],"text":"8,811,195","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Virginia","marker":{"color":"rgba(193,154,165,1)","line":{"color":"rgba(193,154,165,1)"}},"textfont":{"color":"rgba(193,154,165,1)"},"error_y":{"color":"rgba(193,154,165,1)"},"error_x":{"color":"rgba(193,154,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Arizona"],"y":[7582384],"text":"7,582,384","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Arizona","marker":{"color":"rgba(162,158,189,1)","line":{"color":"rgba(162,158,189,1)"}},"textfont":{"color":"rgba(162,158,189,1)"},"error_y":{"color":"rgba(162,158,189,1)"},"error_x":{"color":"rgba(162,158,189,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Tennessee"],"y":[7227750],"text":"7,227,750","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Tennessee","marker":{"color":"rgba(152,158,202,1)","line":{"color":"rgba(152,158,202,1)"}},"textfont":{"color":"rgba(152,158,202,1)"},"error_y":{"color":"rgba(152,158,202,1)"},"error_x":{"color":"rgba(152,158,202,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Massachusetts"],"y":[7136171],"text":"7,136,171","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Massachusetts","marker":{"color":"rgba(175,154,200,1)","line":{"color":"rgba(175,154,200,1)"}},"textfont":{"color":"rgba(175,154,200,1)"},"error_y":{"color":"rgba(175,154,200,1)"},"error_x":{"color":"rgba(175,154,200,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Indiana"],"y":[6924275],"text":"6,924,275","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Indiana","marker":{"color":"rgba(196,149,198,1)","line":{"color":"rgba(196,149,198,1)"}},"textfont":{"color":"rgba(196,149,198,1)"},"error_y":{"color":"rgba(196,149,198,1)"},"error_x":{"color":"rgba(196,149,198,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Maryland"],"y":[6263220],"text":"6,263,220","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Maryland","marker":{"color":"rgba(215,144,197,1)","line":{"color":"rgba(215,144,197,1)"}},"textfont":{"color":"rgba(215,144,197,1)"},"error_y":{"color":"rgba(215,144,197,1)"},"error_x":{"color":"rgba(215,144,197,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Colorado"],"y":[5957494],"text":"5,957,494","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Colorado","marker":{"color":"rgba(230,141,192,1)","line":{"color":"rgba(230,141,192,1)"}},"textfont":{"color":"rgba(230,141,192,1)"},"error_y":{"color":"rgba(230,141,192,1)"},"error_x":{"color":"rgba(230,141,192,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Louisiana"],"y":[4597740],"text":"4,597,740","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Louisiana","marker":{"color":"rgba(219,162,168,1)","line":{"color":"rgba(219,162,168,1)"}},"textfont":{"color":"rgba(219,162,168,1)"},"error_y":{"color":"rgba(219,162,168,1)"},"error_x":{"color":"rgba(219,162,168,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Kentucky"],"y":[4588372],"text":"4,588,372","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Kentucky","marker":{"color":"rgba(205,180,144,1)","line":{"color":"rgba(205,180,144,1)"}},"textfont":{"color":"rgba(205,180,144,1)"},"error_y":{"color":"rgba(205,180,144,1)"},"error_x":{"color":"rgba(205,180,144,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Oregon"],"y":[4272371],"text":"4,272,371","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Oregon","marker":{"color":"rgba(189,198,118,1)","line":{"color":"rgba(189,198,118,1)"}},"textfont":{"color":"rgba(189,198,118,1)"},"error_y":{"color":"rgba(189,198,118,1)"},"error_x":{"color":"rgba(189,198,118,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Connecticut"],"y":[3675069],"text":"3,675,069","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Connecticut","marker":{"color":"rgba(169,214,89,1)","line":{"color":"rgba(169,214,89,1)"}},"textfont":{"color":"rgba(169,214,89,1)"},"error_y":{"color":"rgba(169,214,89,1)"},"error_x":{"color":"rgba(169,214,89,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Nevada"],"y":[3267467],"text":"3,267,467","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Nevada","marker":{"color":"rgba(186,217,78,1)","line":{"color":"rgba(186,217,78,1)"}},"textfont":{"color":"rgba(186,217,78,1)"},"error_y":{"color":"rgba(186,217,78,1)"},"error_x":{"color":"rgba(186,217,78,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Iowa"],"y":[3241488],"text":"3,241,488","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Iowa","marker":{"color":"rgba(207,217,70,1)","line":{"color":"rgba(207,217,70,1)"}},"textfont":{"color":"rgba(207,217,70,1)"},"error_y":{"color":"rgba(207,217,70,1)"},"error_x":{"color":"rgba(207,217,70,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Kansas"],"y":[2970606],"text":"2,970,606","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Kansas","marker":{"color":"rgba(227,217,62,1)","line":{"color":"rgba(227,217,62,1)"}},"textfont":{"color":"rgba(227,217,62,1)"},"error_y":{"color":"rgba(227,217,62,1)"},"error_x":{"color":"rgba(227,217,62,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Mississippi"],"y":[2943045],"text":"2,943,045","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Mississippi","marker":{"color":"rgba(247,217,52,1)","line":{"color":"rgba(247,217,52,1)"}},"textfont":{"color":"rgba(247,217,52,1)"},"error_y":{"color":"rgba(247,217,52,1)"},"error_x":{"color":"rgba(247,217,52,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["West Virginia"],"y":[1769979],"text":"1,769,979","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"West Virginia","marker":{"color":"rgba(252,214,66,1)","line":{"color":"rgba(252,214,66,1)"}},"textfont":{"color":"rgba(252,214,66,1)"},"error_y":{"color":"rgba(252,214,66,1)"},"error_x":{"color":"rgba(252,214,66,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["New Hampshire"],"y":[1409032],"text":"1,409,032","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"New Hampshire","marker":{"color":"rgba(247,209,92,1)","line":{"color":"rgba(247,209,92,1)"}},"textfont":{"color":"rgba(247,209,92,1)"},"error_y":{"color":"rgba(247,209,92,1)"},"error_x":{"color":"rgba(247,209,92,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Maine"],"y":[1405012],"text":"1,405,012","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Maine","marker":{"color":"rgba(241,204,114,1)","line":{"color":"rgba(241,204,114,1)"}},"textfont":{"color":"rgba(241,204,114,1)"},"error_y":{"color":"rgba(241,204,114,1)"},"error_x":{"color":"rgba(241,204,114,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Montana"],"y":[1137233],"text":"1,137,233","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Montana","marker":{"color":"rgba(234,199,134,1)","line":{"color":"rgba(234,199,134,1)"}},"textfont":{"color":"rgba(234,199,134,1)"},"error_y":{"color":"rgba(234,199,134,1)"},"error_x":{"color":"rgba(234,199,134,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Rhode Island"],"y":[1112308],"text":"1,112,308","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Rhode Island","marker":{"color":"rgba(226,195,150,1)","line":{"color":"rgba(226,195,150,1)"}},"textfont":{"color":"rgba(226,195,150,1)"},"error_y":{"color":"rgba(226,195,150,1)"},"error_x":{"color":"rgba(226,195,150,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Delaware"],"y":[1051917],"text":"1,051,917","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Delaware","marker":{"color":"rgba(215,191,158,1)","line":{"color":"rgba(215,191,158,1)"}},"textfont":{"color":"rgba(215,191,158,1)"},"error_y":{"color":"rgba(215,191,158,1)"},"error_x":{"color":"rgba(215,191,158,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["South Dakota"],"y":[924669],"text":"924,669","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"South Dakota","marker":{"color":"rgba(204,187,165,1)","line":{"color":"rgba(204,187,165,1)"}},"textfont":{"color":"rgba(204,187,165,1)"},"error_y":{"color":"rgba(204,187,165,1)"},"error_x":{"color":"rgba(204,187,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Vermont"],"y":[648493],"text":"648,493","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Vermont","marker":{"color":"rgba(192,183,172,1)","line":{"color":"rgba(192,183,172,1)"}},"textfont":{"color":"rgba(192,183,172,1)"},"error_y":{"color":"rgba(192,183,172,1)"},"error_x":{"color":"rgba(192,183,172,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Wyoming"],"y":[587618],"text":"587,618","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Wyoming","marker":{"color":"rgba(179,179,179,1)","line":{"color":"rgba(179,179,179,1)"}},"textfont":{"color":"rgba(179,179,179,1)"},"error_y":{"color":"rgba(179,179,179,1)"},"error_x":{"color":"rgba(179,179,179,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
-<div id="revenue" class="section level3">
-<h3>Revenue</h3>
+<div id="revenue" class="section level2">
+<h2>Revenue</h2>
 <pre class="r"><code>revenue_plot = 
   model_clean_2024 |&gt; 
-    filter(State != &quot;Washington D.C.&quot;) |&gt; 
+  filter(State != &quot;Washington D.C.&quot;) |&gt; 
     mutate(
       State = as.factor(State),
       State = fct_reorder(State, total_pop, .desc = TRUE)
+    )
+
+ordered_states = as.character(revenue_plot$State)
+
+revenue_plot = 
+  revenue_plot |&gt; 
+  plot_ly(
+    x = ~State,
+    y = ~Revenue, 
+    type = &quot;bar&quot;, 
+    color = ~State,
+    text = ~scales::dollar(Revenue),
+    textposition = &quot;outside&quot;,
+    hoverinfo = &quot;x+y+text&quot;
     ) |&gt; 
-    ggplot(aes(x = State, y = Revenue)) +
-    geom_col(aes(fill = State)) +
-    theme(
-      axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1),
-      legend.position = &quot;none&quot;) +
-    labs(
-        x = &quot;State (sorted by population)&quot;,
-        y = &quot;Revenue&quot;,
-        title = &quot;Gambling Revenue by State (2024)&quot;
-      )
+  layout(
+    title = &quot;Gambling Revenue by State (2024)&quot;,
+    xaxis = list(
+      title = &quot;State (sorted by population)&quot;,
+      tickangle = 90,        
+      tickmode = &quot;array&quot;,           
+      tickvals = ordered_states,  
+      ticktext = ordered_states
+      ),
+    yaxis = list(
+      title = &quot;Revenue&quot;,
+      tickformat = &quot;$,&quot;
+    ),
+    showlegend = FALSE
+  )
+
 revenue_plot</code></pre>
-<p><img src="analysis_files/figure-html/rev_plot-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-f62c963226733df65d45" style="width:90%;height:460.8px;"></div>
+<script type="application/json" data-for="htmlwidget-f62c963226733df65d45">{"x":{"visdat":{"1fda1b2a37fa":["function () ","plotlyVisDat"]},"cur_data":"1fda1b2a37fa","attrs":{"1fda1b2a37fa":{"x":{},"y":{},"text":{},"textposition":"outside","hoverinfo":"x+y+text","color":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Gambling Revenue by State (2024)","xaxis":{"domain":[0,1],"automargin":true,"title":"State (sorted by population)","tickangle":90,"tickmode":"array","tickvals":["Arizona","Colorado","Connecticut","Delaware","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Mississippi","Montana","Nevada","New Hampshire","New Jersey","New York","North Carolina","Ohio","Oregon","Pennsylvania","Rhode Island","South Dakota","Tennessee","Vermont","Virginia","West Virginia","Wyoming"],"ticktext":["Arizona","Colorado","Connecticut","Delaware","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Mississippi","Montana","Nevada","New Hampshire","New Jersey","New York","North Carolina","Ohio","Oregon","Pennsylvania","Rhode Island","South Dakota","Tennessee","Vermont","Virginia","West Virginia","Wyoming"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"Revenue","tickformat":"$,"},"showlegend":false,"hovermode":"closest"},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["New York"],"y":[2059297238],"text":"$2,059,297,238","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"New York","marker":{"color":"rgba(102,194,165,1)","line":{"color":"rgba(102,194,165,1)"}},"textfont":{"color":"rgba(102,194,165,1)"},"error_y":{"color":"rgba(102,194,165,1)"},"error_x":{"color":"rgba(102,194,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Pennsylvania"],"y":[778420570],"text":"$778,420,570","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Pennsylvania","marker":{"color":"rgba(153,184,149,1)","line":{"color":"rgba(153,184,149,1)"}},"textfont":{"color":"rgba(153,184,149,1)"},"error_y":{"color":"rgba(153,184,149,1)"},"error_x":{"color":"rgba(153,184,149,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Illinois"],"y":[1866642282],"text":"$1,866,642,282","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Illinois","marker":{"color":"rgba(189,173,133,1)","line":{"color":"rgba(189,173,133,1)"}},"textfont":{"color":"rgba(189,173,133,1)"},"error_y":{"color":"rgba(189,173,133,1)"},"error_x":{"color":"rgba(189,173,133,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Ohio"],"y":[904187897],"text":"$904,187,897","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Ohio","marker":{"color":"rgba(219,161,118,1)","line":{"color":"rgba(219,161,118,1)"}},"textfont":{"color":"rgba(219,161,118,1)"},"error_y":{"color":"rgba(219,161,118,1)"},"error_x":{"color":"rgba(219,161,118,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["North Carolina"],"y":[583645811],"text":"$583,645,811","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"North Carolina","marker":{"color":"rgba(245,146,102,1)","line":{"color":"rgba(245,146,102,1)"}},"textfont":{"color":"rgba(245,146,102,1)"},"error_y":{"color":"rgba(245,146,102,1)"},"error_x":{"color":"rgba(245,146,102,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Michigan"],"y":[481495654],"text":"$481,495,654","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Michigan","marker":{"color":"rgba(238,145,116,1)","line":{"color":"rgba(238,145,116,1)"}},"textfont":{"color":"rgba(238,145,116,1)"},"error_y":{"color":"rgba(238,145,116,1)"},"error_x":{"color":"rgba(238,145,116,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["New Jersey"],"y":[1094630610],"text":"$1,094,630,610","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"New Jersey","marker":{"color":"rgba(217,150,141,1)","line":{"color":"rgba(217,150,141,1)"}},"textfont":{"color":"rgba(217,150,141,1)"},"error_y":{"color":"rgba(217,150,141,1)"},"error_x":{"color":"rgba(217,150,141,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Virginia"],"y":[615044067],"text":"$615,044,067","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Virginia","marker":{"color":"rgba(193,154,165,1)","line":{"color":"rgba(193,154,165,1)"}},"textfont":{"color":"rgba(193,154,165,1)"},"error_y":{"color":"rgba(193,154,165,1)"},"error_x":{"color":"rgba(193,154,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Arizona"],"y":[427397087],"text":"$427,397,087","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Arizona","marker":{"color":"rgba(162,158,189,1)","line":{"color":"rgba(162,158,189,1)"}},"textfont":{"color":"rgba(162,158,189,1)"},"error_y":{"color":"rgba(162,158,189,1)"},"error_x":{"color":"rgba(162,158,189,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Tennessee"],"y":[485802815],"text":"$485,802,815","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Tennessee","marker":{"color":"rgba(152,158,202,1)","line":{"color":"rgba(152,158,202,1)"}},"textfont":{"color":"rgba(152,158,202,1)"},"error_y":{"color":"rgba(152,158,202,1)"},"error_x":{"color":"rgba(152,158,202,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Massachusetts"],"y":[670694019],"text":"$670,694,019","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Massachusetts","marker":{"color":"rgba(175,154,200,1)","line":{"color":"rgba(175,154,200,1)"}},"textfont":{"color":"rgba(175,154,200,1)"},"error_y":{"color":"rgba(175,154,200,1)"},"error_x":{"color":"rgba(175,154,200,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Indiana"],"y":[484278308],"text":"$484,278,308","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Indiana","marker":{"color":"rgba(196,149,198,1)","line":{"color":"rgba(196,149,198,1)"}},"textfont":{"color":"rgba(196,149,198,1)"},"error_y":{"color":"rgba(196,149,198,1)"},"error_x":{"color":"rgba(196,149,198,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Maryland"],"y":[629812059],"text":"$629,812,059","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Maryland","marker":{"color":"rgba(215,144,197,1)","line":{"color":"rgba(215,144,197,1)"}},"textfont":{"color":"rgba(215,144,197,1)"},"error_y":{"color":"rgba(215,144,197,1)"},"error_x":{"color":"rgba(215,144,197,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Colorado"],"y":[475176731],"text":"$475,176,731","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Colorado","marker":{"color":"rgba(230,141,192,1)","line":{"color":"rgba(230,141,192,1)"}},"textfont":{"color":"rgba(230,141,192,1)"},"error_y":{"color":"rgba(230,141,192,1)"},"error_x":{"color":"rgba(230,141,192,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Louisiana"],"y":[461224426],"text":"$461,224,426","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Louisiana","marker":{"color":"rgba(219,162,168,1)","line":{"color":"rgba(219,162,168,1)"}},"textfont":{"color":"rgba(219,162,168,1)"},"error_y":{"color":"rgba(219,162,168,1)"},"error_x":{"color":"rgba(219,162,168,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Kentucky"],"y":[272086697],"text":"$272,086,697","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Kentucky","marker":{"color":"rgba(205,180,144,1)","line":{"color":"rgba(205,180,144,1)"}},"textfont":{"color":"rgba(205,180,144,1)"},"error_y":{"color":"rgba(205,180,144,1)"},"error_x":{"color":"rgba(205,180,144,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Oregon"],"y":[80932000],"text":"$80,932,000","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Oregon","marker":{"color":"rgba(189,198,118,1)","line":{"color":"rgba(189,198,118,1)"}},"textfont":{"color":"rgba(189,198,118,1)"},"error_y":{"color":"rgba(189,198,118,1)"},"error_x":{"color":"rgba(189,198,118,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Connecticut"],"y":[187349516],"text":"$187,349,516","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Connecticut","marker":{"color":"rgba(169,214,89,1)","line":{"color":"rgba(169,214,89,1)"}},"textfont":{"color":"rgba(169,214,89,1)"},"error_y":{"color":"rgba(169,214,89,1)"},"error_x":{"color":"rgba(169,214,89,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Nevada"],"y":[482121000],"text":"$482,121,000","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Nevada","marker":{"color":"rgba(186,217,78,1)","line":{"color":"rgba(186,217,78,1)"}},"textfont":{"color":"rgba(186,217,78,1)"},"error_y":{"color":"rgba(186,217,78,1)"},"error_x":{"color":"rgba(186,217,78,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Iowa"],"y":[218482781],"text":"$218,482,781","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Iowa","marker":{"color":"rgba(207,217,70,1)","line":{"color":"rgba(207,217,70,1)"}},"textfont":{"color":"rgba(207,217,70,1)"},"error_y":{"color":"rgba(207,217,70,1)"},"error_x":{"color":"rgba(207,217,70,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Kansas"],"y":[145263244],"text":"$145,263,244","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Kansas","marker":{"color":"rgba(227,217,62,1)","line":{"color":"rgba(227,217,62,1)"}},"textfont":{"color":"rgba(227,217,62,1)"},"error_y":{"color":"rgba(227,217,62,1)"},"error_x":{"color":"rgba(227,217,62,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Mississippi"],"y":[43344188],"text":"$43,344,188","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Mississippi","marker":{"color":"rgba(247,217,52,1)","line":{"color":"rgba(247,217,52,1)"}},"textfont":{"color":"rgba(247,217,52,1)"},"error_y":{"color":"rgba(247,217,52,1)"},"error_x":{"color":"rgba(247,217,52,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["West Virginia"],"y":[65866101],"text":"$65,866,101","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"West Virginia","marker":{"color":"rgba(252,214,66,1)","line":{"color":"rgba(252,214,66,1)"}},"textfont":{"color":"rgba(252,214,66,1)"},"error_y":{"color":"rgba(252,214,66,1)"},"error_x":{"color":"rgba(252,214,66,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["New Hampshire"],"y":[78996303],"text":"$78,996,303","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"New Hampshire","marker":{"color":"rgba(247,209,92,1)","line":{"color":"rgba(247,209,92,1)"}},"textfont":{"color":"rgba(247,209,92,1)"},"error_y":{"color":"rgba(247,209,92,1)"},"error_x":{"color":"rgba(247,209,92,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Maine"],"y":[55388488],"text":"$55,388,488","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Maine","marker":{"color":"rgba(241,204,114,1)","line":{"color":"rgba(241,204,114,1)"}},"textfont":{"color":"rgba(241,204,114,1)"},"error_y":{"color":"rgba(241,204,114,1)"},"error_x":{"color":"rgba(241,204,114,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Montana"],"y":[7186894],"text":"$7,186,894","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Montana","marker":{"color":"rgba(234,199,134,1)","line":{"color":"rgba(234,199,134,1)"}},"textfont":{"color":"rgba(234,199,134,1)"},"error_y":{"color":"rgba(234,199,134,1)"},"error_x":{"color":"rgba(234,199,134,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Rhode Island"],"y":[38051914],"text":"$38,051,914","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Rhode Island","marker":{"color":"rgba(226,195,150,1)","line":{"color":"rgba(226,195,150,1)"}},"textfont":{"color":"rgba(226,195,150,1)"},"error_y":{"color":"rgba(226,195,150,1)"},"error_x":{"color":"rgba(226,195,150,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Delaware"],"y":[14585100],"text":"$14,585,100","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Delaware","marker":{"color":"rgba(215,191,158,1)","line":{"color":"rgba(215,191,158,1)"}},"textfont":{"color":"rgba(215,191,158,1)"},"error_y":{"color":"rgba(215,191,158,1)"},"error_x":{"color":"rgba(215,191,158,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["South Dakota"],"y":[920918],"text":"$920,918","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"South Dakota","marker":{"color":"rgba(204,187,165,1)","line":{"color":"rgba(204,187,165,1)"}},"textfont":{"color":"rgba(204,187,165,1)"},"error_y":{"color":"rgba(204,187,165,1)"},"error_x":{"color":"rgba(204,187,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Vermont"],"y":[27347988],"text":"$27,347,988","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Vermont","marker":{"color":"rgba(192,183,172,1)","line":{"color":"rgba(192,183,172,1)"}},"textfont":{"color":"rgba(192,183,172,1)"},"error_y":{"color":"rgba(192,183,172,1)"},"error_x":{"color":"rgba(192,183,172,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Wyoming"],"y":[22810652],"text":"$22,810,652","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Wyoming","marker":{"color":"rgba(179,179,179,1)","line":{"color":"rgba(179,179,179,1)"}},"textfont":{"color":"rgba(179,179,179,1)"},"error_y":{"color":"rgba(179,179,179,1)"},"error_x":{"color":"rgba(179,179,179,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
-<div id="comparison" class="section level3">
-<h3>Comparison</h3>
-<pre class="r"><code>combined_revenue_population = (population_plot + revenue_plot)
+<div id="comparison" class="section level2">
+<h2>Comparison</h2>
+<pre class="r"><code>combined_revenue_population = 
+  subplot(
+    population_plot, 
+    revenue_plot, 
+    nrows = 2,      
+    shareX = TRUE,    
+    shareY = FALSE,
+    titleY = TRUE,
+    titleX = TRUE
+  ) |&gt; 
+  layout(
+    title = &quot;Population vs Revenue Comparison by State&quot;,
+    showlegend = FALSE
+  )
+
 combined_revenue_population</code></pre>
-<p><img src="analysis_files/figure-html/combined_plot-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-b915d263f1c97a449fa8" style="width:90%;height:460.8px;"></div>
+<script type="application/json" data-for="htmlwidget-b915d263f1c97a449fa8">{"x":{"data":[{"x":["New York"],"y":[19867248],"text":"19,867,248","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"New York","marker":{"color":"rgba(102,194,165,1)","line":{"color":"rgba(102,194,165,1)"}},"textfont":{"color":"rgba(102,194,165,1)"},"error_y":{"color":"rgba(102,194,165,1)"},"error_x":{"color":"rgba(102,194,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Pennsylvania"],"y":[13078751],"text":"13,078,751","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Pennsylvania","marker":{"color":"rgba(153,184,149,1)","line":{"color":"rgba(153,184,149,1)"}},"textfont":{"color":"rgba(153,184,149,1)"},"error_y":{"color":"rgba(153,184,149,1)"},"error_x":{"color":"rgba(153,184,149,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Illinois"],"y":[12710158],"text":"12,710,158","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Illinois","marker":{"color":"rgba(189,173,133,1)","line":{"color":"rgba(189,173,133,1)"}},"textfont":{"color":"rgba(189,173,133,1)"},"error_y":{"color":"rgba(189,173,133,1)"},"error_x":{"color":"rgba(189,173,133,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Ohio"],"y":[11883304],"text":"11,883,304","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Ohio","marker":{"color":"rgba(219,161,118,1)","line":{"color":"rgba(219,161,118,1)"}},"textfont":{"color":"rgba(219,161,118,1)"},"error_y":{"color":"rgba(219,161,118,1)"},"error_x":{"color":"rgba(219,161,118,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["North Carolina"],"y":[11046024],"text":"11,046,024","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"North Carolina","marker":{"color":"rgba(245,146,102,1)","line":{"color":"rgba(245,146,102,1)"}},"textfont":{"color":"rgba(245,146,102,1)"},"error_y":{"color":"rgba(245,146,102,1)"},"error_x":{"color":"rgba(245,146,102,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Michigan"],"y":[10140459],"text":"10,140,459","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Michigan","marker":{"color":"rgba(238,145,116,1)","line":{"color":"rgba(238,145,116,1)"}},"textfont":{"color":"rgba(238,145,116,1)"},"error_y":{"color":"rgba(238,145,116,1)"},"error_x":{"color":"rgba(238,145,116,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["New Jersey"],"y":[9500851],"text":"9,500,851","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"New Jersey","marker":{"color":"rgba(217,150,141,1)","line":{"color":"rgba(217,150,141,1)"}},"textfont":{"color":"rgba(217,150,141,1)"},"error_y":{"color":"rgba(217,150,141,1)"},"error_x":{"color":"rgba(217,150,141,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Virginia"],"y":[8811195],"text":"8,811,195","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Virginia","marker":{"color":"rgba(193,154,165,1)","line":{"color":"rgba(193,154,165,1)"}},"textfont":{"color":"rgba(193,154,165,1)"},"error_y":{"color":"rgba(193,154,165,1)"},"error_x":{"color":"rgba(193,154,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Arizona"],"y":[7582384],"text":"7,582,384","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Arizona","marker":{"color":"rgba(162,158,189,1)","line":{"color":"rgba(162,158,189,1)"}},"textfont":{"color":"rgba(162,158,189,1)"},"error_y":{"color":"rgba(162,158,189,1)"},"error_x":{"color":"rgba(162,158,189,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Tennessee"],"y":[7227750],"text":"7,227,750","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Tennessee","marker":{"color":"rgba(152,158,202,1)","line":{"color":"rgba(152,158,202,1)"}},"textfont":{"color":"rgba(152,158,202,1)"},"error_y":{"color":"rgba(152,158,202,1)"},"error_x":{"color":"rgba(152,158,202,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Massachusetts"],"y":[7136171],"text":"7,136,171","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Massachusetts","marker":{"color":"rgba(175,154,200,1)","line":{"color":"rgba(175,154,200,1)"}},"textfont":{"color":"rgba(175,154,200,1)"},"error_y":{"color":"rgba(175,154,200,1)"},"error_x":{"color":"rgba(175,154,200,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Indiana"],"y":[6924275],"text":"6,924,275","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Indiana","marker":{"color":"rgba(196,149,198,1)","line":{"color":"rgba(196,149,198,1)"}},"textfont":{"color":"rgba(196,149,198,1)"},"error_y":{"color":"rgba(196,149,198,1)"},"error_x":{"color":"rgba(196,149,198,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Maryland"],"y":[6263220],"text":"6,263,220","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Maryland","marker":{"color":"rgba(215,144,197,1)","line":{"color":"rgba(215,144,197,1)"}},"textfont":{"color":"rgba(215,144,197,1)"},"error_y":{"color":"rgba(215,144,197,1)"},"error_x":{"color":"rgba(215,144,197,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Colorado"],"y":[5957494],"text":"5,957,494","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Colorado","marker":{"color":"rgba(230,141,192,1)","line":{"color":"rgba(230,141,192,1)"}},"textfont":{"color":"rgba(230,141,192,1)"},"error_y":{"color":"rgba(230,141,192,1)"},"error_x":{"color":"rgba(230,141,192,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Louisiana"],"y":[4597740],"text":"4,597,740","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Louisiana","marker":{"color":"rgba(219,162,168,1)","line":{"color":"rgba(219,162,168,1)"}},"textfont":{"color":"rgba(219,162,168,1)"},"error_y":{"color":"rgba(219,162,168,1)"},"error_x":{"color":"rgba(219,162,168,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Kentucky"],"y":[4588372],"text":"4,588,372","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Kentucky","marker":{"color":"rgba(205,180,144,1)","line":{"color":"rgba(205,180,144,1)"}},"textfont":{"color":"rgba(205,180,144,1)"},"error_y":{"color":"rgba(205,180,144,1)"},"error_x":{"color":"rgba(205,180,144,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Oregon"],"y":[4272371],"text":"4,272,371","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Oregon","marker":{"color":"rgba(189,198,118,1)","line":{"color":"rgba(189,198,118,1)"}},"textfont":{"color":"rgba(189,198,118,1)"},"error_y":{"color":"rgba(189,198,118,1)"},"error_x":{"color":"rgba(189,198,118,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Connecticut"],"y":[3675069],"text":"3,675,069","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Connecticut","marker":{"color":"rgba(169,214,89,1)","line":{"color":"rgba(169,214,89,1)"}},"textfont":{"color":"rgba(169,214,89,1)"},"error_y":{"color":"rgba(169,214,89,1)"},"error_x":{"color":"rgba(169,214,89,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Nevada"],"y":[3267467],"text":"3,267,467","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Nevada","marker":{"color":"rgba(186,217,78,1)","line":{"color":"rgba(186,217,78,1)"}},"textfont":{"color":"rgba(186,217,78,1)"},"error_y":{"color":"rgba(186,217,78,1)"},"error_x":{"color":"rgba(186,217,78,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Iowa"],"y":[3241488],"text":"3,241,488","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Iowa","marker":{"color":"rgba(207,217,70,1)","line":{"color":"rgba(207,217,70,1)"}},"textfont":{"color":"rgba(207,217,70,1)"},"error_y":{"color":"rgba(207,217,70,1)"},"error_x":{"color":"rgba(207,217,70,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Kansas"],"y":[2970606],"text":"2,970,606","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Kansas","marker":{"color":"rgba(227,217,62,1)","line":{"color":"rgba(227,217,62,1)"}},"textfont":{"color":"rgba(227,217,62,1)"},"error_y":{"color":"rgba(227,217,62,1)"},"error_x":{"color":"rgba(227,217,62,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Mississippi"],"y":[2943045],"text":"2,943,045","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Mississippi","marker":{"color":"rgba(247,217,52,1)","line":{"color":"rgba(247,217,52,1)"}},"textfont":{"color":"rgba(247,217,52,1)"},"error_y":{"color":"rgba(247,217,52,1)"},"error_x":{"color":"rgba(247,217,52,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["West Virginia"],"y":[1769979],"text":"1,769,979","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"West Virginia","marker":{"color":"rgba(252,214,66,1)","line":{"color":"rgba(252,214,66,1)"}},"textfont":{"color":"rgba(252,214,66,1)"},"error_y":{"color":"rgba(252,214,66,1)"},"error_x":{"color":"rgba(252,214,66,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["New Hampshire"],"y":[1409032],"text":"1,409,032","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"New Hampshire","marker":{"color":"rgba(247,209,92,1)","line":{"color":"rgba(247,209,92,1)"}},"textfont":{"color":"rgba(247,209,92,1)"},"error_y":{"color":"rgba(247,209,92,1)"},"error_x":{"color":"rgba(247,209,92,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Maine"],"y":[1405012],"text":"1,405,012","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Maine","marker":{"color":"rgba(241,204,114,1)","line":{"color":"rgba(241,204,114,1)"}},"textfont":{"color":"rgba(241,204,114,1)"},"error_y":{"color":"rgba(241,204,114,1)"},"error_x":{"color":"rgba(241,204,114,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Montana"],"y":[1137233],"text":"1,137,233","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Montana","marker":{"color":"rgba(234,199,134,1)","line":{"color":"rgba(234,199,134,1)"}},"textfont":{"color":"rgba(234,199,134,1)"},"error_y":{"color":"rgba(234,199,134,1)"},"error_x":{"color":"rgba(234,199,134,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Rhode Island"],"y":[1112308],"text":"1,112,308","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Rhode Island","marker":{"color":"rgba(226,195,150,1)","line":{"color":"rgba(226,195,150,1)"}},"textfont":{"color":"rgba(226,195,150,1)"},"error_y":{"color":"rgba(226,195,150,1)"},"error_x":{"color":"rgba(226,195,150,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Delaware"],"y":[1051917],"text":"1,051,917","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Delaware","marker":{"color":"rgba(215,191,158,1)","line":{"color":"rgba(215,191,158,1)"}},"textfont":{"color":"rgba(215,191,158,1)"},"error_y":{"color":"rgba(215,191,158,1)"},"error_x":{"color":"rgba(215,191,158,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["South Dakota"],"y":[924669],"text":"924,669","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"South Dakota","marker":{"color":"rgba(204,187,165,1)","line":{"color":"rgba(204,187,165,1)"}},"textfont":{"color":"rgba(204,187,165,1)"},"error_y":{"color":"rgba(204,187,165,1)"},"error_x":{"color":"rgba(204,187,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Vermont"],"y":[648493],"text":"648,493","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Vermont","marker":{"color":"rgba(192,183,172,1)","line":{"color":"rgba(192,183,172,1)"}},"textfont":{"color":"rgba(192,183,172,1)"},"error_y":{"color":"rgba(192,183,172,1)"},"error_x":{"color":"rgba(192,183,172,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Wyoming"],"y":[587618],"text":"587,618","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Wyoming","marker":{"color":"rgba(179,179,179,1)","line":{"color":"rgba(179,179,179,1)"}},"textfont":{"color":"rgba(179,179,179,1)"},"error_y":{"color":"rgba(179,179,179,1)"},"error_x":{"color":"rgba(179,179,179,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["New York"],"y":[2059297238],"text":"$2,059,297,238","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"New York","marker":{"color":"rgba(102,194,165,1)","line":{"color":"rgba(102,194,165,1)"}},"textfont":{"color":"rgba(102,194,165,1)"},"error_y":{"color":"rgba(102,194,165,1)"},"error_x":{"color":"rgba(102,194,165,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["Pennsylvania"],"y":[778420570],"text":"$778,420,570","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Pennsylvania","marker":{"color":"rgba(153,184,149,1)","line":{"color":"rgba(153,184,149,1)"}},"textfont":{"color":"rgba(153,184,149,1)"},"error_y":{"color":"rgba(153,184,149,1)"},"error_x":{"color":"rgba(153,184,149,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["Illinois"],"y":[1866642282],"text":"$1,866,642,282","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Illinois","marker":{"color":"rgba(189,173,133,1)","line":{"color":"rgba(189,173,133,1)"}},"textfont":{"color":"rgba(189,173,133,1)"},"error_y":{"color":"rgba(189,173,133,1)"},"error_x":{"color":"rgba(189,173,133,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["Ohio"],"y":[904187897],"text":"$904,187,897","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Ohio","marker":{"color":"rgba(219,161,118,1)","line":{"color":"rgba(219,161,118,1)"}},"textfont":{"color":"rgba(219,161,118,1)"},"error_y":{"color":"rgba(219,161,118,1)"},"error_x":{"color":"rgba(219,161,118,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["North Carolina"],"y":[583645811],"text":"$583,645,811","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"North Carolina","marker":{"color":"rgba(245,146,102,1)","line":{"color":"rgba(245,146,102,1)"}},"textfont":{"color":"rgba(245,146,102,1)"},"error_y":{"color":"rgba(245,146,102,1)"},"error_x":{"color":"rgba(245,146,102,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["Michigan"],"y":[481495654],"text":"$481,495,654","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Michigan","marker":{"color":"rgba(238,145,116,1)","line":{"color":"rgba(238,145,116,1)"}},"textfont":{"color":"rgba(238,145,116,1)"},"error_y":{"color":"rgba(238,145,116,1)"},"error_x":{"color":"rgba(238,145,116,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["New Jersey"],"y":[1094630610],"text":"$1,094,630,610","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"New Jersey","marker":{"color":"rgba(217,150,141,1)","line":{"color":"rgba(217,150,141,1)"}},"textfont":{"color":"rgba(217,150,141,1)"},"error_y":{"color":"rgba(217,150,141,1)"},"error_x":{"color":"rgba(217,150,141,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["Virginia"],"y":[615044067],"text":"$615,044,067","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Virginia","marker":{"color":"rgba(193,154,165,1)","line":{"color":"rgba(193,154,165,1)"}},"textfont":{"color":"rgba(193,154,165,1)"},"error_y":{"color":"rgba(193,154,165,1)"},"error_x":{"color":"rgba(193,154,165,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["Arizona"],"y":[427397087],"text":"$427,397,087","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Arizona","marker":{"color":"rgba(162,158,189,1)","line":{"color":"rgba(162,158,189,1)"}},"textfont":{"color":"rgba(162,158,189,1)"},"error_y":{"color":"rgba(162,158,189,1)"},"error_x":{"color":"rgba(162,158,189,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["Tennessee"],"y":[485802815],"text":"$485,802,815","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Tennessee","marker":{"color":"rgba(152,158,202,1)","line":{"color":"rgba(152,158,202,1)"}},"textfont":{"color":"rgba(152,158,202,1)"},"error_y":{"color":"rgba(152,158,202,1)"},"error_x":{"color":"rgba(152,158,202,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["Massachusetts"],"y":[670694019],"text":"$670,694,019","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Massachusetts","marker":{"color":"rgba(175,154,200,1)","line":{"color":"rgba(175,154,200,1)"}},"textfont":{"color":"rgba(175,154,200,1)"},"error_y":{"color":"rgba(175,154,200,1)"},"error_x":{"color":"rgba(175,154,200,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["Indiana"],"y":[484278308],"text":"$484,278,308","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Indiana","marker":{"color":"rgba(196,149,198,1)","line":{"color":"rgba(196,149,198,1)"}},"textfont":{"color":"rgba(196,149,198,1)"},"error_y":{"color":"rgba(196,149,198,1)"},"error_x":{"color":"rgba(196,149,198,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["Maryland"],"y":[629812059],"text":"$629,812,059","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Maryland","marker":{"color":"rgba(215,144,197,1)","line":{"color":"rgba(215,144,197,1)"}},"textfont":{"color":"rgba(215,144,197,1)"},"error_y":{"color":"rgba(215,144,197,1)"},"error_x":{"color":"rgba(215,144,197,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["Colorado"],"y":[475176731],"text":"$475,176,731","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Colorado","marker":{"color":"rgba(230,141,192,1)","line":{"color":"rgba(230,141,192,1)"}},"textfont":{"color":"rgba(230,141,192,1)"},"error_y":{"color":"rgba(230,141,192,1)"},"error_x":{"color":"rgba(230,141,192,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["Louisiana"],"y":[461224426],"text":"$461,224,426","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Louisiana","marker":{"color":"rgba(219,162,168,1)","line":{"color":"rgba(219,162,168,1)"}},"textfont":{"color":"rgba(219,162,168,1)"},"error_y":{"color":"rgba(219,162,168,1)"},"error_x":{"color":"rgba(219,162,168,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["Kentucky"],"y":[272086697],"text":"$272,086,697","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Kentucky","marker":{"color":"rgba(205,180,144,1)","line":{"color":"rgba(205,180,144,1)"}},"textfont":{"color":"rgba(205,180,144,1)"},"error_y":{"color":"rgba(205,180,144,1)"},"error_x":{"color":"rgba(205,180,144,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["Oregon"],"y":[80932000],"text":"$80,932,000","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Oregon","marker":{"color":"rgba(189,198,118,1)","line":{"color":"rgba(189,198,118,1)"}},"textfont":{"color":"rgba(189,198,118,1)"},"error_y":{"color":"rgba(189,198,118,1)"},"error_x":{"color":"rgba(189,198,118,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["Connecticut"],"y":[187349516],"text":"$187,349,516","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Connecticut","marker":{"color":"rgba(169,214,89,1)","line":{"color":"rgba(169,214,89,1)"}},"textfont":{"color":"rgba(169,214,89,1)"},"error_y":{"color":"rgba(169,214,89,1)"},"error_x":{"color":"rgba(169,214,89,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["Nevada"],"y":[482121000],"text":"$482,121,000","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Nevada","marker":{"color":"rgba(186,217,78,1)","line":{"color":"rgba(186,217,78,1)"}},"textfont":{"color":"rgba(186,217,78,1)"},"error_y":{"color":"rgba(186,217,78,1)"},"error_x":{"color":"rgba(186,217,78,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["Iowa"],"y":[218482781],"text":"$218,482,781","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Iowa","marker":{"color":"rgba(207,217,70,1)","line":{"color":"rgba(207,217,70,1)"}},"textfont":{"color":"rgba(207,217,70,1)"},"error_y":{"color":"rgba(207,217,70,1)"},"error_x":{"color":"rgba(207,217,70,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["Kansas"],"y":[145263244],"text":"$145,263,244","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Kansas","marker":{"color":"rgba(227,217,62,1)","line":{"color":"rgba(227,217,62,1)"}},"textfont":{"color":"rgba(227,217,62,1)"},"error_y":{"color":"rgba(227,217,62,1)"},"error_x":{"color":"rgba(227,217,62,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["Mississippi"],"y":[43344188],"text":"$43,344,188","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Mississippi","marker":{"color":"rgba(247,217,52,1)","line":{"color":"rgba(247,217,52,1)"}},"textfont":{"color":"rgba(247,217,52,1)"},"error_y":{"color":"rgba(247,217,52,1)"},"error_x":{"color":"rgba(247,217,52,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["West Virginia"],"y":[65866101],"text":"$65,866,101","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"West Virginia","marker":{"color":"rgba(252,214,66,1)","line":{"color":"rgba(252,214,66,1)"}},"textfont":{"color":"rgba(252,214,66,1)"},"error_y":{"color":"rgba(252,214,66,1)"},"error_x":{"color":"rgba(252,214,66,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["New Hampshire"],"y":[78996303],"text":"$78,996,303","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"New Hampshire","marker":{"color":"rgba(247,209,92,1)","line":{"color":"rgba(247,209,92,1)"}},"textfont":{"color":"rgba(247,209,92,1)"},"error_y":{"color":"rgba(247,209,92,1)"},"error_x":{"color":"rgba(247,209,92,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["Maine"],"y":[55388488],"text":"$55,388,488","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Maine","marker":{"color":"rgba(241,204,114,1)","line":{"color":"rgba(241,204,114,1)"}},"textfont":{"color":"rgba(241,204,114,1)"},"error_y":{"color":"rgba(241,204,114,1)"},"error_x":{"color":"rgba(241,204,114,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["Montana"],"y":[7186894],"text":"$7,186,894","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Montana","marker":{"color":"rgba(234,199,134,1)","line":{"color":"rgba(234,199,134,1)"}},"textfont":{"color":"rgba(234,199,134,1)"},"error_y":{"color":"rgba(234,199,134,1)"},"error_x":{"color":"rgba(234,199,134,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["Rhode Island"],"y":[38051914],"text":"$38,051,914","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Rhode Island","marker":{"color":"rgba(226,195,150,1)","line":{"color":"rgba(226,195,150,1)"}},"textfont":{"color":"rgba(226,195,150,1)"},"error_y":{"color":"rgba(226,195,150,1)"},"error_x":{"color":"rgba(226,195,150,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["Delaware"],"y":[14585100],"text":"$14,585,100","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Delaware","marker":{"color":"rgba(215,191,158,1)","line":{"color":"rgba(215,191,158,1)"}},"textfont":{"color":"rgba(215,191,158,1)"},"error_y":{"color":"rgba(215,191,158,1)"},"error_x":{"color":"rgba(215,191,158,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["South Dakota"],"y":[920918],"text":"$920,918","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"South Dakota","marker":{"color":"rgba(204,187,165,1)","line":{"color":"rgba(204,187,165,1)"}},"textfont":{"color":"rgba(204,187,165,1)"},"error_y":{"color":"rgba(204,187,165,1)"},"error_x":{"color":"rgba(204,187,165,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["Vermont"],"y":[27347988],"text":"$27,347,988","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Vermont","marker":{"color":"rgba(192,183,172,1)","line":{"color":"rgba(192,183,172,1)"}},"textfont":{"color":"rgba(192,183,172,1)"},"error_y":{"color":"rgba(192,183,172,1)"},"error_x":{"color":"rgba(192,183,172,1)"},"xaxis":"x","yaxis":"y2","frame":null},{"x":["Wyoming"],"y":[22810652],"text":"$22,810,652","textposition":"outside","hoverinfo":"x+y+text","type":"bar","name":"Wyoming","marker":{"color":"rgba(179,179,179,1)","line":{"color":"rgba(179,179,179,1)"}},"textfont":{"color":"rgba(179,179,179,1)"},"error_y":{"color":"rgba(179,179,179,1)"},"error_x":{"color":"rgba(179,179,179,1)"},"xaxis":"x","yaxis":"y2","frame":null}],"layout":{"xaxis":{"domain":[0,1],"automargin":true,"title":"State (sorted by population)","tickangle":90,"tickmode":"array","tickvals":["Arizona","Colorado","Connecticut","Delaware","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Mississippi","Montana","Nevada","New Hampshire","New Jersey","New York","North Carolina","Ohio","Oregon","Pennsylvania","Rhode Island","South Dakota","Tennessee","Vermont","Virginia","West Virginia","Wyoming"],"ticktext":["Arizona","Colorado","Connecticut","Delaware","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Mississippi","Montana","Nevada","New Hampshire","New Jersey","New York","North Carolina","Ohio","Oregon","Pennsylvania","Rhode Island","South Dakota","Tennessee","Vermont","Virginia","West Virginia","Wyoming"],"anchor":"y2"},"yaxis2":{"domain":[0,0.47999999999999998],"automargin":true,"title":"Revenue","tickformat":"$,","anchor":"x"},"yaxis":{"domain":[0.52000000000000002,1],"automargin":true,"title":"Total Population","anchor":"x"},"annotations":[],"shapes":[],"images":[],"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Population vs Revenue Comparison by State","showlegend":false,"hovermode":"closest"},"attrs":{"1fda78a46c43":{"x":{},"y":{},"text":{},"textposition":"outside","hoverinfo":"x+y+text","color":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"},"1fda1b2a37fa":{"x":{},"y":{},"text":{},"textposition":"outside","hoverinfo":"x+y+text","color":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"bar"}},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"subplot":true,"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
-<div id="racial-makeup" class="section level3">
-<h3>Racial Makeup</h3>
-<pre class="r"><code>model_clean_2024 |&gt; 
+<div id="racial-makeup" class="section level2">
+<h2>Racial Makeup</h2>
+<pre class="r"><code>race_plot = 
+  model_clean_2024 |&gt; 
   filter(State != &quot;Washington D.C.&quot;) |&gt; 
   select(State, Revenue, pct_white, pct_black, pct_asian, pct_hispanic) |&gt; 
   pivot_longer(
@@ -565,55 +643,86 @@ combined_revenue_population</code></pre>
       race = factor(race,
                   levels = c(&quot;pct_white&quot;, &quot;pct_black&quot;, &quot;pct_asian&quot;, &quot;pct_hispanic&quot;),
                   labels = c(&quot;% White&quot;, &quot;% Black&quot;, &quot;% Asian&quot;, &quot;% Hispanic&quot;))
+  )
+
+race_plot |&gt; 
+  plot_ly(
+    x = ~State,
+    y = ~percentage,
+    color = ~race,
+    type = &#39;scatter&#39;,
+    mode = &#39;lines+markers&#39;,
+    text = ~paste(State, &quot;: &quot;, round(percentage, 1), &quot;%&quot;),
+    hoverinfo = &#39;text&#39;,         
+    line = list(width = 2)
   ) |&gt; 
-  ggplot(aes(x = State, y = percentage, color = race, group = race)) +
-  geom_point() +
-  geom_line() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1)) +
-    labs(
-        x = &quot;State (sorted by revenue)&quot;,
-        y = &quot;Percentage of Population&quot;,
-        title = &quot;Racial Makeup by State (2024)&quot;,
-        fill = &quot;Race&quot;
-    ) </code></pre>
-<p><img src="analysis_files/figure-html/race_plot-1.png" width="90%" style="display: block; margin: auto;" /></p>
+  layout(
+    title = &quot;Racial Makeup by State (2024)&quot;,    
+    xaxis = list(
+      title = &quot;State (sorted by revenue)&quot;,
+      tickangle = 90            
+    ),
+    yaxis = list(
+      title = &quot;Percentage of Population&quot;, 
+      tickformat = &quot;%&quot;
+    ),
+    showlegend = TRUE 
+  )</code></pre>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-f3c59a4c29056bb56713" style="width:90%;height:460.8px;"></div>
+<script type="application/json" data-for="htmlwidget-f3c59a4c29056bb56713">{"x":{"visdat":{"1fda26c71dcc":["function () ","plotlyVisDat"]},"cur_data":"1fda26c71dcc","attrs":{"1fda26c71dcc":{"x":{},"y":{},"mode":"lines+markers","text":{},"hoverinfo":"text","line":{"width":2},"color":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Racial Makeup by State (2024)","xaxis":{"domain":[0,1],"automargin":true,"title":"State (sorted by revenue)","tickangle":90,"type":"category","categoryorder":"array","categoryarray":["New York","Illinois","New Jersey","Ohio","Pennsylvania","Massachusetts","Maryland","Virginia","North Carolina","Tennessee","Indiana","Nevada","Michigan","Colorado","Louisiana","Arizona","Kentucky","Iowa","Connecticut","Kansas","Oregon","New Hampshire","West Virginia","Maine","Mississippi","Rhode Island","Vermont","Wyoming","Delaware","Montana","South Dakota"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"Percentage of Population","tickformat":"%"},"showlegend":true,"hovermode":"closest"},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["Arizona","Colorado","Connecticut","Delaware","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Mississippi","Montana","Nevada","New Hampshire","New Jersey","New York","North Carolina","Ohio","Oregon","Pennsylvania","Rhode Island","South Dakota","Tennessee","Vermont","Virginia","West Virginia","Wyoming"],"y":[0.57312752822858903,0.69359885213480699,0.63697987711251103,0.58165805857306196,0.60189629428682201,0.76012607818147004,0.83172604680319695,0.75049871978983396,0.81427312345206504,0.56421372239404599,0.89681653964521302,0.46899358476949599,0.66718258292857602,0.73043853340366505,0.55563676396385397,0.84627160836873405,0.48017960089574002,0.87559260541989103,0.52336227565299198,0.54330297784574899,0.60837754833775504,0.75988050124780104,0.73484442245301296,0.73495565440461397,0.68538570252124398,0.79927736303477204,0.71959102071875802,0.90105829978118501,0.59293920972126901,0.89395297910314198,0.83302757914155101],"mode":"lines+markers","text":["Arizona :  0.6 %","Colorado :  0.7 %","Connecticut :  0.6 %","Delaware :  0.6 %","Illinois :  0.6 %","Indiana :  0.8 %","Iowa :  0.8 %","Kansas :  0.8 %","Kentucky :  0.8 %","Louisiana :  0.6 %","Maine :  0.9 %","Maryland :  0.5 %","Massachusetts :  0.7 %","Michigan :  0.7 %","Mississippi :  0.6 %","Montana :  0.8 %","Nevada :  0.5 %","New Hampshire :  0.9 %","New Jersey :  0.5 %","New York :  0.5 %","North Carolina :  0.6 %","Ohio :  0.8 %","Oregon :  0.7 %","Pennsylvania :  0.7 %","Rhode Island :  0.7 %","South Dakota :  0.8 %","Tennessee :  0.7 %","Vermont :  0.9 %","Virginia :  0.6 %","West Virginia :  0.9 %","Wyoming :  0.8 %"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text"],"line":{"color":"rgba(102,194,165,1)","width":2},"type":"scatter","name":"% White","marker":{"color":"rgba(102,194,165,1)","line":{"color":"rgba(102,194,165,1)"}},"textfont":{"color":"rgba(102,194,165,1)"},"error_y":{"color":"rgba(102,194,165,1)"},"error_x":{"color":"rgba(102,194,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Arizona","Colorado","Connecticut","Delaware","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Mississippi","Montana","Nevada","New Hampshire","New Jersey","New York","North Carolina","Ohio","Oregon","Pennsylvania","Rhode Island","South Dakota","Tennessee","Vermont","Virginia","West Virginia","Wyoming"],"y":[0.047592947020356699,0.042512338241549201,0.10757838832413801,0.22039286369552,0.13215421869657301,0.091196406844037806,0.041514267521582701,0.053426809209972601,0.071121304026787693,0.30411267274791498,0.020814768841832001,0.291403144069664,0.068592806982904403,0.13016738196959299,0.35880219296680799,0.0030908353872953001,0.095148933409273898,0.015097598918974201,0.12901139066384701,0.14235122046093099,0.19820045656247001,0.121569051839455,0.019374721905003101,0.105373058941179,0.055527785469492302,0.020277526336451201,0.149972121337899,0.0096778222741031907,0.18221194741462399,0.032174958007976401,0.0078265131428921497],"mode":"lines+markers","text":["Arizona :  0 %","Colorado :  0 %","Connecticut :  0.1 %","Delaware :  0.2 %","Illinois :  0.1 %","Indiana :  0.1 %","Iowa :  0 %","Kansas :  0.1 %","Kentucky :  0.1 %","Louisiana :  0.3 %","Maine :  0 %","Maryland :  0.3 %","Massachusetts :  0.1 %","Michigan :  0.1 %","Mississippi :  0.4 %","Montana :  0 %","Nevada :  0.1 %","New Hampshire :  0 %","New Jersey :  0.1 %","New York :  0.1 %","North Carolina :  0.2 %","Ohio :  0.1 %","Oregon :  0 %","Pennsylvania :  0.1 %","Rhode Island :  0.1 %","South Dakota :  0 %","Tennessee :  0.1 %","Vermont :  0 %","Virginia :  0.2 %","West Virginia :  0 %","Wyoming :  0 %"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text"],"line":{"color":"rgba(252,141,98,1)","width":2},"type":"scatter","name":"% Black","marker":{"color":"rgba(252,141,98,1)","line":{"color":"rgba(252,141,98,1)"}},"textfont":{"color":"rgba(252,141,98,1)"},"error_y":{"color":"rgba(252,141,98,1)"},"error_x":{"color":"rgba(252,141,98,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Arizona","Colorado","Connecticut","Delaware","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Mississippi","Montana","Nevada","New Hampshire","New Jersey","New York","North Carolina","Ohio","Oregon","Pennsylvania","Rhode Island","South Dakota","Tennessee","Vermont","Virginia","West Virginia","Wyoming"],"y":[0.039926229006602698,0.034834445489999699,0.048035560692874103,0.048310845817683301,0.063933430253187998,0.027088612165172499,0.025885951143425501,0.030271264516398302,0.018778119995501701,0.018233088430402802,0.013376398208698599,0.069358093760078704,0.077293411270553905,0.0374693098211826,0.0123141168415706,0.0082700730633036498,0.094512048629718404,0.0268602842234953,0.10665023585781901,0.095325281085734695,0.036272146430244998,0.027620012077449199,0.0494404629185995,0.0417672910815413,0.037539062921421,0.017061240292472201,0.020193559544809898,0.020575395570962201,0.071753717855523605,0.0070627956602875002,0.0099009900990098994],"mode":"lines+markers","text":["Arizona :  0 %","Colorado :  0 %","Connecticut :  0 %","Delaware :  0 %","Illinois :  0.1 %","Indiana :  0 %","Iowa :  0 %","Kansas :  0 %","Kentucky :  0 %","Louisiana :  0 %","Maine :  0 %","Maryland :  0.1 %","Massachusetts :  0.1 %","Michigan :  0 %","Mississippi :  0 %","Montana :  0 %","Nevada :  0.1 %","New Hampshire :  0 %","New Jersey :  0.1 %","New York :  0.1 %","North Carolina :  0 %","Ohio :  0 %","Oregon :  0 %","Pennsylvania :  0 %","Rhode Island :  0 %","South Dakota :  0 %","Tennessee :  0 %","Vermont :  0 %","Virginia :  0.1 %","West Virginia :  0 %","Wyoming :  0 %"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text"],"line":{"color":"rgba(141,160,203,1)","width":2},"type":"scatter","name":"% Asian","marker":{"color":"rgba(141,160,203,1)","line":{"color":"rgba(141,160,203,1)"}},"textfont":{"color":"rgba(141,160,203,1)"},"error_y":{"color":"rgba(141,160,203,1)"},"error_x":{"color":"rgba(141,160,203,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Arizona","Colorado","Connecticut","Delaware","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Mississippi","Montana","Nevada","New Hampshire","New Jersey","New York","North Carolina","Ohio","Oregon","Pennsylvania","Rhode Island","South Dakota","Tennessee","Vermont","Virginia","West Virginia","Wyoming"],"y":[0.32122627922827401,0.23213586115235699,0.19232455227371201,0.116751606828295,0.193763759663727,0.0904955392441808,0.078119678369933804,0.142315069719781,0.055060923569405403,0.077783432729993399,0.023394106242509,0.13267105418618499,0.13996231312282201,0.061321780404614799,0.040274273753884197,0.048807939973602603,0.30587210215129901,0.0503267491440932,0.23465940051054399,0.20230723449971499,0.119913735476222,0.051074431824684401,0.15512229626125601,0.094245773162896104,0.18787601995130801,0.048608745399705201,0.078425374424959393,0.0268329804639372,0.115515886324159,0.023165246593321202,0.110667134090515],"mode":"lines+markers","text":["Arizona :  0.3 %","Colorado :  0.2 %","Connecticut :  0.2 %","Delaware :  0.1 %","Illinois :  0.2 %","Indiana :  0.1 %","Iowa :  0.1 %","Kansas :  0.1 %","Kentucky :  0.1 %","Louisiana :  0.1 %","Maine :  0 %","Maryland :  0.1 %","Massachusetts :  0.1 %","Michigan :  0.1 %","Mississippi :  0 %","Montana :  0 %","Nevada :  0.3 %","New Hampshire :  0.1 %","New Jersey :  0.2 %","New York :  0.2 %","North Carolina :  0.1 %","Ohio :  0.1 %","Oregon :  0.2 %","Pennsylvania :  0.1 %","Rhode Island :  0.2 %","South Dakota :  0 %","Tennessee :  0.1 %","Vermont :  0 %","Virginia :  0.1 %","West Virginia :  0 %","Wyoming :  0.1 %"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text"],"line":{"color":"rgba(231,138,195,1)","width":2},"type":"scatter","name":"% Hispanic","marker":{"color":"rgba(231,138,195,1)","line":{"color":"rgba(231,138,195,1)"}},"textfont":{"color":"rgba(231,138,195,1)"},"error_y":{"color":"rgba(231,138,195,1)"},"error_x":{"color":"rgba(231,138,195,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
-<div id="economic-stats" class="section level3">
-<h3>Economic Stats</h3>
-<pre class="r"><code>model_clean_2024 |&gt; 
-  filter(State != &quot;Washington D.C.&quot;) |&gt; 
-  select(State, Revenue, unemployment_rate, pct_poverty) |&gt; 
-  pivot_longer(
-    cols = c(&quot;pct_poverty&quot;, &quot;unemployment_rate&quot;),
-    names_to = &quot;measure&quot;,
-    values_to = &quot;percentage&quot;
+<div id="economic-stats" class="section level2">
+<h2>Economic Stats</h2>
+<pre class="r"><code>economic_plot = 
+  model_clean_2024 |&gt; 
+    filter(State != &quot;Washington D.C.&quot;) |&gt; 
+    select(State, Revenue, unemployment_rate, pct_poverty) |&gt; 
+    pivot_longer(
+      cols = c(&quot;pct_poverty&quot;, &quot;unemployment_rate&quot;),
+      names_to = &quot;measure&quot;,
+      values_to = &quot;percentage&quot;
+    ) |&gt; 
+    mutate(
+        State = as.factor(State),
+        State = fct_reorder(State, Revenue, .desc = TRUE),
+        measure = factor(measure,
+                    levels = c(&quot;pct_poverty&quot;, &quot;unemployment_rate&quot;),
+                    labels = c(&quot;% in Poverty&quot;, &quot;% Unemployed&quot;))
+    )
+
+economic_plot |&gt; 
+  plot_ly(
+    x = ~State,
+    y = ~percentage,
+    color = ~measure,
+    type = &#39;scatter&#39;,
+    mode = &#39;lines+markers&#39;,
+    text = ~paste(State, &quot;: &quot;, round(percentage, 1), &quot;%&quot;),
+    hoverinfo = &#39;text&#39;,         
+    line = list(width = 2)
   ) |&gt; 
-  mutate(
-      State = as.factor(State),
-      State = fct_reorder(State, Revenue, .desc = TRUE),
-      measure = factor(measure,
-                  levels = c(&quot;pct_poverty&quot;, &quot;unemployment_rate&quot;),
-                  labels = c(&quot;% in Poverty&quot;, &quot;% Unemployed&quot;))
-  ) |&gt; 
-  ggplot(aes(x = State, y = percentage, color = measure, group = measure)) +
-  geom_point() +
-  geom_line() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1)) +
-    labs(
-        x = &quot;State (sorted by revenue)&quot;,
-        y = &quot;Percentage of Population&quot;,
-        title = &quot;Poverty &amp; Unemployment by State (2024)&quot;,
-        fill = &quot;Measure&quot;
-    ) </code></pre>
-<p><img src="analysis_files/figure-html/econ_plot-1.png" width="90%" style="display: block; margin: auto;" /></p>
+  layout(
+    title = &quot;Poverty &amp; Unemployment by State (2024)&quot;,    
+    xaxis = list(
+      title = &quot;State (sorted by revenue)&quot;,
+      tickangle = 90            
+    ),
+    yaxis = list(
+      title = &quot;Percentage of Population&quot;, 
+      tickformat = &quot;%&quot;
+    ),
+    showlegend = TRUE 
+  )</code></pre>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-00a66ce74692ba487801" style="width:90%;height:460.8px;"></div>
+<script type="application/json" data-for="htmlwidget-00a66ce74692ba487801">{"x":{"visdat":{"1fda10ee4d4f":["function () ","plotlyVisDat"]},"cur_data":"1fda10ee4d4f","attrs":{"1fda10ee4d4f":{"x":{},"y":{},"mode":"lines+markers","text":{},"hoverinfo":"text","line":{"width":2},"color":{},"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"Poverty & Unemployment by State (2024)","xaxis":{"domain":[0,1],"automargin":true,"title":"State (sorted by revenue)","tickangle":90,"type":"category","categoryorder":"array","categoryarray":["New York","Illinois","New Jersey","Ohio","Pennsylvania","Massachusetts","Maryland","Virginia","North Carolina","Tennessee","Indiana","Nevada","Michigan","Colorado","Louisiana","Arizona","Kentucky","Iowa","Connecticut","Kansas","Oregon","New Hampshire","West Virginia","Maine","Mississippi","Rhode Island","Vermont","Wyoming","Delaware","Montana","South Dakota"]},"yaxis":{"domain":[0,1],"automargin":true,"title":"Percentage of Population","tickformat":"%"},"showlegend":true,"hovermode":"closest"},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":["Arizona","Colorado","Connecticut","Delaware","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Mississippi","Montana","Nevada","New Hampshire","New Jersey","New York","North Carolina","Ohio","Oregon","Pennsylvania","Rhode Island","South Dakota","Tennessee","Vermont","Virginia","West Virginia","Wyoming"],"y":[0.116805302577693,0.096011668699054198,0.10195636795853,0.095937176933724999,0.115789212711916,0.122276666904688,0.1133853317804,0.108541075711762,0.15555882731262799,0.18687793455590701,0.10598586639857301,0.090648953011687794,0.097188245112582894,0.13445265492470501,0.17812326777482301,0.102255698611753,0.11578105072867501,0.072048082719815901,0.091957993636379104,0.13971302310467301,0.125482468770931,0.12672748044722501,0.117864210641138,0.115776120959588,0.121662252898198,0.10411901484783199,0.134601236749816,0.090159396590621804,0.097491173585547999,0.16736124000602401,0.10095231141522],"mode":"lines+markers","text":["Arizona :  0.1 %","Colorado :  0.1 %","Connecticut :  0.1 %","Delaware :  0.1 %","Illinois :  0.1 %","Indiana :  0.1 %","Iowa :  0.1 %","Kansas :  0.1 %","Kentucky :  0.2 %","Louisiana :  0.2 %","Maine :  0.1 %","Maryland :  0.1 %","Massachusetts :  0.1 %","Michigan :  0.1 %","Mississippi :  0.2 %","Montana :  0.1 %","Nevada :  0.1 %","New Hampshire :  0.1 %","New Jersey :  0.1 %","New York :  0.1 %","North Carolina :  0.1 %","Ohio :  0.1 %","Oregon :  0.1 %","Pennsylvania :  0.1 %","Rhode Island :  0.1 %","South Dakota :  0.1 %","Tennessee :  0.1 %","Vermont :  0.1 %","Virginia :  0.1 %","West Virginia :  0.2 %","Wyoming :  0.1 %"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text"],"line":{"color":"rgba(102,194,165,1)","width":2},"type":"scatter","name":"% in Poverty","marker":{"color":"rgba(102,194,165,1)","line":{"color":"rgba(102,194,165,1)"}},"textfont":{"color":"rgba(102,194,165,1)"},"error_y":{"color":"rgba(102,194,165,1)"},"error_x":{"color":"rgba(102,194,165,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":["Arizona","Colorado","Connecticut","Delaware","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Mississippi","Montana","Nevada","New Hampshire","New Jersey","New York","North Carolina","Ohio","Oregon","Pennsylvania","Rhode Island","South Dakota","Tennessee","Vermont","Virginia","West Virginia","Wyoming"],"y":[0.045637548016821898,0.042770318157260498,0.049482889745232503,0.051067189839202803,0.051274607770050502,0.040963569793122601,0.031819046666200203,0.036714328173470201,0.048706068993665502,0.051515239241408502,0.027231558189705098,0.043456375838926198,0.040706371215408002,0.044997010233710701,0.046047512310693997,0.029626135877790099,0.0628302798451012,0.027765141176113801,0.054064165521133703,0.053222478733459602,0.039885912529005099,0.039911548884883699,0.048540222510555599,0.043452420240770902,0.050414644261615203,0.0280759936503443,0.042269914198456097,0.026674037344768999,0.036202912799668301,0.046344915416549601,0.034279547663393403],"mode":"lines+markers","text":["Arizona :  0 %","Colorado :  0 %","Connecticut :  0 %","Delaware :  0.1 %","Illinois :  0.1 %","Indiana :  0 %","Iowa :  0 %","Kansas :  0 %","Kentucky :  0 %","Louisiana :  0.1 %","Maine :  0 %","Maryland :  0 %","Massachusetts :  0 %","Michigan :  0 %","Mississippi :  0 %","Montana :  0 %","Nevada :  0.1 %","New Hampshire :  0 %","New Jersey :  0.1 %","New York :  0.1 %","North Carolina :  0 %","Ohio :  0 %","Oregon :  0 %","Pennsylvania :  0 %","Rhode Island :  0.1 %","South Dakota :  0 %","Tennessee :  0 %","Vermont :  0 %","Virginia :  0 %","West Virginia :  0 %","Wyoming :  0 %"],"hoverinfo":["text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text","text"],"line":{"color":"rgba(141,160,203,1)","width":2},"type":"scatter","name":"% Unemployed","marker":{"color":"rgba(141,160,203,1)","line":{"color":"rgba(141,160,203,1)"}},"textfont":{"color":"rgba(141,160,203,1)"},"error_y":{"color":"rgba(141,160,203,1)"},"error_x":{"color":"rgba(141,160,203,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
-<div id="predictive-modeling" class="section level2">
-<h2>Predictive Modeling</h2>
-<div id="model-setup" class="section level3">
-<h3>Model Setup</h3>
-<p>We begin by building our training dataset and handling missing
-values.</p>
+<div id="predictive-modeling" class="section level1">
+<h1>Predictive Modeling</h1>
+<div id="model-setup" class="section level2">
+<h2>Model Setup</h2>
+<p>We begin by building our training dataset, fitting a standard linear
+model for comparison, and handling missing values.</p>
 <pre class="r"><code># Build training dataset
 training_data &lt;- model_clean_2024 |&gt;
   select(
@@ -622,6 +731,14 @@ training_data &lt;- model_clean_2024 |&gt;
   ) |&gt;
   drop_na()
 
+# Fit Linear Model for later comparison
+fit_lm &lt;- lm(
+  Revenue ~ total_pop + median_income + pct_bachelors +
+    pct_age_20_34 + pct_urban + pct_poverty,
+  data = training_data
+)
+
+# Prepare Illegal States Data
 states_no_gambling &lt;- demographics_2024 |&gt;
   anti_join(training_data, by = &quot;State&quot;)
 
@@ -632,8 +749,8 @@ newdata_illegal &lt;- states_no_gambling |&gt;
   ) |&gt;
   drop_na()</code></pre>
 </div>
-<div id="lasso-regression" class="section level3">
-<h3>LASSO Regression</h3>
+<div id="lasso-regression" class="section level2">
+<h2>LASSO Regression</h2>
 <p>We implement a LASSO regression to handle multicollinearity and
 perform feature selection.</p>
 <pre class="r"><code># Build design matrix
@@ -663,13 +780,13 @@ pred_illegal_lasso &lt;- newdata_illegal |&gt;
   ) |&gt;
   arrange(desc(predicted_revenue_lasso))</code></pre>
 </div>
-<div id="prediction-results" class="section level3">
-<h3>Prediction Results</h3>
+<div id="prediction-results" class="section level2">
+<h2>Prediction Results</h2>
 <pre class="r"><code>pred_table &lt;- pred_illegal_lasso |&gt;
   mutate(
-    Predicted_Revenue = dollar(predicted_revenue_lasso),
-    Population = comma(total_pop),
-    Median_Income = dollar(median_income)
+    Predicted_Revenue = scales::dollar(predicted_revenue_lasso),
+    Population = scales::comma(total_pop),
+    Median_Income = scales::dollar(median_income)
   ) |&gt;
   select(
     State, Population, Median_Income, pct_bachelors, 
@@ -1260,16 +1377,24 @@ $0
 </tr>
 </tbody>
 </table>
+<p><em>This table presents the predicted gambling revenue for each state
+that has not yet legalized sports betting. Using the LASSO model, we
+estimated annual revenue based on demographic characteristics, including
+population size, educational attainment, urbanization, and poverty
+rates. The table shows that states like California, Texas, and Florida
+have demographic profiles similar to those of current high-revenue
+states, suggesting substantial untapped market potential if legalization
+were pursued.</em></p>
 </div>
-<div id="visualizing-predictions" class="section level3">
-<h3>Visualizing Predictions</h3>
+<div id="visualizing-predictions" class="section level2">
+<h2>Visualizing Predictions</h2>
 <pre class="r"><code>pred_illegal_lasso_plot &lt;- pred_illegal_lasso |&gt;
   mutate(State = factor(State, levels = State)) # Maintain sorted order
 
 ggplot(pred_illegal_lasso_plot, aes(x = State, y = predicted_revenue_lasso)) +
   geom_col(fill = &quot;steelblue&quot;) +
   coord_flip() +
-  scale_y_continuous(labels = dollar) +
+  scale_y_continuous(labels = scales::dollar) +
   labs(
     title = &quot;Predicted Annual Gambling Revenue (if legalized)&quot;,
     subtitle = &quot;LASSO model predictions for states without legal sports gambling&quot;,
@@ -1277,13 +1402,259 @@ ggplot(pred_illegal_lasso_plot, aes(x = State, y = predicted_revenue_lasso)) +
     y = &quot;Predicted Revenue&quot;
   ) +
   theme_minimal(base_size = 13)</code></pre>
-<p><img src="analysis_files/figure-html/prediction_plot-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<p><img src="analysis_files/figure-html/visualizing-predictions-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<p><em>This bar chart visualizes predicted gambling revenue for each
+non-legal state, ranked from highest to lowest. Large states with urban
+populations and strong young-adult demographics (such as California,
+Texas, and Florida) show the highest predicted revenue, reinforcing the
+idea that demographic scale influences potential market size. Smaller or
+more rural states are projected to generate minimal revenue.</em></p>
+</div>
+<div id="distribution-of-predictions" class="section level2">
+<h2>Distribution of Predictions</h2>
+<pre class="r"><code>compare_df &lt;- tibble(
+  group = c(rep(&quot;Actual Revenue (Legal States)&quot;, nrow(training_data)),
+            rep(&quot;Predicted Revenue (Non-Legal States)&quot;, nrow(pred_illegal_lasso))),
+  revenue = c(training_data$Revenue,
+              pred_illegal_lasso$predicted_revenue_lasso)
+)
+
+ggplot(compare_df, aes(x = revenue, fill = group)) +
+  geom_density(alpha = 0.4) +
+  scale_x_continuous(labels = scales::dollar) +
+  labs(
+    title = &quot;Distribution of Actual vs Predicted Gambling Revenue&quot;,
+    x = &quot;Revenue&quot;,
+    y = &quot;Density&quot;,
+    fill = &quot;&quot;
+  ) +
+  theme_minimal(base_size = 13)</code></pre>
+<p><img src="analysis_files/figure-html/distribution-predictions-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<p><em>This density plot compares the distribution of observed gambling
+revenue in legalized states with the predicted revenue for non-legal
+states. The predicted values span a wider range, with some states
+projecting higher revenue than current legal markets. This suggests that
+expansion into a few large states could dramatically reshape the
+national gambling landscape.</em></p>
+</div>
+<div id="population-vs-revenue-comparison" class="section level2">
+<h2>Population vs Revenue Comparison</h2>
+<pre class="r"><code>scatter_df &lt;- bind_rows(
+  training_data |&gt; mutate(type = &quot;Actual Revenue&quot;),
+  pred_illegal_lasso |&gt; 
+    mutate(Revenue = predicted_revenue_lasso,
+           type = &quot;Predicted Revenue&quot;)
+)
+
+ggplot(scatter_df, aes(x = total_pop, y = Revenue, color = type)) +
+  geom_point(size = 3, alpha = 0.7) +
+  scale_x_continuous(labels = scales::comma) +
+  scale_y_continuous(labels = scales::dollar) +
+  labs(
+    title = &quot;Population vs Gambling Revenue&quot;,
+    subtitle = &quot;Comparing actual and predicted states&quot;,
+    x = &quot;Total Population&quot;,
+    y = &quot;Revenue&quot;,
+    color = &quot;&quot;
+  ) +
+  theme_minimal(base_size = 13)</code></pre>
+<p><img src="analysis_files/figure-html/population-revenue-comparison-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<p><em>Here we compare how population relates to revenue in both actual
+and predicted markets. Larger states show higher revenue but the plot
+also shows that population alone does not fully explain gambling
+revenue.</em></p>
+</div>
+<div id="distribution-statistics" class="section level2">
+<h2>Distribution Statistics</h2>
+<pre class="r"><code>summary_table &lt;- tibble(
+  Metric = c(&quot;Min&quot;, &quot;1st Quartile&quot;, &quot;Median&quot;, &quot;Mean&quot;, &quot;3rd Quartile&quot;, &quot;Max&quot;),
+  Actual_Revenue = summary(training_data$Revenue)[c(1,2,3,4,5,6)],
+  Predicted_Revenue = summary(pred_illegal_lasso$predicted_revenue_lasso)[c(1,2,3,4,5,6)]
+)
+
+kable(summary_table, format = &quot;html&quot;, caption = &quot;Distribution Comparison: Actual vs Predicted Revenue&quot;) |&gt;
+  kable_styling(full_width = FALSE, bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;))</code></pre>
+<table class="table table-striped table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+Distribution Comparison: Actual vs Predicted Revenue
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Metric
+</th>
+<th style="text-align:right;">
+Actual_Revenue
+</th>
+<th style="text-align:right;">
+Predicted_Revenue
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Min
+</td>
+<td style="text-align:right;">
+920918
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1st Quartile
+</td>
+<td style="text-align:right;">
+60627294
+</td>
+<td style="text-align:right;">
+61324867
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Median
+</td>
+<td style="text-align:right;">
+427397087
+</td>
+<td style="text-align:right;">
+201795708
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mean
+</td>
+<td style="text-align:right;">
+443822044
+</td>
+<td style="text-align:right;">
+627940272
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3rd Quartile
+</td>
+<td style="text-align:right;">
+599344939
+</td>
+<td style="text-align:right;">
+471813698
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Max
+</td>
+<td style="text-align:right;">
+2059297238
+</td>
+<td style="text-align:right;">
+3611645904
+</td>
+</tr>
+</tbody>
+</table>
+<p><em>This table summarizes the distribution of actual versus predicted
+revenue using key statistics (min, median, mean, and quartiles). The
+predicted values show a higher mean and larger upper tail, reflecting
+how several non-legal states exceed the revenue observed in legalized
+states.</em></p>
 </div>
 </div>
-<div id="model-diagnostics" class="section level2 tabset">
-<h2 class="tabset">Model Diagnostics</h2>
-<div id="feature-importance" class="section level3">
-<h3>Feature Importance</h3>
+<div id="model-diagnostics" class="section level1 tabset">
+<h1 class="tabset">Model Diagnostics</h1>
+<div id="lasso-cross-validation" class="section level2">
+<h2>LASSO Cross-Validation</h2>
+<pre class="r"><code>plot(lasso_cv)</code></pre>
+<p><img src="analysis_files/figure-html/lasso-cv-plot-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<p><em>This figure shows the LASSO model’s cross-validation process.
+Each point represents the model’s prediction error at a given penalty
+value (lambda). The selected λ minimizes mean-squared error, balancing
+model simplicity and predictive accuracy. The curve illustrates how
+adding too many predictors increases variance, while stronger
+penalization improves stability.</em></p>
+</div>
+<div id="actual-vs-predicted" class="section level2">
+<h2>Actual vs Predicted</h2>
+<pre class="r"><code>pred_lasso_train &lt;- as.numeric(predict(lasso_model, newx = X_train))
+
+training_data_lasso &lt;- training_data %&gt;%
+  mutate(pred_lasso = pred_lasso_train)
+
+ggplot(training_data_lasso, aes(x = Revenue, y = pred_lasso)) +
+  geom_point(alpha = 0.7, color = &quot;darkgreen&quot;, size = 3) +
+  geom_abline(slope = 1, intercept = 0, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+  scale_x_continuous(labels = scales::dollar) +
+  scale_y_continuous(labels = scales::dollar) +
+  labs(
+    title = &quot;Actual vs Predicted Revenue (LASSO)&quot;,
+    x = &quot;Actual Revenue&quot;,
+    y = &quot;Predicted Revenue&quot;
+  ) +
+  theme_minimal(base_size = 13)</code></pre>
+<p><img src="analysis_files/figure-html/actual-vs-predicted-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<p><em>This scatterplot compares predicted revenue to actual revenue in
+legalized states. The points generally follow an upward trend,
+indicating strong model performance.</em></p>
+</div>
+<div id="correlation-map" class="section level2">
+<h2>Correlation Map</h2>
+<pre class="r"><code>predictor_mat &lt;- training_data %&gt;%
+  select(total_pop, median_income, pct_bachelors, pct_age_20_34,
+         pct_urban, pct_poverty) %&gt;%
+  as.matrix()
+
+corr_mat &lt;- cor(predictor_mat)
+
+corrplot(
+  corr_mat,
+  method = &quot;color&quot;,
+  type = &quot;upper&quot;,
+  col = viridis(200),
+  tl.col = &quot;black&quot;,
+  tl.srt = 45,
+  title = &quot;Predictor Correlations&quot;,
+  mar = c(0,0,1,0)
+)</code></pre>
+<p><img src="analysis_files/figure-html/correlation-map-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<p><em>This heatmap displays correlations among demographic predictors
+used in the modeling process. Strong correlations across income,
+education, population size, and poverty show multicollinearity.</em></p>
+</div>
+<div id="predictor-relationships" class="section level2">
+<h2>Predictor Relationships</h2>
+<pre class="r"><code>plot_df &lt;- training_data %&gt;%
+  select(Revenue, total_pop, median_income, pct_bachelors,
+         pct_age_20_34, pct_urban, pct_poverty) %&gt;%
+  pivot_longer(-Revenue, names_to = &quot;predictor&quot;, values_to = &quot;value&quot;)
+
+ggplot(plot_df, aes(x = value, y = Revenue)) +
+  geom_point(alpha = 0.7) +
+  facet_wrap(~ predictor, scales = &quot;free_x&quot;) +
+  scale_y_continuous(labels = scales::dollar) +
+  labs(
+    title = &quot;Revenue vs Key Demographic Predictors (Legal States)&quot;,
+    x = &quot;Predictor Value&quot;,
+    y = &quot;Revenue&quot;
+  ) +
+  theme_minimal(base_size = 13)</code></pre>
+<p><img src="analysis_files/figure-html/predictor-relationships-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<p><em>These scatterplots show the relationship between individual
+demographic predictors and observed gambling revenue. While population
+and urbanization show clearer positive associations, other variables,
+such as poverty or median income, exhibit weak or inconsistent
+relationships. This reinforces the idea that gambling revenue is driven
+by a combination of demographic scale and specific high-engagement age
+groups rather than socioeconomic factors alone.</em></p>
+</div>
+<div id="feature-importance" class="section level2">
+<h2>Feature Importance</h2>
 <pre class="r"><code>coef_mat &lt;- as.matrix(coef(lasso_cv, s = &quot;lambda.min&quot;))
 
 coef_df &lt;- tibble(
@@ -1306,66 +1677,111 @@ ggplot(coef_df, aes(x = reorder(variable, abs(coefficient)),
     y = &quot;Coefficient Estimate&quot;
   ) +
   theme_minimal(base_size = 13)</code></pre>
-<p><img src="analysis_files/figure-html/feature_importance-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<p><img src="analysis_files/figure-html/feature-importance-1.png" width="90%" style="display: block; margin: auto;" /></p>
 </div>
-<div id="correlation-map" class="section level3">
-<h3>Correlation Map</h3>
-<pre class="r"><code>predictor_mat &lt;- training_data %&gt;%
-  select(total_pop, median_income, pct_bachelors, pct_age_20_34,
-         pct_urban, pct_poverty) %&gt;%
-  as.matrix()
+<div id="model-performance" class="section level2">
+<h2>Model Performance</h2>
+<pre class="r"><code># --- Linear Model Predictions ---
+lm_pred &lt;- predict(fit_lm)
 
-corr_mat &lt;- cor(predictor_mat)
+# --- LASSO Predictions ---
+lasso_pred &lt;- as.numeric(predict(lasso_model, newx = X_train))
 
-corrplot(
-  corr_mat,
-  method = &quot;color&quot;,
-  type = &quot;upper&quot;,
-  col = viridis(200),
-  tl.col = &quot;black&quot;,
-  tl.srt = 45,
-  title = &quot;Predictor Correlations&quot;,
-  mar = c(0,0,1,0)
-)</code></pre>
-<p><img src="analysis_files/figure-html/corr_map-1.png" width="90%" style="display: block; margin: auto;" /></p>
+# --- True values ---
+y_true &lt;- training_data$Revenue
+
+# --- Comparison Metrics ---
+model_metrics &lt;- tibble(
+  Model = c(&quot;Linear Model&quot;, &quot;LASSO Model&quot;),
+  RMSE  = c(rmse(y_true, lm_pred),
+            rmse(y_true, lasso_pred)),
+  MAE   = c(mae(y_true, lm_pred),
+            mae(y_true, lasso_pred)),
+  MAPE  = c(mape(y_true, lm_pred),
+            mape(y_true, lasso_pred))
+)
+
+model_metrics %&gt;%
+  mutate(
+    RMSE = scales::dollar(RMSE),
+    MAE  = scales::dollar(MAE),
+    MAPE = scales::percent(MAPE)
+  ) %&gt;%
+  kable(format = &quot;html&quot;, caption = &quot;Model Performance Comparison: Linear Model vs LASSO&quot;) %&gt;%
+  kable_styling(full_width = FALSE, bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;))</code></pre>
+<table class="table table-striped table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+Model Performance Comparison: Linear Model vs LASSO
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Model
+</th>
+<th style="text-align:left;">
+RMSE
+</th>
+<th style="text-align:left;">
+MAE
+</th>
+<th style="text-align:left;">
+MAPE
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Linear Model
+</td>
+<td style="text-align:left;">
+$200,127,907
+</td>
+<td style="text-align:left;">
+$133,430,779
+</td>
+<td style="text-align:left;">
+344%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LASSO Model
+</td>
+<td style="text-align:left;">
+$202,606,893
+</td>
+<td style="text-align:left;">
+$132,201,269
+</td>
+<td style="text-align:left;">
+191%
+</td>
+</tr>
+</tbody>
+</table>
+<p><em>This table compares model performance metrics across the linear
+regression and LASSO model. LASSO performs similarly in RMSE but
+substantially better in MAPE, indicating higher stability for
+lower-revenue states. The comparison highlights the value of
+penalization when predictors show strong collinearity.</em></p>
 </div>
-<div id="actual-vs-predicted" class="section level3">
-<h3>Actual vs Predicted</h3>
-<pre class="r"><code>pred_lasso_train &lt;- as.numeric(predict(lasso_model, newx = X_train))
-
-training_data_lasso &lt;- training_data %&gt;%
-  mutate(pred_lasso = pred_lasso_train)
-
-ggplot(training_data_lasso, aes(x = Revenue, y = pred_lasso)) +
-  geom_point(alpha = 0.7, color = &quot;darkgreen&quot;, size = 3) +
-  geom_abline(slope = 1, intercept = 0, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
-  scale_x_continuous(labels = dollar) +
-  scale_y_continuous(labels = dollar) +
-  labs(
-    title = &quot;Actual vs Predicted Revenue (LASSO)&quot;,
-    x = &quot;Actual Revenue&quot;,
-    y = &quot;Predicted Revenue&quot;
-  ) +
-  theme_minimal(base_size = 13)</code></pre>
-<p><img src="analysis_files/figure-html/actual_vs_predicted-1.png" width="90%" style="display: block; margin: auto;" /></p>
 </div>
-</div>
-<div id="conclusion" class="section level2">
-<h2>Conclusion</h2>
+<div id="conclusion" class="section level1">
+<h1>Conclusion</h1>
 <p>We compared a standard linear regression to a LASSO regularized
 model. Both models have sizeable error due to the extreme variability in
 state gambling revenues. While the linear model slightly outperforms
 LASSO in RMSE, the LASSO model achieves a much better MAPE (191% vs
 344%), indicating more stable performance for low-revenue states.</p>
 <p>LASSO also provides valuable model simplification: only two
-predictors retain nonzero coefficients—<code>pct_age_20_34</code> and
-<code>pct_urban</code>, while income, population, poverty, and education
-are shrunk to zero. This suggests strong multicollinearity among
-socioeconomic indicators, with LASSO consolidating their predictive
-signal into a smaller set of variables. The results highlight that
-demographic structure (<code>pct_age_20_34</code>) and urbanization are
-the strongest predictors of sports gambling markets.</p>
-<p>Go back <a href="home.html">home</a></p>
+predictors retain nonzero coefficients—pct_age_20_34 and pct_urban,
+while income, population, poverty, and education are shrunk to zero.
+This suggests strong multicollinearity among socioeconomic indicators,
+with LASSO consolidating their predictive signal into a smaller set of
+variables. The results highlight that demographic structure
+(pct_age_20_34) and urbanization are the strongest predictors of sports
+gambling markets.</p>
 </div>
 
 <footer style="background-color: #1e293b; color: #cbd5e1; padding: 40px 20px; margin-top: 50px; border-top: 3px solid #eab308; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">

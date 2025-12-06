@@ -11,21 +11,6 @@ output:
     css: style.css
 ---
 
-<style type="text/css">
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  h1, h2, h3 {
-    color: #2c3e50;
-    font-weight: 600;
-  }
-  .main-container {
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-</style>
-
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(rvest)
@@ -39,6 +24,7 @@ library(corrplot)
 library(Metrics)
 library(kableExtra)
 library(viridis)
+library(plotly)
 
 knitr::opts_chunk$set(
   fig.width = 8,
@@ -64,21 +50,36 @@ scale_colour_discrete = scale_color_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
 ```
 
-## Exploratory Data Analysis
+<style type="text/css">
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+h1, h2, h3 {
+  color: #2c3e50;
+  font-weight: 600;
+}
+.main-container {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
 
-### Import Data
+# Exploratory Data Analysis
 
-```{r load_data}
+## Import Data
+
+```{r import-data}
 total_state_revenue = read_csv("data/total_state_revenue.csv")
 model_clean_2024 = read_csv("data/model_clean_2024.csv")
 demographics_2024 = read_csv("data/demographics_2024.csv")
 ```
 
-## Gambling Visuals {.tabset}
+# Gambling Visuals {.tabset}
 
-### Revenue by Year
+## Revenue by Year
 
-```{r revenue_by_year}
+```{r revenue-by-year}
 # Aggregate total revenue by year
 yearly_revenue_summary = total_state_revenue |> 
   group_by(Year) |> 
@@ -99,9 +100,48 @@ yearly_revenue_summary |>
   )
 ```
 
-### Growth by State
+## Growth by State
 
-```{r revenue_by_state_growth}
+```{r growth-by-state-fixed}
+# Aggregate total revenue by year
+yearly_revenue_summary = total_state_revenue |> 
+  group_by(Year) |> 
+  summarize(Total_Revenue = sum(Revenue, na.rm = TRUE))
+
+# Create the plot
+plot_ly(
+  data = yearly_revenue_summary |> mutate(Year = as.factor(Year)),
+  x = ~Year,
+  y = ~Total_Revenue, 
+  type = "bar", 
+  color = ~Year,
+  text = ~scales::dollar(Total_Revenue / 1e9, scale = 1, suffix = "B"),
+  textposition = "outside",
+  hoverinfo = "x+y+text"
+) |> 
+  layout(
+    title = "Total US Gambling Revenue (2018-2024)",
+    xaxis = list(
+      title = "Year"
+    ),
+    yaxis = list(
+      title = "Total Revenue",
+      tickformat = "$,",
+      tickprefix = "$"
+    ),
+    showlegend = FALSE
+  )
+```
+
+## Market Rank Shifts
+
+```{r market-rank-shifts}
+# Calculate Ranks for every state, every year
+ranked_data = total_state_revenue |> 
+  group_by(Year) |> 
+  mutate(Rank = min_rank(desc(Revenue))) |> 
+  ungroup()
+
 # Identify top 5 states by 2024 revenue to keep things looking clean
 top_states = total_state_revenue |> 
   filter(Year == 2019) |> 
@@ -116,119 +156,145 @@ state_growth_plot_data = total_state_revenue |>
   summarize(Revenue = sum(Revenue, na.rm = TRUE), .groups = "drop") |> 
   mutate(State_Group = fct_reorder(State_Group, Revenue, .desc = TRUE))
 
-
-ggplot(state_growth_plot_data, aes(x = Year, y = Revenue, fill = State_Group)) +
-  geom_col() +
-  scale_y_continuous(labels = scales::dollar_format()) +
-  scale_x_continuous(breaks = 2018:2024) +
-  labs(
+state_growth_plot_data |> 
+  plot_ly(
+    x = ~Year,
+    y = ~Revenue, 
+    type = "bar", 
+    color = ~State_Group,
+    text = ~scales::dollar(Revenue),
+    textposition = "outside",
+    hoverinfo = "x+y+text"
+  ) |> 
+  layout(
     title = "US Gambling Revenue Growth by State",
-    x = "Year",
-    y = "Revenue",
-    fill = "State"
+    xaxis = list(
+      title = "Year",
+      tickvals = 2018:2024
+    ),
+    yaxis = list(
+      title = "Revenue",
+      tickformat = "$,"
+    ),
+    barmode = "stack",
+    showlegend = TRUE 
   )
 ```
 
-### Market Rank Shifts
+# Demographic Visuals {.tabset}
 
-```{r market_rank_shift}
-# Calculate Ranks for every state, every year
-ranked_data = total_state_revenue |> 
-  group_by(Year) |> 
-  mutate(Rank = min_rank(desc(Revenue))) |> 
-  ungroup()
+## Population
 
-# Identify "States of Interest" - Top 5 at any point
-focus_states = ranked_data |> 
-  filter(Rank <= 5) |> 
-  pull(State) |> 
-  unique()
-
-# Filter the dataset to just those states
-plot_data = ranked_data |> 
-  filter(State %in% focus_states)
-
-plot_data |> 
-  ggplot(aes(x = Year, y = Rank, color = State, group = State)) +
-  geom_point(size = 3) +
-  geom_line(linewidth = 1.2) + 
-  scale_y_reverse(breaks = 1:max(plot_data$Rank, na.rm = TRUE)) + 
-  scale_x_continuous(breaks = 2018:2024) +
-  geom_text(data = plot_data |> filter(Year == 2018), 
-            aes(label = paste(Rank, State)), x = 2017.8, hjust = 1, size = 3) +
-  geom_text(data = plot_data |> filter(Year == 2024), 
-            aes(label = paste(Rank, State)), x = 2024.2, hjust = 0, size = 3) +
-  labs(
-    title = "Shift in Top Gambling Markets (2018 vs 2024)",
-    subtitle = "Tracking rank of states that were in top 5 in 2018 or 2024",
-    y = "Revenue Rank",
-    x = "Year"
-  ) +
-  theme(
-    legend.position = "none",        
-    panel.grid.minor = element_blank()
-  ) +
-  coord_cartesian(xlim = c(2017, 2025))
-```
-
-## Demographic Visuals {.tabset}
-
-### Population
-
-```{r pop_plot}
+```{r population-plot}
+# Population plot:
 population_plot = 
   model_clean_2024 |> 
-    filter(State != "Washington D.C.") |> 
+  filter(State != "Washington D.C.") |> 
     mutate(
       State = as.factor(State),
       State = fct_reorder(State, total_pop, .desc = TRUE)
+    )
+
+ordered_states = as.character(population_plot$State)
+
+population_plot = 
+  population_plot |> 
+  plot_ly(
+    x = ~State,
+    y = ~total_pop, 
+    type = "bar", 
+    color = ~State,
+    text = ~scales::comma(total_pop),
+    textposition = "outside",
+    hoverinfo = "x+y+text"
     ) |> 
-    ggplot(aes(x = State, y = total_pop)) +
-    geom_col(aes(fill = State)) +
-    theme(
-      axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1),
-      legend.position = "none") +
-    labs(
-        y = "Total Population",
-        title = "Total Population by State (2024)"
-      )
+  layout(
+    title = "Total Population by State (2024)",
+    xaxis = list(
+      title = "State",
+      tickangle = 90,        
+      tickmode = "array",           
+      tickvals = ordered_states,  
+      ticktext = ordered_states
+      ),
+    yaxis = list(
+      title = "Total Population"
+    ),
+    showlegend = FALSE
+  )
+
 population_plot
 ```
 
-### Revenue
+## Revenue
 
-```{r rev_plot}
+```{r revenue-plot}
 revenue_plot = 
   model_clean_2024 |> 
-    filter(State != "Washington D.C.") |> 
+  filter(State != "Washington D.C.") |> 
     mutate(
       State = as.factor(State),
       State = fct_reorder(State, total_pop, .desc = TRUE)
+    )
+
+ordered_states = as.character(revenue_plot$State)
+
+revenue_plot = 
+  revenue_plot |> 
+  plot_ly(
+    x = ~State,
+    y = ~Revenue, 
+    type = "bar", 
+    color = ~State,
+    text = ~scales::dollar(Revenue),
+    textposition = "outside",
+    hoverinfo = "x+y+text"
     ) |> 
-    ggplot(aes(x = State, y = Revenue)) +
-    geom_col(aes(fill = State)) +
-    theme(
-      axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1),
-      legend.position = "none") +
-    labs(
-        x = "State (sorted by population)",
-        y = "Revenue",
-        title = "Gambling Revenue by State (2024)"
-      )
+  layout(
+    title = "Gambling Revenue by State (2024)",
+    xaxis = list(
+      title = "State (sorted by population)",
+      tickangle = 90,        
+      tickmode = "array",           
+      tickvals = ordered_states,  
+      ticktext = ordered_states
+      ),
+    yaxis = list(
+      title = "Revenue",
+      tickformat = "$,"
+    ),
+    showlegend = FALSE
+  )
+
 revenue_plot
 ```
 
-### Comparison
+## Comparison
 
-```{r combined_plot, fig.width = 10}
-combined_revenue_population = (population_plot + revenue_plot)
+```{r combined-plots}
+combined_revenue_population = 
+  subplot(
+    population_plot, 
+    revenue_plot, 
+    nrows = 2,      
+    shareX = TRUE,    
+    shareY = FALSE,
+    titleY = TRUE,
+    titleX = TRUE
+  ) |> 
+  layout(
+    title = "Population vs Revenue Comparison by State",
+    showlegend = FALSE
+  )
+
 combined_revenue_population
 ```
 
-### Racial Makeup
+## Racial Makeup
 
-```{r race_plot}
-model_clean_2024 |> 
+```{r racial-makeup}
+race_plot = 
+  model_clean_2024 |> 
   filter(State != "Washington D.C.") |> 
   select(State, Revenue, pct_white, pct_black, pct_asian, pct_hispanic) |> 
   pivot_longer(
@@ -242,56 +308,85 @@ model_clean_2024 |>
       race = factor(race,
                   levels = c("pct_white", "pct_black", "pct_asian", "pct_hispanic"),
                   labels = c("% White", "% Black", "% Asian", "% Hispanic"))
+  )
+
+race_plot |> 
+  plot_ly(
+    x = ~State,
+    y = ~percentage,
+    color = ~race,
+    type = 'scatter',
+    mode = 'lines+markers',
+    text = ~paste(State, ": ", round(percentage, 1), "%"),
+    hoverinfo = 'text',         
+    line = list(width = 2)
   ) |> 
-  ggplot(aes(x = State, y = percentage, color = race, group = race)) +
-  geom_point() +
-  geom_line() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1)) +
-    labs(
-        x = "State (sorted by revenue)",
-        y = "Percentage of Population",
-        title = "Racial Makeup by State (2024)",
-        fill = "Race"
-    ) 
+  layout(
+    title = "Racial Makeup by State (2024)",    
+    xaxis = list(
+      title = "State (sorted by revenue)",
+      tickangle = 90            
+    ),
+    yaxis = list(
+      title = "Percentage of Population", 
+      tickformat = "%"
+    ),
+    showlegend = TRUE 
+  )
 ```
 
-### Economic Stats
+## Economic Stats
 
-```{r econ_plot}
-model_clean_2024 |> 
-  filter(State != "Washington D.C.") |> 
-  select(State, Revenue, unemployment_rate, pct_poverty) |> 
-  pivot_longer(
-    cols = c("pct_poverty", "unemployment_rate"),
-    names_to = "measure",
-    values_to = "percentage"
+```{r economic-stats}
+economic_plot = 
+  model_clean_2024 |> 
+    filter(State != "Washington D.C.") |> 
+    select(State, Revenue, unemployment_rate, pct_poverty) |> 
+    pivot_longer(
+      cols = c("pct_poverty", "unemployment_rate"),
+      names_to = "measure",
+      values_to = "percentage"
+    ) |> 
+    mutate(
+        State = as.factor(State),
+        State = fct_reorder(State, Revenue, .desc = TRUE),
+        measure = factor(measure,
+                    levels = c("pct_poverty", "unemployment_rate"),
+                    labels = c("% in Poverty", "% Unemployed"))
+    )
+
+economic_plot |> 
+  plot_ly(
+    x = ~State,
+    y = ~percentage,
+    color = ~measure,
+    type = 'scatter',
+    mode = 'lines+markers',
+    text = ~paste(State, ": ", round(percentage, 1), "%"),
+    hoverinfo = 'text',         
+    line = list(width = 2)
   ) |> 
-  mutate(
-      State = as.factor(State),
-      State = fct_reorder(State, Revenue, .desc = TRUE),
-      measure = factor(measure,
-                  levels = c("pct_poverty", "unemployment_rate"),
-                  labels = c("% in Poverty", "% Unemployed"))
-  ) |> 
-  ggplot(aes(x = State, y = percentage, color = measure, group = measure)) +
-  geom_point() +
-  geom_line() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1)) +
-    labs(
-        x = "State (sorted by revenue)",
-        y = "Percentage of Population",
-        title = "Poverty & Unemployment by State (2024)",
-        fill = "Measure"
-    ) 
+  layout(
+    title = "Poverty & Unemployment by State (2024)",    
+    xaxis = list(
+      title = "State (sorted by revenue)",
+      tickangle = 90            
+    ),
+    yaxis = list(
+      title = "Percentage of Population", 
+      tickformat = "%"
+    ),
+    showlegend = TRUE 
+  )
 ```
 
-## Predictive Modeling
+# Predictive Modeling
 
-### Model Setup
+## Model Setup
 
-We begin by building our training dataset and handling missing values.
+We begin by building our training dataset, fitting a standard linear model for comparison, and handling missing values.
 
-```{r model_prep}
+```{r model-setup}
 # Build training dataset
 training_data <- model_clean_2024 |>
   select(
@@ -300,6 +395,14 @@ training_data <- model_clean_2024 |>
   ) |>
   drop_na()
 
+# Fit Linear Model for later comparison
+fit_lm <- lm(
+  Revenue ~ total_pop + median_income + pct_bachelors +
+    pct_age_20_34 + pct_urban + pct_poverty,
+  data = training_data
+)
+
+# Prepare Illegal States Data
 states_no_gambling <- demographics_2024 |>
   anti_join(training_data, by = "State")
 
@@ -311,11 +414,11 @@ newdata_illegal <- states_no_gambling |>
   drop_na()
 ```
 
-### LASSO Regression
+## LASSO Regression
 
 We implement a LASSO regression to handle multicollinearity and perform feature selection.
 
-```{r lasso_model}
+```{r lasso-regression}
 # Build design matrix
 X_train <- model.matrix(
   Revenue ~ total_pop + median_income + pct_bachelors +
@@ -344,14 +447,14 @@ pred_illegal_lasso <- newdata_illegal |>
   arrange(desc(predicted_revenue_lasso))
 ```
 
-### Prediction Results
+## Prediction Results
 
-```{r results_table}
+```{r prediction-results}
 pred_table <- pred_illegal_lasso |>
   mutate(
-    Predicted_Revenue = dollar(predicted_revenue_lasso),
-    Population = comma(total_pop),
-    Median_Income = dollar(median_income)
+    Predicted_Revenue = scales::dollar(predicted_revenue_lasso),
+    Population = scales::comma(total_pop),
+    Median_Income = scales::dollar(median_income)
   ) |>
   select(
     State, Population, Median_Income, pct_bachelors, 
@@ -363,16 +466,18 @@ kable(pred_table, format = "html",
   kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
-### Visualizing Predictions
+*This table presents the predicted gambling revenue for each state that has not yet legalized sports betting. Using the LASSO model, we estimated annual revenue based on demographic characteristics, including population size, educational attainment, urbanization, and poverty rates. The table shows that states like California, Texas, and Florida have demographic profiles similar to those of current high-revenue states, suggesting substantial untapped market potential if legalization were pursued.*
 
-```{r prediction_plot, fig.height=8}
+## Visualizing Predictions
+
+```{r visualizing-predictions}
 pred_illegal_lasso_plot <- pred_illegal_lasso |>
   mutate(State = factor(State, levels = State)) # Maintain sorted order
 
 ggplot(pred_illegal_lasso_plot, aes(x = State, y = predicted_revenue_lasso)) +
   geom_col(fill = "steelblue") +
   coord_flip() +
-  scale_y_continuous(labels = dollar) +
+  scale_y_continuous(labels = scales::dollar) +
   labs(
     title = "Predicted Annual Gambling Revenue (if legalized)",
     subtitle = "LASSO model predictions for states without legal sports gambling",
@@ -382,11 +487,155 @@ ggplot(pred_illegal_lasso_plot, aes(x = State, y = predicted_revenue_lasso)) +
   theme_minimal(base_size = 13)
 ```
 
-## Model Diagnostics {.tabset}
+*This bar chart visualizes predicted gambling revenue for each non-legal state, ranked from highest to lowest. Large states with urban populations and strong young-adult demographics (such as California, Texas, and Florida) show the highest predicted revenue, reinforcing the idea that demographic scale influences potential market size. Smaller or more rural states are projected to generate minimal revenue.*
 
-### Feature Importance
+## Distribution of Predictions
 
-```{r feature_importance}
+```{r distribution-predictions}
+compare_df <- tibble(
+  group = c(rep("Actual Revenue (Legal States)", nrow(training_data)),
+            rep("Predicted Revenue (Non-Legal States)", nrow(pred_illegal_lasso))),
+  revenue = c(training_data$Revenue,
+              pred_illegal_lasso$predicted_revenue_lasso)
+)
+
+ggplot(compare_df, aes(x = revenue, fill = group)) +
+  geom_density(alpha = 0.4) +
+  scale_x_continuous(labels = scales::dollar) +
+  labs(
+    title = "Distribution of Actual vs Predicted Gambling Revenue",
+    x = "Revenue",
+    y = "Density",
+    fill = ""
+  ) +
+  theme_minimal(base_size = 13)
+```
+
+*This density plot compares the distribution of observed gambling revenue in legalized states with the predicted revenue for non-legal states. The predicted values span a wider range, with some states projecting higher revenue than current legal markets. This suggests that expansion into a few large states could dramatically reshape the national gambling landscape.*
+
+## Population vs Revenue Comparison
+
+```{r population-revenue-comparison}
+scatter_df <- bind_rows(
+  training_data |> mutate(type = "Actual Revenue"),
+  pred_illegal_lasso |> 
+    mutate(Revenue = predicted_revenue_lasso,
+           type = "Predicted Revenue")
+)
+
+ggplot(scatter_df, aes(x = total_pop, y = Revenue, color = type)) +
+  geom_point(size = 3, alpha = 0.7) +
+  scale_x_continuous(labels = scales::comma) +
+  scale_y_continuous(labels = scales::dollar) +
+  labs(
+    title = "Population vs Gambling Revenue",
+    subtitle = "Comparing actual and predicted states",
+    x = "Total Population",
+    y = "Revenue",
+    color = ""
+  ) +
+  theme_minimal(base_size = 13)
+```
+
+*Here we compare how population relates to revenue in both actual and predicted markets. Larger states show higher revenue but the plot also shows that population alone does not fully explain gambling revenue.*
+
+## Distribution Statistics
+
+```{r distribution-statistics}
+summary_table <- tibble(
+  Metric = c("Min", "1st Quartile", "Median", "Mean", "3rd Quartile", "Max"),
+  Actual_Revenue = summary(training_data$Revenue)[c(1,2,3,4,5,6)],
+  Predicted_Revenue = summary(pred_illegal_lasso$predicted_revenue_lasso)[c(1,2,3,4,5,6)]
+)
+
+kable(summary_table, format = "html", caption = "Distribution Comparison: Actual vs Predicted Revenue") |>
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover"))
+```
+
+*This table summarizes the distribution of actual versus predicted revenue using key statistics (min, median, mean, and quartiles). The predicted values show a higher mean and larger upper tail, reflecting how several non-legal states exceed the revenue observed in legalized states.*
+
+# Model Diagnostics {.tabset}
+
+## LASSO Cross-Validation
+
+```{r lasso-cv-plot}
+plot(lasso_cv)
+```
+
+*This figure shows the LASSO model's cross-validation process. Each point represents the model's prediction error at a given penalty value (lambda). The selected λ minimizes mean-squared error, balancing model simplicity and predictive accuracy. The curve illustrates how adding too many predictors increases variance, while stronger penalization improves stability.*
+
+## Actual vs Predicted
+
+```{r actual-vs-predicted}
+pred_lasso_train <- as.numeric(predict(lasso_model, newx = X_train))
+
+training_data_lasso <- training_data %>%
+  mutate(pred_lasso = pred_lasso_train)
+
+ggplot(training_data_lasso, aes(x = Revenue, y = pred_lasso)) +
+  geom_point(alpha = 0.7, color = "darkgreen", size = 3) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "red") +
+  scale_x_continuous(labels = scales::dollar) +
+  scale_y_continuous(labels = scales::dollar) +
+  labs(
+    title = "Actual vs Predicted Revenue (LASSO)",
+    x = "Actual Revenue",
+    y = "Predicted Revenue"
+  ) +
+  theme_minimal(base_size = 13)
+```
+
+*This scatterplot compares predicted revenue to actual revenue in legalized states. The points generally follow an upward trend, indicating strong model performance.*
+
+## Correlation Map
+
+```{r correlation-map}
+predictor_mat <- training_data %>%
+  select(total_pop, median_income, pct_bachelors, pct_age_20_34,
+         pct_urban, pct_poverty) %>%
+  as.matrix()
+
+corr_mat <- cor(predictor_mat)
+
+corrplot(
+  corr_mat,
+  method = "color",
+  type = "upper",
+  col = viridis(200),
+  tl.col = "black",
+  tl.srt = 45,
+  title = "Predictor Correlations",
+  mar = c(0,0,1,0)
+)
+```
+
+*This heatmap displays correlations among demographic predictors used in the modeling process. Strong correlations across income, education, population size, and poverty show multicollinearity.*
+
+## Predictor Relationships
+
+```{r predictor-relationships}
+plot_df <- training_data %>%
+  select(Revenue, total_pop, median_income, pct_bachelors,
+         pct_age_20_34, pct_urban, pct_poverty) %>%
+  pivot_longer(-Revenue, names_to = "predictor", values_to = "value")
+
+ggplot(plot_df, aes(x = value, y = Revenue)) +
+  geom_point(alpha = 0.7) +
+  facet_wrap(~ predictor, scales = "free_x") +
+  scale_y_continuous(labels = scales::dollar) +
+  labs(
+    title = "Revenue vs Key Demographic Predictors (Legal States)",
+    x = "Predictor Value",
+    y = "Revenue"
+  ) +
+  theme_minimal(base_size = 13)
+```
+
+*These scatterplots show the relationship between individual demographic predictors and observed gambling revenue. While population and urbanization show clearer positive associations, other variables, such as poverty or median income, exhibit weak or inconsistent relationships. This reinforces the idea that gambling revenue is driven by a combination of demographic scale and specific high-engagement age groups rather than socioeconomic factors alone.*
+
+## Feature Importance
+
+```{r feature-importance}
 coef_mat <- as.matrix(coef(lasso_cv, s = "lambda.min"))
 
 coef_df <- tibble(
@@ -411,53 +660,43 @@ ggplot(coef_df, aes(x = reorder(variable, abs(coefficient)),
   theme_minimal(base_size = 13)
 ```
 
-### Correlation Map
+## Model Performance
 
-```{r corr_map}
-predictor_mat <- training_data %>%
-  select(total_pop, median_income, pct_bachelors, pct_age_20_34,
-         pct_urban, pct_poverty) %>%
-  as.matrix()
+```{r model-performance}
+# --- Linear Model Predictions ---
+lm_pred <- predict(fit_lm)
 
-corr_mat <- cor(predictor_mat)
+# --- LASSO Predictions ---
+lasso_pred <- as.numeric(predict(lasso_model, newx = X_train))
 
-corrplot(
-  corr_mat,
-  method = "color",
-  type = "upper",
-  col = viridis(200),
-  tl.col = "black",
-  tl.srt = 45,
-  title = "Predictor Correlations",
-  mar = c(0,0,1,0)
+# --- True values ---
+y_true <- training_data$Revenue
+
+# --- Comparison Metrics ---
+model_metrics <- tibble(
+  Model = c("Linear Model", "LASSO Model"),
+  RMSE  = c(rmse(y_true, lm_pred),
+            rmse(y_true, lasso_pred)),
+  MAE   = c(mae(y_true, lm_pred),
+            mae(y_true, lasso_pred)),
+  MAPE  = c(mape(y_true, lm_pred),
+            mape(y_true, lasso_pred))
 )
+
+model_metrics %>%
+  mutate(
+    RMSE = scales::dollar(RMSE),
+    MAE  = scales::dollar(MAE),
+    MAPE = scales::percent(MAPE)
+  ) %>%
+  kable(format = "html", caption = "Model Performance Comparison: Linear Model vs LASSO") %>%
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover"))
 ```
 
-### Actual vs Predicted
+*This table compares model performance metrics across the linear regression and LASSO model. LASSO performs similarly in RMSE but substantially better in MAPE, indicating higher stability for lower-revenue states. The comparison highlights the value of penalization when predictors show strong collinearity.*
 
-```{r actual_vs_predicted}
-pred_lasso_train <- as.numeric(predict(lasso_model, newx = X_train))
-
-training_data_lasso <- training_data %>%
-  mutate(pred_lasso = pred_lasso_train)
-
-ggplot(training_data_lasso, aes(x = Revenue, y = pred_lasso)) +
-  geom_point(alpha = 0.7, color = "darkgreen", size = 3) +
-  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "red") +
-  scale_x_continuous(labels = dollar) +
-  scale_y_continuous(labels = dollar) +
-  labs(
-    title = "Actual vs Predicted Revenue (LASSO)",
-    x = "Actual Revenue",
-    y = "Predicted Revenue"
-  ) +
-  theme_minimal(base_size = 13)
-```
-
-## Conclusion
+# Conclusion
 
 We compared a standard linear regression to a LASSO regularized model. Both models have sizeable error due to the extreme variability in state gambling revenues. While the linear model slightly outperforms LASSO in RMSE, the LASSO model achieves a much better MAPE (191% vs 344%), indicating more stable performance for low-revenue states.
 
-LASSO also provides valuable model simplification: only two predictors retain nonzero coefficients—`pct_age_20_34` and `pct_urban`, while income, population, poverty, and education are shrunk to zero. This suggests strong multicollinearity among socioeconomic indicators, with LASSO consolidating their predictive signal into a smaller set of variables. The results highlight that demographic structure (`pct_age_20_34`) and urbanization are the strongest predictors of sports gambling markets.
-
-Go back [home](home.html)
+LASSO also provides valuable model simplification: only two predictors retain nonzero coefficients—pct_age_20_34 and pct_urban, while income, population, poverty, and education are shrunk to zero. This suggests strong multicollinearity among socioeconomic indicators, with LASSO consolidating their predictive signal into a smaller set of variables. The results highlight that demographic structure (pct_age_20_34) and urbanization are the strongest predictors of sports gambling markets.
