@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Project Report</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="home.html"></a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="data.html">Data Processing</a>
+</li>
+<li>
+  <a href="analysis.html">Analysis</a>
+</li>
+<li>
+  <a href="flexdashboard.html">Shiny</a>
+</li>
+<li>
+  <a href="report.html">Project Report</a>
+</li>
+<li>
+  <a href="about.html">About Us</a>
+</li>
+<li>
+  <a href="https://github.com/zakbillo/sports-betting">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Project Report</h1>
+
+</div>
+
+
+<div id="group-members" class="section level2">
+<h2>Group Members</h2>
+<ul>
+<li>Kimia Faroughi (UNI: ksf2129)</li>
+<li>Lawrence Zicari (UNI: lz3015)</li>
+<li>Sukhman Parhar (UNI: sp4436)</li>
+<li>Zakari Billo (UNI: zlb2008)</li>
+</ul>
+</div>
+<div id="motivation" class="section level2">
+<h2>Motivation</h2>
+<p>Scandals surrounding gambling in sports have reached the national
+stage in recent months, fueled by a meteoric rise over the last few
+years that has seemingly gone unchecked by our regulators. Whether you
+watch sports, TV, streaming, use social media, or take the subway,
+you’ve definitely been exposed to sports betting advertisements in one
+way or another. Our analysis focuses on the demographic factors
+underlying revenue earned in legal sports betting markets, including
+education &amp; income status, age, and proximity to a major sports
+team. We then built a model to project the revenue generated in states
+with illegal markets and those likely to legalize soon—such as
+California. The overarching goal is to illustrate how the potential
+profitability of the sports gambling industry might compromise
+regulatory oversight.</p>
+</div>
+<div id="related-work" class="section level2">
+<h2>Related Work</h2>
+<p><strong>Anything that inspired us</strong></p>
+</div>
+<div id="initial-questions" class="section level2">
+<h2>Initial Questions</h2>
+<p>We initially wanted to answer whether any demographic characteristics
+are associated with higher amounts of sports gambling, such as age, sex,
+education status, income level, and proximity to a major sports team. We
+also considered trying to project gambling revenue based on demographics
+(education &amp; income status, age, and proximity to a major sports
+team), as well as the market sizes of sports gambling in states that
+have yet to legalize it, such as California.</p>
+<p>As we began to explore data sources and develop an analysis plan, we
+found it more feasible to focus on an exploratory data analysis of
+gambling revenue by state, as well as demographic characteristics by
+state. We further decided to examine and execute a predictive model of
+sports gambling revenue in states that have yet to legalize it.</p>
+<p>Due to the lack of granularity in gambling revenue data, we found it
+unrealistic to conduct an analysis as detailed as we had initially
+intended, with data informing proximity to major sports teams.
+Additionally, for the purposes of feasibility, we decided to focus on
+the relationship between 2024 census demographic data and gambling
+revenue data. For these reasons, we found it more worthwhile to focus on
+predictive modeling rather than an exploration of demographic predictors
+of sports gambling.</p>
+</div>
+<div id="data" class="section level2">
+<h2>Data</h2>
+<p><strong>Source, scraping method, cleaning</strong></p>
+<p>Gambling data was obtained from <a
+href="https://rg.org/statistics/us">Research Ground’s US sports betting
+data</a>. The gambling revenue and growth data per state per month was
+manually pulled in from 2018-2025, since the website that was scrapped
+to obtain this data had dynamic filters that switched the year of the
+displayed data. From here, the data were compiled into a data set for
+total revenue per state per year and total revenue growth per state per
+year. States which have not legalized sports betting and therefore did
+not have any available gambling revenue available were not included.</p>
+<p>Demographic data was obtained from publicly available <a
+href="https://www.census.gov/programs-surveys/acs/data.html">American
+Community Survey data</a> from 2024. Data was pulled using a Census API
+code, for each state for each demographic variable of interest. The
+following demographic factors were pulled or subsequently calculated:
+median income, total population, % with a bachelor’s degree, % aged
+20-34, % urban, % rural, % in poverty, % male, unemployment rate, %
+white, % Black, % Asian, % Hispanic, median age, % with broadband
+internet access, GINI coefficient, % who are renters, and % who are
+owners. From here, each demographic characteristic was compiled into a
+larger dataset that including all characteristics per state. This
+dataset was joined with the gambling dataset created (detailed in the
+paragraph above). All states with NA values for gambling data were
+dropped from the dataset, leaving 31 states and Washington D.C.</p>
+</div>
+<div id="exploratory-analysis" class="section level2">
+<h2>Exploratory analysis</h2>
+<p><strong>Visualizations of gambling revenue data</strong></p>
+<p>Preliminary visualizations of the gambling revenue data were
+generated. First, a column chart of total US gambling revenue from
+2018-2024 was generated, aggregating revenue across all states, showing
+a steep increase in gambling revenue data from 2018 to 2024. Then a
+column chart of gambling revenue from 2018-2024 was generated, color
+coded by state, with each of the top 5 states in gambling revenue in
+2024 in their own categories and all other states in a sixth category.
+Once again, this plot showed a steep increase in gambling revenue data
+from 2018 to 2024 across all states, with the largest (other than the
+compiled other category) in gambling revenue being New Jersey across all
+years, followed by Pennsylvania, Indiana, Arkansas, and Mississippi.</p>
+<p>Finally, among the states that were in the top 5 in gambling revenue
+at any point across 2018 - 2024, their rankings in gambling revenue were
+mapping against year, showing how top gambling markets shifted from 2018
+- 2024. We see that as some states began to legalize sports gambling
+over this time period, such as New York in 2022, they emerged as top
+gambling revenue states up until 2024. We also see that New Jersey and
+Pennsylvania have consistently remained in the top 5 gambling revenue
+states from 2018 to 2024. There is a steady decline in ranking of
+gambling revenue in Mississippi, Rhode Island, and Arkansas from 2018 or
+2019 to 2024. Finally, we see a unique trend in Michigan, which was
+first ranked in 2020, spiked in 2021, before declining to rank 13 by
+2024.</p>
+<p><strong>Visualizations of census demographic data</strong></p>
+<p>Preliminary visualizations of the census demographic data were
+generated. Two column charts of total population and total gambling
+revenue in 2024 by state were compared side by side. The plot of the
+gambling revenue by state showed that arranging states by descending
+population size did not yield the same pattern for gambling revenue. For
+example, while New Jersey is the 7th largest state by population size,
+it is the third largest in gambling revenue. This suggests there are
+other factors at play in predicting states’ gambling revenue.</p>
+<p>A line chart of the racial makeup of each state in 2024, with the
+percentage of white, Black, Asian, and Hispanic people represented was
+also generated, and states were arranged in descending order of gambling
+revenue. Racial distributions vary across states, with no discernable
+pattern between gambling revenue and racial makeup of these states. A
+similar plot of the percentage of the population who are in poverty and
+the unemployment rate of each state in 2024, in descending order of
+gambling revenue, was also created, with no apparent pattern between
+gambling revenue and economic measures.</p>
+</div>
+<div id="additional-analysis" class="section level2">
+<h2>Additional analysis</h2>
+<p><strong>Predictive modeling of sports gambling revenue</strong></p>
+</div>
+<div id="discussion" class="section level2">
+<h2>Discussion</h2>
+<p><strong>Findings, expectations, insights</strong></p>
+<p>Go back to <a href="home.html">home</a></p>
+</div>
+
+<footer style="background-color: #1e293b; color: #cbd5e1; padding: 30px 0; margin-top: 50px; border-top: 3px solid #eab308;">
+  <div class="container">
+    <div class="row">
+      
+      <!-- Single Centered Column -->
+      <div class="col-xs-12" style="text-align: center;">
+        <p style="margin-bottom: 5px;">
+          <strong>Team:</strong> Zakari, Kimia, Law & Sukhman
+        </p>
+        <p>
+          <a href="https://github.com/zakbillo/sports-betting" target="_blank" style="color: #eab308; text-decoration: none;">
+            <i class="fa fa-github fa-lg"></i> View Our Source Code
+          </a>
+        </p>
+        <p style="font-size: 0.8em; color: #64748b;">
+          <em>"The house always wins... usually."</em>
+        </p>
+        
+        <!-- Added 2025 Line -->
+        <p style="font-size: 0.8em; color: #64748b; margin-top: 15px;">
+          2025 Data Science I (P8105) Final Project
+        </p>
+      </div>
+
+    </div>
+  </div>
+</footer>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

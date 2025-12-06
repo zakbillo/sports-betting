@@ -1,0 +1,1862 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Analysis</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="home.html"></a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="data.html">Data Processing</a>
+</li>
+<li>
+  <a href="analysis.html">Analysis</a>
+</li>
+<li>
+  <a href="flexdashboard.html">Shiny</a>
+</li>
+<li>
+  <a href="report.html">Project Report</a>
+</li>
+<li>
+  <a href="about.html">About Us</a>
+</li>
+<li>
+  <a href="https://github.com/zakbillo/sports-betting">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Analysis</h1>
+
+</div>
+
+
+<pre class="r"><code>library(tidyverse)
+library(rvest)
+library(httr)
+library(jsonlite)
+library(patchwork)
+
+knitr::opts_chunk$set(
+fig.width = 6,
+fig.asp = .6,
+out.width = &quot;90%&quot;
+)
+
+theme_set(theme_minimal() + theme(legend.position = &quot;bottom&quot;))
+
+options(
+ggplot2.continuous.colour = &quot;viridis&quot;,
+ggplot2.continuous.fill = &quot;viridis&quot;
+)
+
+scale_colour_discrete = scale_color_viridis_d
+scale_fill_discrete = scale_fill_viridis_d</code></pre>
+<div id="exploratory-data-analysis" class="section level3">
+<h3>Exploratory Data Analysis</h3>
+</div>
+<div id="import-data" class="section level2">
+<h2>Import Data</h2>
+<pre class="r"><code>total_state_revenue = read_csv(&quot;data/total_state_revenue.csv&quot;)
+model_clean_2024 = read_csv(&quot;data/model_clean_2024.csv&quot;)</code></pre>
+</div>
+<div id="gambling-visuals" class="section level2">
+<h2>Gambling visuals</h2>
+</div>
+<div id="plot-gambling-revenue-by-year" class="section level1">
+<h1>Plot gambling revenue by year</h1>
+<pre class="r"><code># Aggregate total revenue by year
+yearly_revenue_summary = total_state_revenue |&gt; 
+  group_by(Year) |&gt; 
+  summarize(Total_Revenue = sum(Revenue, na.rm = TRUE))
+
+yearly_revenue_summary |&gt; 
+  ggplot(aes(x = Year, y = Total_Revenue)) +
+  geom_col(aes(fill = as.factor(Year)), show.legend = FALSE) +
+  geom_text(aes(label = scales::dollar(Total_Revenue, scale = 1e-9, suffix = &quot;B&quot;)), 
+            vjust = -0.5) + # Add labels in Billions
+  scale_y_continuous(labels = scales::dollar_format()) +
+  scale_x_continuous(breaks = 2018:2024) +
+  labs(
+    title = &quot;Total US Gambling Revenue (2018-2024)&quot;,
+    subtitle = &quot;Aggregated revenue across all states&quot;,
+    x = &quot;Year&quot;,
+    y = &quot;Total Revenue&quot;
+  )</code></pre>
+<p><img src="analysis_files/figure-html/Plotting%20gambling%20revenue%20by%20Year-1.png" width="90%" /></p>
+</div>
+<div id="plotting-gambling-revenue-by-state-over-time"
+class="section level1">
+<h1>Plotting gambling revenue by state over time</h1>
+<pre class="r"><code># Identify top 5 states by 2024 revenue to keep things looking clean
+top_states = total_state_revenue |&gt; 
+  filter(Year == 2019) |&gt; 
+  slice_max(Revenue, n = 5) |&gt; 
+  pull(State)
+
+state_growth_plot_data = total_state_revenue |&gt; 
+  mutate(
+    State_Group = ifelse(State %in% top_states, State, &quot;All Other&quot;)
+  ) |&gt; 
+  group_by(Year, State_Group) |&gt; 
+  summarize(Revenue = sum(Revenue, na.rm = TRUE), .groups = &quot;drop&quot;) |&gt; 
+  mutate(State_Group = fct_reorder(State_Group, Revenue, .desc = TRUE))
+
+
+ggplot(state_growth_plot_data, aes(x = Year, y = Revenue, fill = State_Group)) +
+  geom_col() +
+  scale_y_continuous(labels = scales::dollar_format()) +
+  scale_x_continuous(breaks = 2018:2024) +
+  labs(
+    title = &quot;US Gambling Revenue Growth by State&quot;,
+    x = &quot;Year&quot;,
+    y = &quot;Revenue&quot;,
+    fill = &quot;State&quot;
+  )</code></pre>
+<p><img src="analysis_files/figure-html/Plotting%20gambling%20revenue%20by%20State%20Over%20time-1.png" width="90%" /></p>
+</div>
+<div
+id="plotting-revenue-rank-top-5-gambling-markets-by-year-since-2018"
+class="section level1">
+<h1>Plotting revenue rank: top 5 gambling markets by year since
+2018</h1>
+<pre class="r"><code># Calculate Ranks for every state, every year
+ranked_data = total_state_revenue |&gt; 
+  group_by(Year) |&gt; 
+  mutate(Rank = min_rank(desc(Revenue))) |&gt; 
+  ungroup()
+
+# Identify &quot;States of Interest&quot;
+# We want to track any state that was Top 5 at any point
+focus_states = ranked_data |&gt; 
+  filter(Rank &lt;= 5) |&gt;  # can change if we want less point to start and end points: filter((Year == 2018 &amp; Rank &lt;= 5) | (Year == 2024 &amp; Rank &lt;= 5)) |&gt;
+  pull(State) |&gt; 
+  unique()
+
+# Filter the dataset to just those states
+plot_data = ranked_data |&gt; 
+  filter(State %in% focus_states)
+
+plot_data |&gt; 
+  ggplot(aes(x = Year, y = Rank, color = State, group = State)) +
+  geom_point(size = 3) +
+  geom_line(linewidth = 1.2) + 
+  scale_y_reverse(breaks = 1:max(plot_data$Rank, na.rm = TRUE)) + 
+  scale_x_continuous(breaks = 2018:2024) +
+  geom_text(data = plot_data |&gt; filter(Year == 2018), 
+            aes(label = paste(Rank, State)), x = 2017.8, hjust = 1, size = 3) +
+  geom_text(data = plot_data |&gt; filter(Year == 2024), 
+            aes(label = paste(Rank, State)), x = 2024.2, hjust = 0, size = 3) +
+  labs(
+    title = &quot;Shift in Top Gambling Markets (2018 vs 2024)&quot;,
+    subtitle = &quot;Tracking the rank of states that were in the top 5 in either 2018 or 2024&quot;,
+    y = &quot;Revenue Rank&quot;,
+    x = &quot;Year&quot;
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = &quot;none&quot;,        
+    panel.grid.minor = element_blank()
+  ) +
+  coord_cartesian(xlim = c(2017, 2025))</code></pre>
+<pre><code>## Warning: Removed 17 rows containing missing values or values outside the scale range (`geom_point()`).</code></pre>
+<pre><code>## Warning: Removed 17 rows containing missing values or values outside the scale range (`geom_line()`).</code></pre>
+<pre><code>## Warning: Removed 7 rows containing missing values or values outside the scale range (`geom_text()`).</code></pre>
+<p><img src="analysis_files/figure-html/plotting%20revenue%20rank:%20top%205%20gambling%20markets%20by%20year%20since%202018-1.png" width="90%" /></p>
+<div id="demographic-visuals" class="section level2">
+<h2>Demographic visuals</h2>
+</div>
+</div>
+<div id="plot-of-total-population-in-2024-by-state"
+class="section level1">
+<h1>Plot of Total Population in 2024 by State</h1>
+<pre class="r"><code>population_plot = 
+  model_clean_2024 |&gt; 
+    filter(State != &quot;Washington D.C.&quot;) |&gt; #drop DC bc all demographic data is NA
+    mutate(
+      State = as.factor(State),
+      State = fct_reorder(State, total_pop, .desc = TRUE)
+    ) |&gt; 
+    ggplot(aes(x = State, y = total_pop)) +
+    geom_col(aes(fill = State)) +
+    theme(
+      axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1),
+      legend.position = &quot;none&quot;) +
+    labs(
+        y = &quot;Total Population&quot;,
+        title = &quot;Total Population by State in 2024&quot;
+      )</code></pre>
+</div>
+<div id="plot-of-gambling-revenue-in-2024-by-state"
+class="section level1">
+<h1>Plot of Gambling Revenue in 2024 by State</h1>
+<pre class="r"><code>revenue_plot = 
+  model_clean_2024 |&gt; 
+    filter(State != &quot;Washington D.C.&quot;) |&gt; #drop DC bc all demographic data is NA
+    mutate(
+      State = as.factor(State),
+      State = fct_reorder(State, total_pop, .desc = TRUE)
+    ) |&gt; 
+    ggplot(aes(x = State, y = Revenue)) +
+    geom_col(aes(fill = State)) +
+    theme(
+      axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1),
+      legend.position = &quot;none&quot;) +
+    labs(
+        x = &quot;State (in order of largest to smallest total population)&quot;,
+        y = &quot;Revenue&quot;,
+        title = &quot;Gambling Revenue by State in 2024&quot;
+      )</code></pre>
+</div>
+<div
+id="patchwork-plot-of-total-population-and-gambling-revenue-in-2024-by-state"
+class="section level1">
+<h1>Patchwork Plot of Total Population and Gambling Revenue in 2024 by
+State</h1>
+<pre class="r"><code>combined_revenue_population = (population_plot + revenue_plot)
+
+combined_revenue_population</code></pre>
+<p><img src="analysis_files/figure-html/unnamed-chunk-4-1.png" width="90%" /></p>
+</div>
+<div id="racial-makeup-of-states-in-2024" class="section level1">
+<h1>Racial Makeup of States in 2024</h1>
+<pre class="r"><code>model_clean_2024 |&gt; 
+  filter(State != &quot;Washington D.C.&quot;) |&gt; #drop DC bc all demographic data is NA
+  select(State, Revenue, pct_white, pct_black, pct_asian, pct_hispanic) |&gt; 
+  pivot_longer(
+    cols = pct_white:pct_hispanic,
+    names_to = &quot;race&quot;,
+    values_to = &quot;percentage&quot;
+  ) |&gt; 
+  mutate(
+      State = as.factor(State),
+      State = fct_reorder(State, Revenue, .desc = TRUE),
+      race = factor(race,
+                  levels = c(&quot;pct_white&quot;, &quot;pct_black&quot;, &quot;pct_asian&quot;, &quot;pct_hispanic&quot;),
+                  labels = c(&quot;% White&quot;, &quot;% Black&quot;, &quot;% Asian&quot;, &quot;% Hispanic&quot;))
+  ) |&gt; 
+  ggplot(aes(x = State, y = percentage, color = race, group = race)) +
+  geom_point() +
+  geom_line() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1)) +
+    labs(
+        x = &quot;State (in order of largest to smallest gambling revenue)&quot;,
+        y = &quot;Percentage of Population&quot;,
+        title = &quot;Racial Makeup by State in 2024&quot;,
+        fill = &quot;Race&quot;
+    ) </code></pre>
+<p><img src="analysis_files/figure-html/unnamed-chunk-5-1.png" width="90%" /></p>
+</div>
+<div id="poverty-and-unemployment-rate-by-state-in-2024"
+class="section level1">
+<h1>Poverty % and Unemployment Rate by State in 2024</h1>
+<pre class="r"><code>model_clean_2024 |&gt; 
+  filter(State != &quot;Washington D.C.&quot;) |&gt; #drop DC bc all demographic data is NA
+  select(State, Revenue, unemployment_rate, pct_poverty) |&gt; 
+  pivot_longer(
+    cols = c(&quot;pct_poverty&quot;, &quot;unemployment_rate&quot;),
+    names_to = &quot;measure&quot;,
+    values_to = &quot;percentage&quot;
+  ) |&gt; 
+  mutate(
+      State = as.factor(State),
+      State = fct_reorder(State, Revenue, .desc = TRUE),
+      measure = factor(measure,
+                  levels = c(&quot;pct_poverty&quot;, &quot;unemployment_rate&quot;),
+                  labels = c(&quot;% in Poverty&quot;, &quot;% Unemployed&quot;))
+  ) |&gt; 
+  ggplot(aes(x = State, y = percentage, color = measure, group = measure)) +
+  geom_point() +
+  geom_line() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1)) +
+    labs(
+        x = &quot;State (in order of largest to smallest gambling revenue)&quot;,
+        y = &quot;Percentage of Population&quot;,
+        title = &quot;% Poverty and Unemployment Rate by State in 2024&quot;,
+        fill = &quot;Measure&quot;
+    ) </code></pre>
+<p><img src="analysis_files/figure-html/unnamed-chunk-6-1.png" width="90%" /></p>
+<div id="lets-build-a-predictive-model" class="section level3">
+<h3>Let’s build a predictive model!</h3>
+</div>
+</div>
+<div id="build-training-dataset" class="section level1">
+<h1>Build training dataset</h1>
+<pre class="r"><code># Build training dataset
+training_data &lt;- model_clean_2024 |&gt;
+  select(
+    State,
+    Revenue,
+    total_pop,
+    median_income,
+    pct_bachelors,
+    pct_age_20_34,
+    pct_urban,
+    pct_poverty
+  ) |&gt;
+  drop_na()   # make sure no missing values in predictors or Revenue</code></pre>
+</div>
+<div id="fit-linear-regression-model" class="section level1">
+<h1>Fit linear regression model</h1>
+<pre class="r"><code># Fit linear regression model
+
+# Model: Revenue = β0 + β1 * total_pop + β2 * median_income + ... + error
+fit_lm &lt;- lm(
+  Revenue ~ total_pop + median_income + pct_bachelors +
+    pct_age_20_34 + pct_urban + pct_poverty,
+  data = training_data
+  )
+
+summary(fit_lm)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = Revenue ~ total_pop + median_income + pct_bachelors + 
+##     pct_age_20_34 + pct_urban + pct_poverty, data = training_data)
+## 
+## Residuals:
+##        Min         1Q     Median         3Q        Max 
+## -343955707  -71243106    2818238  102251402  763021755 
+## 
+## Coefficients:
+##                 Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   -2.966e+08  1.216e+09  -0.244    0.809    
+## total_pop      9.210e+01  1.200e+01   7.674 6.54e-08 ***
+## median_income  6.809e+03  1.322e+04   0.515    0.611    
+## pct_bachelors -4.983e+07  1.972e+09  -0.025    0.980    
+## pct_age_20_34 -1.020e+10  1.352e+10  -0.755    0.458    
+## pct_urban      1.618e+08  4.739e+08   0.341    0.736    
+## pct_poverty    1.876e+09  3.013e+09   0.623    0.539    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 227400000 on 24 degrees of freedom
+## Multiple R-squared:  0.8359, Adjusted R-squared:  0.7948 
+## F-statistic: 20.37 on 6 and 24 DF,  p-value: 2.503e-08</code></pre>
+<pre class="r"><code>states_no_gambling &lt;-
+  demographics_2024 |&gt;
+  anti_join(training_data, by = &quot;State&quot;)
+
+newdata_illegal &lt;-
+  states_no_gambling |&gt;
+  select(
+    State,
+    total_pop,
+    median_income,
+    pct_bachelors,
+    pct_age_20_34,
+    pct_urban,
+    pct_poverty
+  ) |&gt;
+  drop_na()  # just in case a state is missing some demographic</code></pre>
+</div>
+<div id="predict-revenue-if-illegal-states-legalized-gambling"
+class="section level1">
+<h1>Predict revenue if illegal states legalized gambling</h1>
+<pre class="r"><code># Predict revenue if these states legalized gambling
+
+pred_illegal &lt;-
+  newdata_illegal |&gt;
+  mutate(
+    predicted_revenue = predict(fit_lm, newdata = newdata_illegal)
+  ) |&gt;
+  arrange(desc(predicted_revenue))</code></pre>
+</div>
+<div id="compare-distribution-of-real-vs-predicted"
+class="section level1">
+<h1>Compare distribution of real vs predicted</h1>
+<pre class="r"><code># Compare distribution of real vs predicted
+summary(training_data$Revenue)</code></pre>
+<pre><code>##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+## 9.209e+05 6.063e+07 4.274e+08 4.438e+08 5.993e+08 2.059e+09</code></pre>
+<pre class="r"><code>summary(pred_illegal$predicted_revenue)</code></pre>
+<pre><code>##       Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+## -191325313   78725694  339787241  636990268  454658976 3706182311</code></pre>
+</div>
+<div id="fit-a-lasso-regression-model" class="section level1">
+<h1>Fit a LASSO regression model</h1>
+<pre class="r"><code># Fit LASSO regression model
+
+# Build design matrix (same predictors as your LM model)
+X_train &lt;- model.matrix(
+  Revenue ~ total_pop + median_income + pct_bachelors +
+    pct_age_20_34 + pct_urban + pct_poverty,
+  data = training_data)[, -1]   # remove intercept column (glmnet adds its own)
+
+# Outcome vector
+y_train &lt;- training_data$Revenue
+
+set.seed(123)
+
+# Cross-validated LASSO to choose lambda
+lasso_cv &lt;- cv.glmnet(
+  X_train,
+  y_train,
+  alpha = 1,          # LASSO penalty
+  nfolds = 5,
+  standardize = TRUE  # recommended because predictors differ in scale
+)
+
+# Final LASSO model at best lambda
+lasso_model &lt;- glmnet(
+  X_train,
+  y_train,
+  alpha = 1,
+  lambda = lasso_cv$lambda.min,
+  standardize = TRUE
+)
+
+lasso_cv$lambda.min #This is the penalty </code></pre>
+<pre><code>## [1] 10761247</code></pre>
+</div>
+<div id="build-the-prediction-matrix-for-the-non-gambling-states"
+class="section level1">
+<h1>Build the prediction matrix for the non-gambling states</h1>
+<pre class="r"><code># Build the prediction matrix for the non-gambling states
+X_new &lt;- model.matrix(
+  ~ total_pop + median_income + pct_bachelors +
+    pct_age_20_34 + pct_urban + pct_poverty,
+  data = newdata_illegal)[, -1]   # remove intercept column
+
+# LASSO predictions
+pred_illegal_lasso &lt;-
+  newdata_illegal |&gt;
+  mutate(
+    predicted_revenue_lasso = as.numeric(
+      predict(lasso_model, newx = X_new)
+    )
+  ) |&gt;
+  arrange(desc(predicted_revenue_lasso))
+
+pred_illegal_lasso &lt;- pred_illegal_lasso |&gt; 
+  mutate(predicted_revenue_lasso = pmax(predicted_revenue_lasso, 0))</code></pre>
+</div>
+<div id="compare-models" class="section level1">
+<h1>Compare models</h1>
+<pre class="r"><code>summary(training_data$Revenue)</code></pre>
+<pre><code>##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+## 9.209e+05 6.063e+07 4.274e+08 4.438e+08 5.993e+08 2.059e+09</code></pre>
+<pre class="r"><code>summary(pred_illegal$predicted_revenue)          # from LM model</code></pre>
+<pre><code>##       Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
+## -191325313   78725694  339787241  636990268  454658976 3706182311</code></pre>
+<pre class="r"><code>summary(pred_illegal_lasso$predicted_revenue_lasso)  # from LASSO model</code></pre>
+<pre><code>##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+## 0.000e+00 6.132e+07 2.018e+08 6.279e+08 4.718e+08 3.612e+09</code></pre>
+<pre class="r"><code>#LASSO better</code></pre>
+<div id="predictive-model-tables-and-figures" class="section level2">
+<h2>Predictive model tables and Figures</h2>
+<p>Table of Predicted Annual Gambling Revenue for Non-Legal States
+(LASSO Model)</p>
+<pre class="r"><code># Clean negative values
+pred_illegal_lasso &lt;- pred_illegal_lasso |&gt;
+  mutate(predicted_revenue_lasso = pmax(predicted_revenue_lasso, 0))
+
+# Clean and format final table
+pred_table &lt;- pred_illegal_lasso |&gt;
+  mutate(
+    Predicted_Revenue = dollar(predicted_revenue_lasso),
+    Population = comma(total_pop),
+    Median_Income = dollar(median_income)
+  ) |&gt;
+  select(
+    State,
+    Population,
+    Median_Income,
+    pct_bachelors,
+    pct_age_20_34,
+    pct_urban,
+    pct_poverty,
+    Predicted_Revenue
+  )
+
+kable(pred_table, format = &quot;html&quot;, caption = &quot;Predicted Annual Gambling Revenue for Non-Legal States (LASSO Model)&quot;) |&gt;
+  kable_styling(full_width = FALSE, bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;))</code></pre>
+<table class="table table-striped table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+Predicted Annual Gambling Revenue for Non-Legal States (LASSO Model)
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+State
+</th>
+<th style="text-align:left;">
+Population
+</th>
+<th style="text-align:left;">
+Median_Income
+</th>
+<th style="text-align:right;">
+pct_bachelors
+</th>
+<th style="text-align:right;">
+pct_age_20_34
+</th>
+<th style="text-align:right;">
+pct_urban
+</th>
+<th style="text-align:right;">
+pct_poverty
+</th>
+<th style="text-align:left;">
+Predicted_Revenue
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+California
+</td>
+<td style="text-align:left;">
+39,431,263
+</td>
+<td style="text-align:left;">
+$100,149
+</td>
+<td style="text-align:right;">
+0.3812365
+</td>
+<td style="text-align:right;">
+0.0652504
+</td>
+<td style="text-align:right;">
+0.9423663
+</td>
+<td style="text-align:right;">
+0.1180257
+</td>
+<td style="text-align:left;">
+$3,611,645,904
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Texas
+</td>
+<td style="text-align:left;">
+31,290,831
+</td>
+<td style="text-align:left;">
+$79,721
+</td>
+<td style="text-align:right;">
+0.3516383
+</td>
+<td style="text-align:right;">
+0.0694787
+</td>
+<td style="text-align:right;">
+0.8372028
+</td>
+<td style="text-align:right;">
+0.1340909
+</td>
+<td style="text-align:left;">
+$2,765,125,447
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Florida
+</td>
+<td style="text-align:left;">
+23,372,215
+</td>
+<td style="text-align:left;">
+$77,735
+</td>
+<td style="text-align:right;">
+0.3583638
+</td>
+<td style="text-align:right;">
+0.0582353
+</td>
+<td style="text-align:right;">
+0.9153419
+</td>
+<td style="text-align:right;">
+0.1204723
+</td>
+<td style="text-align:left;">
+$2,135,268,431
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Georgia
+</td>
+<td style="text-align:left;">
+11,180,878
+</td>
+<td style="text-align:left;">
+$79,991
+</td>
+<td style="text-align:right;">
+0.3631028
+</td>
+<td style="text-align:right;">
+0.0673810
+</td>
+<td style="text-align:right;">
+0.7406697
+</td>
+<td style="text-align:right;">
+0.1258716
+</td>
+<td style="text-align:left;">
+$922,707,171
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Washington
+</td>
+<td style="text-align:left;">
+7,958,180
+</td>
+<td style="text-align:left;">
+$99,389
+</td>
+<td style="text-align:right;">
+0.4101713
+</td>
+<td style="text-align:right;">
+0.0616117
+</td>
+<td style="text-align:right;">
+0.8337185
+</td>
+<td style="text-align:right;">
+0.0993223
+</td>
+<td style="text-align:left;">
+$736,907,744
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Minnesota
+</td>
+<td style="text-align:left;">
+5,793,151
+</td>
+<td style="text-align:left;">
+$87,117
+</td>
+<td style="text-align:right;">
+0.4003043
+</td>
+<td style="text-align:right;">
+0.0634185
+</td>
+<td style="text-align:right;">
+0.7187871
+</td>
+<td style="text-align:right;">
+0.0933292
+</td>
+<td style="text-align:left;">
+$471,813,698
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Missouri
+</td>
+<td style="text-align:left;">
+6,245,466
+</td>
+<td style="text-align:left;">
+$71,589
+</td>
+<td style="text-align:right;">
+0.3347161
+</td>
+<td style="text-align:right;">
+0.0670586
+</td>
+<td style="text-align:right;">
+0.6946748
+</td>
+<td style="text-align:right;">
+0.1226321
+</td>
+<td style="text-align:left;">
+$443,937,391
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Wisconsin
+</td>
+<td style="text-align:left;">
+5,960,975
+</td>
+<td style="text-align:left;">
+$77,488
+</td>
+<td style="text-align:right;">
+0.3455598
+</td>
+<td style="text-align:right;">
+0.0673242
+</td>
+<td style="text-align:right;">
+0.6708314
+</td>
+<td style="text-align:right;">
+0.1032844
+</td>
+<td style="text-align:left;">
+$425,197,336
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+South Carolina
+</td>
+<td style="text-align:left;">
+5,478,831
+</td>
+<td style="text-align:left;">
+$72,350
+</td>
+<td style="text-align:right;">
+0.3333325
+</td>
+<td style="text-align:right;">
+0.0634482
+</td>
+<td style="text-align:right;">
+0.6794803
+</td>
+<td style="text-align:right;">
+0.1325996
+</td>
+<td style="text-align:left;">
+$398,844,164
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Alabama
+</td>
+<td style="text-align:left;">
+5,157,699
+</td>
+<td style="text-align:left;">
+$66,659
+</td>
+<td style="text-align:right;">
+0.2985358
+</td>
+<td style="text-align:right;">
+0.0643101
+</td>
+<td style="text-align:right;">
+0.5773724
+</td>
+<td style="text-align:right;">
+0.1518804
+</td>
+<td style="text-align:left;">
+$327,792,352
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oklahoma
+</td>
+<td style="text-align:left;">
+4,095,393
+</td>
+<td style="text-align:left;">
+$66,148
+</td>
+<td style="text-align:right;">
+0.2931934
+</td>
+<td style="text-align:right;">
+0.0701015
+</td>
+<td style="text-align:right;">
+0.6462195
+</td>
+<td style="text-align:right;">
+0.1490811
+</td>
+<td style="text-align:left;">
+$201,795,708
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Hawaii
+</td>
+<td style="text-align:left;">
+1,446,146
+</td>
+<td style="text-align:left;">
+$100,745
+</td>
+<td style="text-align:right;">
+0.3775749
+</td>
+<td style="text-align:right;">
+0.0586905
+</td>
+<td style="text-align:right;">
+0.8606301
+</td>
+<td style="text-align:right;">
+0.0998640
+</td>
+<td style="text-align:left;">
+$172,063,243
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Utah
+</td>
+<td style="text-align:left;">
+3,503,613
+</td>
+<td style="text-align:left;">
+$96,658
+</td>
+<td style="text-align:right;">
+0.3911757
+</td>
+<td style="text-align:right;">
+0.0874363
+</td>
+<td style="text-align:right;">
+0.8978141
+</td>
+<td style="text-align:right;">
+0.0832570
+</td>
+<td style="text-align:left;">
+$148,267,944
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Puerto Rico
+</td>
+<td style="text-align:left;">
+3,203,295
+</td>
+<td style="text-align:left;">
+$27,213
+</td>
+<td style="text-align:right;">
+0.2969966
+</td>
+<td style="text-align:right;">
+0.0663738
+</td>
+<td style="text-align:right;">
+0.9187534
+</td>
+<td style="text-align:right;">
+0.3730844
+</td>
+<td style="text-align:left;">
+$111,180,446
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Arkansas
+</td>
+<td style="text-align:left;">
+3,088,354
+</td>
+<td style="text-align:left;">
+$62,106
+</td>
+<td style="text-align:right;">
+0.2711732
+</td>
+<td style="text-align:right;">
+0.0664785
+</td>
+<td style="text-align:right;">
+0.5547613
+</td>
+<td style="text-align:right;">
+0.1553574
+</td>
+<td style="text-align:left;">
+$107,040,120
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+New Mexico
+</td>
+<td style="text-align:left;">
+2,130,256
+</td>
+<td style="text-align:left;">
+$67,816
+</td>
+<td style="text-align:right;">
+0.3178310
+</td>
+<td style="text-align:right;">
+0.0681773
+</td>
+<td style="text-align:right;">
+0.7454714
+</td>
+<td style="text-align:right;">
+0.1641940
+</td>
+<td style="text-align:left;">
+$61,324,867
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Idaho
+</td>
+<td style="text-align:left;">
+2,001,619
+</td>
+<td style="text-align:left;">
+$81,166
+</td>
+<td style="text-align:right;">
+0.3302656
+</td>
+<td style="text-align:right;">
+0.0708042
+</td>
+<td style="text-align:right;">
+0.6924218
+</td>
+<td style="text-align:right;">
+0.1046070
+</td>
+<td style="text-align:left;">
+$51,404,787
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+District of Columbia
+</td>
+<td style="text-align:left;">
+702,250
+</td>
+<td style="text-align:left;">
+$109,707
+</td>
+<td style="text-align:right;">
+0.6546496
+</td>
+<td style="text-align:right;">
+0.0729740
+</td>
+<td style="text-align:right;">
+1.0000000
+</td>
+<td style="text-align:right;">
+0.1731169
+</td>
+<td style="text-align:left;">
+$51,027,257
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Nebraska
+</td>
+<td style="text-align:left;">
+2,005,466
+</td>
+<td style="text-align:left;">
+$76,376
+</td>
+<td style="text-align:right;">
+0.3535887
+</td>
+<td style="text-align:right;">
+0.0714562
+</td>
+<td style="text-align:right;">
+0.7300536
+</td>
+<td style="text-align:right;">
+0.1087362
+</td>
+<td style="text-align:left;">
+$43,401,693
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Alaska
+</td>
+<td style="text-align:left;">
+740,133
+</td>
+<td style="text-align:left;">
+$95,665
+</td>
+<td style="text-align:right;">
+0.3275460
+</td>
+<td style="text-align:right;">
+0.0682283
+</td>
+<td style="text-align:right;">
+0.6489949
+</td>
+<td style="text-align:right;">
+0.1016680
+</td>
+<td style="text-align:left;">
+$0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+North Dakota
+</td>
+<td style="text-align:left;">
+796,568
+</td>
+<td style="text-align:left;">
+$77,871
+</td>
+<td style="text-align:right;">
+0.3395173
+</td>
+<td style="text-align:right;">
+0.0773305
+</td>
+<td style="text-align:right;">
+0.6096684
+</td>
+<td style="text-align:right;">
+0.1112829
+</td>
+<td style="text-align:left;">
+$0
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="bar-plot-of-predicted-annual-gambling-revenue-if-legalized"
+class="section level1">
+<h1>Bar plot of predicted annual gambling revenue (if legalized)</h1>
+<pre class="r"><code>pred_illegal_lasso_plot &lt;- pred_illegal_lasso |&gt;
+  mutate(predicted_revenue_lasso = pmax(predicted_revenue_lasso, 0)) |&gt;
+  arrange(predicted_revenue_lasso) |&gt;
+  mutate(State = factor(State, levels = State))
+
+ggplot(pred_illegal_lasso_plot, aes(x = State, y = predicted_revenue_lasso)) +
+  geom_col(fill = &quot;steelblue&quot;) +
+  coord_flip() +
+  scale_y_continuous(labels = dollar) +
+  labs(
+    title = &quot;Predicted Annual Gambling Revenue (if legalized)&quot;,
+    subtitle = &quot;LASSO model predictions for states without legal sports gambling&quot;,
+    x = &quot;&quot;,
+    y = &quot;Predicted Revenue&quot;
+  ) +
+  theme_minimal(base_size = 13)</code></pre>
+<p><img src="analysis_files/figure-html/Bar%20Plot-1.png" width="90%" /></p>
+</div>
+<div
+id="density-plot-of-distribution-of-actual-vs-predicted-gambling-revenue"
+class="section level1">
+<h1>Density plot of distribution of actual vs predicted gambling
+revenue</h1>
+<pre class="r"><code>compare_df &lt;- tibble(
+  group = c(rep(&quot;Actual Revenue (Legal States)&quot;, nrow(training_data)),
+            rep(&quot;Predicted Revenue (Non-Legal States)&quot;, nrow(pred_illegal_lasso))),
+  revenue = c(training_data$Revenue,
+              pred_illegal_lasso$predicted_revenue_lasso)
+)
+
+ggplot(compare_df, aes(x = revenue, fill = group)) +
+  geom_density(alpha = 0.4) +
+  scale_x_continuous(labels = dollar) +
+  labs(
+    title = &quot;Distribution of Actual vs Predicted Gambling Revenue&quot;,
+    x = &quot;Revenue&quot;,
+    y = &quot;Density&quot;,
+    fill = &quot;&quot;
+  ) +
+  theme_minimal(base_size = 13)</code></pre>
+<p><img src="analysis_files/figure-html/unnamed-chunk-13-1.png" width="90%" /></p>
+</div>
+<div
+id="scatterplot-of-population-vs-gambling-revenue-comparing-actual-and-predicted-states"
+class="section level1">
+<h1>Scatterplot of population vs gambling revenue comparing actual and
+predicted states</h1>
+<pre class="r"><code>scatter_df &lt;- bind_rows(
+  training_data |&gt; mutate(type = &quot;Actual Revenue&quot;),
+  pred_illegal_lasso |&gt; 
+    mutate(Revenue = predicted_revenue_lasso,
+           type = &quot;Predicted Revenue&quot;)
+)
+
+ggplot(scatter_df, aes(x = total_pop, y = Revenue, color = type)) +
+  geom_point(size = 3, alpha = 0.7) +
+  scale_x_continuous(labels = comma) +
+  scale_y_continuous(labels = dollar) +
+  labs(
+    title = &quot;Population vs Gambling Revenue&quot;,
+    subtitle = &quot;Comparing actual and predicted states&quot;,
+    x = &quot;Total Population&quot;,
+    y = &quot;Revenue&quot;,
+    color = &quot;&quot;
+  ) +
+  theme_minimal(base_size = 13)</code></pre>
+<p><img src="analysis_files/figure-html/unnamed-chunk-14-1.png" width="90%" /></p>
+</div>
+<div
+id="table-of-distribution-comparison-of-actual-vs.-predicted-revenue"
+class="section level1">
+<h1>Table of distribution comparison of actual vs. predicted
+revenue</h1>
+<pre class="r"><code>summary_table &lt;- tibble(
+  Metric = c(&quot;Min&quot;, &quot;1st Quartile&quot;, &quot;Median&quot;, &quot;Mean&quot;, &quot;3rd Quartile&quot;, &quot;Max&quot;),
+  Actual_Revenue = summary(training_data$Revenue)[c(1,2,3,4,5,6)],
+  Predicted_Revenue = summary(pred_illegal_lasso$predicted_revenue_lasso)[c(1,2,3,4,5,6)]
+)
+
+kable(summary_table, format = &quot;html&quot;, caption = &quot;Distribution Comparison: Actual vs Predicted Revenue&quot;) |&gt;
+  kable_styling(full_width = FALSE, bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;))</code></pre>
+<table class="table table-striped table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+Distribution Comparison: Actual vs Predicted Revenue
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Metric
+</th>
+<th style="text-align:right;">
+Actual_Revenue
+</th>
+<th style="text-align:right;">
+Predicted_Revenue
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Min
+</td>
+<td style="text-align:right;">
+920918
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1st Quartile
+</td>
+<td style="text-align:right;">
+60627294
+</td>
+<td style="text-align:right;">
+61324867
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Median
+</td>
+<td style="text-align:right;">
+427397087
+</td>
+<td style="text-align:right;">
+201795708
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mean
+</td>
+<td style="text-align:right;">
+443822044
+</td>
+<td style="text-align:right;">
+627940272
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3rd Quartile
+</td>
+<td style="text-align:right;">
+599344939
+</td>
+<td style="text-align:right;">
+471813698
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Max
+</td>
+<td style="text-align:right;">
+2059297238
+</td>
+<td style="text-align:right;">
+3611645904
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># Prepare actual revenue table
+actual_table &lt;- training_data %&gt;%
+  select(State, Revenue) %&gt;%
+  mutate(
+    revenue_source = &quot;Actual (Legal States)&quot;,
+    Revenue = as.numeric(Revenue)
+  )
+
+# Prepare predicted revenue table (LASSO)
+predicted_table &lt;- pred_illegal_lasso %&gt;%
+  select(State, predicted_revenue_lasso) %&gt;%
+  rename(Revenue = predicted_revenue_lasso) %&gt;%
+  mutate(
+    revenue_source = &quot;Predicted (Non-Legal States)&quot;
+  )
+
+# Combine both tables
+ranked_table &lt;- bind_rows(actual_table, predicted_table) %&gt;%
+  arrange(desc(Revenue)) %&gt;%
+  mutate(
+    Rank = row_number(),
+    Revenue = scales::dollar(Revenue)
+  ) %&gt;%
+  select(Rank, State, Revenue, revenue_source)</code></pre>
+</div>
+<div id="lasso-cross-validation-plot-lamda-vs.-cross-validation-error"
+class="section level1">
+<h1>LASSO cross-validation plot (lamda vs. cross-validation error)</h1>
+<pre class="r"><code>plot(lasso_cv)</code></pre>
+<p><img src="analysis_files/figure-html/LASSO%20Cross-Validation%20Plot%20(%CE%BB%20vs%20CV%20error)-1.png" width="90%" /></p>
+</div>
+<div id="lasso-coefficient-path-plot" class="section level1">
+<h1>LASSO coefficient path plot</h1>
+<pre class="r"><code>plot(lasso_cv$glmnet.fit, xvar = &quot;lambda&quot;, label = TRUE)</code></pre>
+<p><img src="analysis_files/figure-html/LASSO%20Coefficient%20Path%20Plot-1.png" width="90%" /></p>
+<pre class="r"><code>coef_mat &lt;- as.matrix(coef(lasso_cv, s = &quot;lambda.min&quot;))
+coef_df &lt;- tibble(
+  variable = rownames(coef_mat),
+  coefficient = coef_mat[, 1]
+) %&gt;%
+  filter(variable != &quot;(Intercept)&quot;)</code></pre>
+</div>
+<div id="plot-of-actual-vs.-predicted-revenue-lasso"
+class="section level1">
+<h1>Plot of actual vs. predicted revenue (LASSO)</h1>
+<pre class="r"><code>pred_lasso_train &lt;- as.numeric(predict(lasso_model, newx = X_train))
+
+training_data_lasso &lt;- training_data %&gt;%
+mutate(pred_lasso = pred_lasso_train)
+
+ggplot(training_data_lasso, aes(x = Revenue, y = pred_lasso)) +
+geom_point(alpha = 0.7, color = &quot;darkgreen&quot;) +
+geom_abline(slope = 1, intercept = 0, linetype = &quot;dashed&quot;, color = &quot;red&quot;) +
+scale_x_continuous(labels = dollar) +
+scale_y_continuous(labels = dollar) +
+labs(
+title = &quot;Actual vs Predicted Revenue (LASSO)&quot;,
+x = &quot;Actual Revenue&quot;,
+y = &quot;Predicted Revenue&quot;
+) +
+theme_minimal(base_size = 13)</code></pre>
+<p><img src="analysis_files/figure-html/Actual%20vs%20Predicted-1.png" width="90%" /></p>
+</div>
+<div id="correlation-map-of-potential-predictors-upper-triangle-only"
+class="section level1">
+<h1>Correlation map of potential predictors (upper triangle only)</h1>
+<pre class="r"><code>predictor_mat &lt;- training_data %&gt;%
+  select(total_pop, median_income, pct_bachelors, pct_age_20_34,
+         pct_urban, pct_poverty) %&gt;%
+  as.matrix()
+
+corr_mat &lt;- cor(predictor_mat)
+
+corrplot(
+  corr_mat,
+  method = &quot;color&quot;,
+  type = &quot;upper&quot;,
+  col = viridis(200),   # &lt;-- viridis palette applied here
+  tl.col = &quot;black&quot;,
+  tl.srt = 45
+)</code></pre>
+<p><img src="analysis_files/figure-html/CORR%20Map-1.png" width="90%" /></p>
+</div>
+<div id="scatterplot-of-revenue-vs.-each-predictor"
+class="section level1">
+<h1>Scatterplot of revenue vs. each predictor</h1>
+<pre class="r"><code>plot_df &lt;- training_data %&gt;%
+select(Revenue, total_pop, median_income, pct_bachelors,
+pct_age_20_34, pct_urban, pct_poverty) %&gt;%
+pivot_longer(-Revenue, names_to = &quot;predictor&quot;, values_to = &quot;value&quot;)
+
+ggplot(plot_df, aes(x = value, y = Revenue)) +
+geom_point(alpha = 0.7) +
+facet_wrap(~ predictor, scales = &quot;free_x&quot;) +
+scale_y_continuous(labels = dollar) +
+labs(
+title = &quot;Revenue vs Key Demographic Predictors (Legal States)&quot;,
+x = &quot;Predictor Value&quot;,
+y = &quot;Revenue&quot;
+) +
+theme_minimal(base_size = 13)</code></pre>
+<p><img src="analysis_files/figure-html/Rev%20vs%20each%20predictor%20scatter%20plot-1.png" width="90%" /></p>
+</div>
+<div
+id="table-of-model-performance-comparison-between-linear-model-and-lasso"
+class="section level1">
+<h1>Table of model performance comparison between linear model and
+LASSO</h1>
+<pre class="r"><code># --- Linear Model Predictions ---
+lm_pred &lt;- predict(fit_lm)
+
+# --- LASSO Predictions ---
+lasso_pred &lt;- as.numeric(predict(lasso_model, newx = X_train))
+
+# --- True values ---
+y_true &lt;- training_data$Revenue
+
+# --- Comparison Metrics ---
+model_metrics &lt;- tibble(
+  Model = c(&quot;Linear Model&quot;, &quot;LASSO Model&quot;),
+  RMSE  = c(rmse(y_true, lm_pred),
+            rmse(y_true, lasso_pred)),
+  MAE   = c(mae(y_true, lm_pred),
+            mae(y_true, lasso_pred)),
+  MAPE  = c(mape(y_true, lm_pred),
+            mape(y_true, lasso_pred))
+)
+
+model_metrics</code></pre>
+<pre><code>## # A tibble: 2 × 4
+##   Model              RMSE        MAE  MAPE
+##   &lt;chr&gt;             &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt;
+## 1 Linear Model 200127907. 133430779.  3.44
+## 2 LASSO Model  202606893. 132201269.  1.91</code></pre>
+<pre class="r"><code>model_metrics %&gt;%
+  mutate(
+    RMSE = scales::dollar(RMSE),
+    MAE  = scales::dollar(MAE),
+    MAPE = scales::percent(MAPE)
+  ) %&gt;%
+  kable(format = &quot;html&quot;, caption = &quot;Model Performance Comparison: Linear Model vs LASSO&quot;) %&gt;%
+  kable_styling(full_width = FALSE, bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;))</code></pre>
+<table class="table table-striped table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+Model Performance Comparison: Linear Model vs LASSO
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Model
+</th>
+<th style="text-align:left;">
+RMSE
+</th>
+<th style="text-align:left;">
+MAE
+</th>
+<th style="text-align:left;">
+MAPE
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Linear Model
+</td>
+<td style="text-align:left;">
+$200,127,907
+</td>
+<td style="text-align:left;">
+$133,430,779
+</td>
+<td style="text-align:left;">
+344%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LASSO Model
+</td>
+<td style="text-align:left;">
+$202,606,893
+</td>
+<td style="text-align:left;">
+$132,201,269
+</td>
+<td style="text-align:left;">
+191%
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="column-chart-of-lasso-coefficients-at-lambda-min"
+class="section level1">
+<h1>Column chart of LASSO coefficients at lambda min</h1>
+<pre class="r"><code>coef_mat &lt;- as.matrix(coef(lasso_cv, s = &quot;lambda.min&quot;))
+
+coef_df &lt;- tibble(
+  variable = rownames(coef_mat),
+  coefficient = coef_mat[, &quot;lambda.min&quot;]
+) %&gt;%
+  filter(variable != &quot;(Intercept)&quot;) %&gt;%
+  arrange(desc(abs(coefficient)))
+
+coef_df %&gt;%
+  mutate(
+    coefficient = scales::comma(coefficient)
+  ) %&gt;%
+  kable(format = &quot;html&quot;, caption = &quot;LASSO Feature Importance (λ_min)&quot;) %&gt;%
+  kable_styling(full_width = FALSE, bootstrap_options = c(&quot;striped&quot;, &quot;hover&quot;))</code></pre>
+<table class="table table-striped table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+LASSO Feature Importance (λ_min)
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+variable
+</th>
+<th style="text-align:left;">
+coefficient
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+pct_age_20_34
+</td>
+<td style="text-align:left;">
+-7,298,980,844
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pct_urban
+</td>
+<td style="text-align:left;">
+211,985,931
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+median_income
+</td>
+<td style="text-align:left;">
+2,418
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+total_pop
+</td>
+<td style="text-align:left;">
+91
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pct_bachelors
+</td>
+<td style="text-align:left;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pct_poverty
+</td>
+<td style="text-align:left;">
+0
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>ggplot(coef_df, aes(x = reorder(variable, abs(coefficient)), 
+                    y = coefficient, 
+                    fill = coefficient &gt; 0)) +
+  geom_col() +
+  coord_flip() +
+  scale_fill_manual(values = c(&quot;TRUE&quot; = &quot;#1b9e77&quot;, &quot;FALSE&quot; = &quot;#d95f02&quot;),
+                    guide = &quot;none&quot;) +
+  labs(
+    title = &quot;LASSO Coefficients at λ_min&quot;,
+    x = &quot;&quot;,
+    y = &quot;Coefficient Estimate&quot;
+  ) +
+  theme_minimal(base_size = 13)</code></pre>
+<p><img src="analysis_files/figure-html/unnamed-chunk-19-1.png" width="90%" /></p>
+<p>We compared a standard linear regression to a LASSO regularized
+model. Both models have sizeable error due to the extreme variability in
+state gambling revenues. While the linear model slightly outperforms
+LASSO in RMSE, the LASSO model achieves a much better MAPE (191% vs
+344%), indicating more stable performance for low-revenue states.</p>
+<p>LASSO also provides valuable model simplification: only two
+predictors retain nonzero coefficients—pct_age_20_34 and pct_urban—while
+income, population, poverty, and education are shrunk to zero. This
+suggests strong multicollinearity among socioeconomic indicators, with
+LASSO consolidating their predictive signal into a smaller set of
+variables. The results highlight that demographic structure
+(pct_age_20_34) and urbanization are the strongest predictors of sports
+gambling markets.</p>
+<p>Go back to <a href="home.html">home</a></p>
+</div>
+
+<footer style="background-color: #1e293b; color: #cbd5e1; padding: 30px 0; margin-top: 50px; border-top: 3px solid #eab308;">
+  <div class="container">
+    <div class="row">
+      
+      <!-- Single Centered Column -->
+      <div class="col-xs-12" style="text-align: center;">
+        <p style="margin-bottom: 5px;">
+          <strong>Team:</strong> Zakari, Kimia, Law & Sukhman
+        </p>
+        <p>
+          <a href="https://github.com/zakbillo/sports-betting" target="_blank" style="color: #eab308; text-decoration: none;">
+            <i class="fa fa-github fa-lg"></i> View Our Source Code
+          </a>
+        </p>
+        <p style="font-size: 0.8em; color: #64748b;">
+          <em>"The house always wins... usually."</em>
+        </p>
+        
+        <!-- Added 2025 Line -->
+        <p style="font-size: 0.8em; color: #64748b; margin-top: 15px;">
+          2025 Data Science I (P8105) Final Project
+        </p>
+      </div>
+
+    </div>
+  </div>
+</footer>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
