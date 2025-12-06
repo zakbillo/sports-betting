@@ -4,6 +4,13 @@ output:
   html_document:
     lib_dir: libs
     df_print: paged
+    prettydoc::html_pretty:
+      theme: leonids   
+    highlight: pygments
+    toc: true
+    toc_float: true
+    code_folding: hide
+    css: styles.css
 ---
 
 ## Motivation

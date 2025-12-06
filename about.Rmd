@@ -1,9 +1,8 @@
 ---
 title: 'About Us'
 output: 
-  html_document: 
-    theme: flatly 
-    css: style.css
+  html_document:
+    css: styles.css
 ---
 
 <style>

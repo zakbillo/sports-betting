@@ -2,10 +2,12 @@
 title: 'Data Processing'
 output: 
   html_document:
+    theme: flatly       
+    highlight: pygments
     toc: true
-    toc_float:
-      collapsed: false      
-      smooth_scroll: true 
+    toc_float: true
+    code_folding: hide
+    css: styles.css      
 ---
 
 ```{r packages}

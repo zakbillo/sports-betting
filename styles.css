@@ -1,86 +1,92 @@
-/* 1. Import Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap');
+/* 1. Import Fonts (Leonids uses clean sans-serifs) */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Montserrat:wght@700&display=swap');
 
-/* 2. Global Reset for Dark Mode */
+/* 2. Global Reset (Light Mode) */
 body, .main-container, .container-fluid {
-  background-color: #0f172a !important; /* Deep Slate Background */
-  color: #f1f5f9 !important;            /* High-Contrast White/Silver Text */
-  font-family: 'Roboto Mono', 'Courier New', monospace;
+  background-color: #ffffff !important;
+  color: #34495e !important; /* Wet Asphalt / Dark Grey */
+  font-family: 'Lato', 'Helvetica Neue', Helvetica, sans-serif;
   font-size: 16px;
+  line-height: 1.8;
 }
 
 /* 3. Typography */
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Orbitron', sans-serif;
-  color: #fbbf24 !important; /* Brighter Gold */
-  letter-spacing: 1px;
+  font-family: 'Montserrat', sans-serif;
+  color: #2c3e50 !important; /* Midnight Blue */
+  font-weight: 700;
   margin-top: 1.5em;
-  text-shadow: 0 0 10px rgba(251, 191, 36, 0.2); 
+  text-transform: none; /* Leonids doesn't usually uppercase everything */
 }
 
 h1 {
-  border-bottom: 2px solid #ca8a04;
-  padding-bottom: 10px;
+  border-bottom: 2px solid #ecf0f1;
+  padding-bottom: 15px;
+  margin-bottom: 30px;
 }
 
+/* 4. Links & Accents (The signature Leonids Pink) */
 a {
-  color: #38bdf8; /* Bright Cyan */
+  color: #eb5e68; /* Salmon Pink */
   text-decoration: none;
   font-weight: bold;
   transition: color 0.3s ease;
 }
 
 a:hover {
-  color: #fbbf24 !important; /* Turn Gold on hover */
-  text-decoration: none;
+  color: #c0392b !important; /* Darker Red on hover */
+  text-decoration: underline;
 }
 
-/* 4. Navigation Bar */
+/* 5. Navigation Bar */
 .navbar-default {
-  background-color: #1e293b !important; /* Lighter Slate */
-  border-bottom: 3px solid #fbbf24 !important;
+  background-color: #2c3e50 !important; /* Midnight Blue */
+  border: none !important;
+  border-radius: 0;
 }
 
 .navbar-default .navbar-brand {
-  color: #fbbf24 !important;
-  font-family: 'Orbitron', sans-serif;
+  color: #ffffff !important;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 700;
 }
 
 .navbar-default .navbar-nav > li > a {
-  color: #e2e8f0 !important;
+  color: #ecf0f1 !important; /* Off-white links */
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .navbar-default .navbar-nav > .active > a,
 .navbar-default .navbar-nav > .active > a:hover {
-  background-color: #fbbf24 !important;
-  color: #000 !important;
+  background-color: #eb5e68 !important; /* Pink Highlight for active page */
+  color: #fff !important;
 }
 
-/* 5. Team Card Overrides (Crucial for About Us Readability) */
-/* This ensures the white cards have dark text, overriding the global white text */
+/* 6. Team Cards (Clean & Minimal) */
 .team-member {
-  background-color: #f8f9fa !important;
-  color: #334155 !important; /* Dark Slate text for readability on white */
+  background-color: #ffffff;
+  border: 1px solid #ecf0f1;
+  color: #34495e;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 
 .team-member h3 {
-  color: #1e293b !important; /* Dark header text */
-  text-shadow: none !important;
-  margin-top: 10px !important;
+  color: #2c3e50 !important;
 }
 
-.team-member p {
-  color: #475569 !important; /* Grey text for description */
+.team-member img {
+  border: 4px solid #eb5e68; /* Pink border around photos */
 }
 
-/* 6. Footer Styling */
+/* 7. Footer Styling */
 .site-footer {
-  background-color: #1e293b; /* Matches Navbar */
-  color: #cbd5e1;
+  background-color: #2c3e50; /* Matches Navbar */
+  color: #ecf0f1;
   padding: 40px 0;
   margin-top: 60px;
-  border-top: 3px solid #fbbf24; /* Gold Border */
+  border-top: 5px solid #eb5e68; /* Pink top border */
   text-align: center;
   width: 100%;
 }
@@ -94,44 +100,44 @@ a:hover {
 .footer-team {
   font-size: 1.2rem;
   margin-bottom: 15px;
-  color: #f1f5f9;
+  color: #fff;
+  font-weight: bold;
 }
 
 .footer-links a {
-  color: #fbbf24 !important; /* Gold links in footer */
-  font-size: 1.1rem;
+  color: #eb5e68 !important; /* Pink links in footer */
 }
 
 .footer-quote {
   font-style: italic;
-  color: #94a3b8;
+  color: #bdc3c7; /* Lighter grey */
   margin: 20px 0;
 }
 
 .footer-copyright {
-  border-top: 1px solid #334155;
+  border-top: 1px solid #34495e;
   padding-top: 20px;
-  color: #64748b;
+  color: #95a5a6;
   font-size: 0.9rem;
 }
 
-/* 7. Code Blocks & Tables */
+/* 8. Code Blocks & Tables */
 pre {
-  background-color: #020617 !important;
-  border: 1px solid #334155;
-  color: #cbd5e1 !important;
-  border-radius: 8px;
+  background-color: #f7f9fa !important;
+  border: 1px solid #ecf0f1;
+  color: #2c3e50 !important;
+  border-radius: 4px;
 }
 
 code {
-  background-color: rgba(251, 191, 36, 0.15);
-  color: #fbbf24;
+  background-color: rgba(235, 94, 104, 0.1); /* Faint pink background */
+  color: #c0392b; /* Dark red text */
 }
 
 .table {
-  color: #f1f5f9 !important;
+  color: #34495e !important;
 }
 
 .table-striped > tbody > tr:nth-of-type(odd) {
-  background-color: rgba(255, 255, 255, 0.05) !important;
+  background-color: #f9f9f9 !important;
 }

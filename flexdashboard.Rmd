@@ -1,9 +1,13 @@
 ---
 title: "Shiny Dashboard"
 output: 
-  flexdashboard::flex_dashboard:
-    orientation: columns
-    vertical_layout: fill
+  html_document:
+    theme: flatly       
+    highlight: pygments
+    toc: true
+    toc_float: true
+    code_folding: hide
+    css: styles.css     
 #runtime: shiny
 ---
 

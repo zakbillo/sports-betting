@@ -1,14 +1,14 @@
 ---
 title: "Sports Betting Analysis"
-author: "Team: Zakari, Kimia, Law & Sukhman"
-date: "2025 Data Science I (P8105)"
 output: 
   html_document:
-    theme: flatly
+    prettydoc::html_pretty:
+      theme: leonids   
+    highlight: pygments
     toc: true
     toc_float: true
     code_folding: hide
-    css: style.css
+    css: styles.css
 ---
 
 ```{r setup, include=FALSE}

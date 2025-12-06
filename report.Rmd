@@ -1,12 +1,24 @@
 ---
 title: "Project Report"
+output: 
+  html_document:
+    prettydoc::html_pretty:
+      theme: leonids   
+    highlight: pygments
+    toc: true
+    toc_float: true
+    code_folding: hide
+    css: styles.css
 ---
 
 ## Group Members
 
 **Kimia Faroughi (UNI: ksf2129)**
+
 **Lawrence Zicari (UNI: lz3015)**
+
 **Sukhman Parhar (UNI: sp4436)**
+
 **Zakari Billo (UNI: zlb2008)**
 
 ## Motivation
