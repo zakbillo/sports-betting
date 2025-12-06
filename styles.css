@@ -9,13 +9,13 @@ body, .main-container, .container-fluid {
   font-size: 16px;
 }
 
-/* 3. Typography - Make it Pop */
+/* 3. Typography */
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Orbitron', sans-serif;
   color: #fbbf24 !important; /* Brighter Gold */
   letter-spacing: 1px;
   margin-top: 1.5em;
-  text-shadow: 0 0 10px rgba(251, 191, 36, 0.2); /* Slight glow */
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.2); 
 }
 
 h1 {
@@ -23,19 +23,19 @@ h1 {
   padding-bottom: 10px;
 }
 
-/* 4. Links - Bright Cyan for Visibility */
 a {
-  color: #38bdf8 !important; /* Bright Cyan */
+  color: #38bdf8; /* Bright Cyan */
   text-decoration: none;
   font-weight: bold;
+  transition: color 0.3s ease;
 }
 
 a:hover {
   color: #fbbf24 !important; /* Turn Gold on hover */
-  text-decoration: underline;
+  text-decoration: none;
 }
 
-/* 5. Navigation Bar (Overrides Cosmo) */
+/* 4. Navigation Bar */
 .navbar-default {
   background-color: #1e293b !important; /* Lighter Slate */
   border-bottom: 3px solid #fbbf24 !important;
@@ -48,66 +48,90 @@ a:hover {
 }
 
 .navbar-default .navbar-nav > li > a {
-  color: #e2e8f0 !important; /* White-ish text */
+  color: #e2e8f0 !important;
 }
 
 .navbar-default .navbar-nav > .active > a,
 .navbar-default .navbar-nav > .active > a:hover {
-  background-color: #fbbf24 !important; /* Gold Background */
-  color: #000 !important;               /* Black Text for Contrast */
+  background-color: #fbbf24 !important;
+  color: #000 !important;
 }
 
-/* 6. Tables - Fix the "White Box" Issue */
-.table {
-  color: #f1f5f9 !important;
-  background-color: transparent !important;
+/* 5. Team Card Overrides (Crucial for About Us Readability) */
+/* This ensures the white cards have dark text, overriding the global white text */
+.team-member {
+  background-color: #f8f9fa !important;
+  color: #334155 !important; /* Dark Slate text for readability on white */
 }
 
-/* Fix Striped Rows (Make them dark grey, not white) */
-.table-striped > tbody > tr:nth-of-type(odd) {
-  background-color: rgba(255, 255, 255, 0.05) !important;
+.team-member h3 {
+  color: #1e293b !important; /* Dark header text */
+  text-shadow: none !important;
+  margin-top: 10px !important;
 }
 
-.table-hover > tbody > tr:hover {
-  background-color: rgba(251, 191, 36, 0.1) !important; /* Gold Tint on Hover */
+.team-member p {
+  color: #475569 !important; /* Grey text for description */
 }
 
-/* 7. Code Blocks */
+/* 6. Footer Styling */
+.site-footer {
+  background-color: #1e293b; /* Matches Navbar */
+  color: #cbd5e1;
+  padding: 40px 0;
+  margin-top: 60px;
+  border-top: 3px solid #fbbf24; /* Gold Border */
+  text-align: center;
+  width: 100%;
+}
+
+.footer-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.footer-team {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  color: #f1f5f9;
+}
+
+.footer-links a {
+  color: #fbbf24 !important; /* Gold links in footer */
+  font-size: 1.1rem;
+}
+
+.footer-quote {
+  font-style: italic;
+  color: #94a3b8;
+  margin: 20px 0;
+}
+
+.footer-copyright {
+  border-top: 1px solid #334155;
+  padding-top: 20px;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+/* 7. Code Blocks & Tables */
 pre {
-  background-color: #020617 !important; /* Almost Black */
+  background-color: #020617 !important;
   border: 1px solid #334155;
   color: #cbd5e1 !important;
   border-radius: 8px;
 }
 
 code {
-  background-color: rgba(251, 191, 36, 0.15); /* Gold Highlight */
-  color: #fbbf24; /* Gold Text */
-  font-family: 'Roboto Mono', monospace;
-  padding: 2px 4px;
-  border-radius: 4px;
+  background-color: rgba(251, 191, 36, 0.15);
+  color: #fbbf24;
 }
 
-/* 8. Table of Contents (Sidebar) */
-.list-group-item {
-  background-color: #0f172a !important;
-  border: 1px solid #334155 !important;
-  color: #cbd5e1 !important;
+.table {
+  color: #f1f5f9 !important;
 }
 
-.list-group-item.active, 
-.list-group-item.active:hover {
-  background-color: #fbbf24 !important;
-  color: #000 !important; /* Black text on Gold */
-  border-color: #fbbf24 !important;
-}
-
-/* 9. Footer Alignment */
-footer {
-  text-align: center;
-  margin-top: 40px;
-  padding-top: 20px;
-  border-top: 1px solid #334155;
-  font-size: 0.9em;
-  color: #94a3b8;
+.table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: rgba(255, 255, 255, 0.05) !important;
 }
