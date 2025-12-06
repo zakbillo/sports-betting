@@ -42,4 +42,4 @@ Column {data-width=350}
 
 ```
 
-Go back to [home](home.html)
+Go back [home](home.html)

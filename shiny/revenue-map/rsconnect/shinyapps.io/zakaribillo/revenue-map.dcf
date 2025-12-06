@@ -5,6 +5,6 @@ account: zakaribillo
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 16256579
-bundleId: 11284793
+bundleId: 11284839
 url: https://zakaribillo.shinyapps.io/revenue-map/
 version: 1

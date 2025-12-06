@@ -16,7 +16,7 @@
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -63,7 +63,7 @@ if (window.hljs) {
 
 
 
-<link rel="stylesheet" href="styles.css" type="text/css" />
+<link rel="stylesheet" href="style.css" type="text/css" />
 
 
 
@@ -247,7 +247,7 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">ODDS ON</a>
+      <a class="navbar-brand" href="index.html">Slot Machine</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -299,30 +299,117 @@ $(document).ready(function () {
 </div>
 
 
-<p>Go back to <a href="home.html">home</a></p>
+<style>
+.team-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+gap: 40px;
+margin-top: 50px;
+margin-bottom: 50px;
+}
+
+.team-member {
+text-align: center;
+padding: 20px;
+background-color: #f8f9fa;
+border-radius: 10px;
+transition: transform 0.3s ease;
+}
+
+.team-member:hover {
+transform: translateY(-5px);
+box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.team-member img {
+width: 180px;
+height: 180px;
+border-radius: 50%; /* This makes the image circular /
+object-fit: cover; / Ensures image doesn't stretch /
+border: 5px solid #2c3e50; / Dark border matching theme */
+margin-bottom: 20px;
+}
+
+.team-member h3 {
+color: #2c3e50;
+margin-bottom: 10px;
+font-weight: 600;
+}
+
+.team-member p {
+color: #5d6d7e;
+line-height: 1.6;
+font-size: 0.95rem;
+}
+</style>
+<div class="team-grid">
+<!-- Zakari -->
+<div class="team-member">
+<img src="images/zlb%20headshot.jpg" alt="Zakari">
+<h3>
+Zakari
+</h3>
+<p>
+Zakari is an Epidemiology MPH candidate (’26) interested in causal
+inference, causal discovery, and algorithmic fairness.
+</p>
+</div>
+<!-- Kimia -->
+<div class="team-member">
+<img src="images/20250204_Dini_5344.JPG" alt="Kimia">
+<h3>
+Kimia
+</h3>
+<p>
+Kimia is a second year Epidemiology MPH student (’26) with an interest
+in biostatistics and data science, as well as humanitarian work.
+</p>
+</div>
+<!-- Sukhman -->
+<div class="team-member">
+<img src="images/IMG_1642.jpg" alt="Sukhman">
+<h3>
+Sukhman
+</h3>
+<p>
+Sukhman is a second-year Epidemiology MPH student (’26) focused on
+biostatistics, computational methods, and cancer epidemiology.
+</p>
+</div>
+<!-- Law -->
+<div class="team-member">
+<img src="images/Headshot-2025.jpg" alt="Law">
+<h3>
+Law
+</h3>
+<p>
+Lawrence is a second-year Epidemiology MPH (’26) student with a focus on
+Biostatistics, policy research and spatial analysis.
+</p>
+</div>
+</div>
+<div style="text-align: center; margin-top: 50px;">
+<p>Go back <a href="home.html">home</a></p>
+</div>
 
 <footer style="background-color: #1e293b; color: #cbd5e1; padding: 40px 20px; margin-top: 50px; border-top: 3px solid #eab308; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
   
   <div style="max-width: 900px; width: 100%;">
     
-    <!-- Team Name - Made Larger -->
     <p style="margin-bottom: 15px; font-size: 1.25rem; line-height: 1.5;">
       <strong style="color: #ffffff;">Team:</strong> Zakari, Kimia, Law & Sukhman
     </p>
     
-    <!-- GitHub Link - Made Larger and added hover effect logic (if css allows, otherwise just clean style) -->
     <p style="margin-bottom: 15px; font-size: 1.1rem;">
       <a href="https://github.com/zakbillo/sports-betting" target="_blank" style="color: #eab308; text-decoration: none; font-weight: 500;">
         <i class="fa fa-github fa-lg" style="margin-right: 5px;"></i> View Our Source Code
       </a>
     </p>
     
-    <!-- Quote - Increased size slightly -->
     <p style="font-size: 1rem; color: #94a3b8; margin-bottom: 20px; font-style: italic;">
       "The house always wins... usually."
     </p>
     
-    <!-- 2025 Line - Made distinct but readable -->
     <p style="font-size: 0.95rem; color: #64748b; margin-top: 20px; border-top: 1px solid #334155; padding-top: 20px; display: inline-block;">
       2025 Data Science I (P8105) Final Project
     </p>

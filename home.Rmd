@@ -7,30 +7,6 @@ output:
 runtime: shiny  
 ---
 
-```{r}
-library(tidyverse)
-library(leaflet)
-library(sf)
-library(maps)
-library(crosstalk)
-
-# Set default figure options
-knitr::opts_chunk$set(
-  fig.width = 6,
-  out.width = "90%"
-)
-
-theme_set(theme_bw() + theme(legend.position = "bottom"))
-
-options(
-  ggplot2.continuous.colour = "viridis",
-  ggplot2.continuous.fill = "viridis"
-)
-
-scale_colour_discrete = scale_colour_viridis_d
-scale_fill_discrete = scale_fill_viridis_d
-```
-
 ## Motivation
 
 Scandals surrounding gambling in sports have reached the national stage in recent months, fueled by a meteoric rise over the last few years that has seemingly gone unchecked by our regulators. Whether you watch sports, TV, streaming, use social media, or take the subway, you've definitely been exposed to sports betting advertisements in one way or another. Our analysis focuses on the demographic factors underlying revenue earned in legal sports betting markets, including education & income status, age, and proximity to a major sports team. We then built a model to project the revenue generated in states with illegal markets and those likely to legalize soon—such as California. The overarching goal is to illustrate how the potential profitability of the sports gambling industry might compromise regulatory oversight. 
@@ -38,11 +14,11 @@ Scandals surrounding gambling in sports have reached the national stage in recen
 Here's a high-level overview of our project: 
 <iframe width="560" height="315" src="XYZ" frameborder="0" allowfullscreen></iframe>
 
-## Sports Gambling Revenue Across Legal States (2018-2024) 
+## Sports Betting Revenue by State (2018-2024) 
 
 <div style="width: 100%; height: 800px;">
   <iframe 
-    src="https://yourusername.shinyapps.io/revenue-map/" 
+    src="https://zakaribillo.shinyapps.io/revenue-map/" 
     style="width: 100%; height: 100%; border: none;"
     title="Sports Betting Revenue Map"
   ></iframe>
