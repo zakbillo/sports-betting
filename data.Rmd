@@ -585,3 +585,5 @@ anti_join(model_data_2024, model_clean_2024, by = "State") |>
 write.csv(model_clean_2024, "data/model_clean_2024.csv")
 write.csv(demographics_2024, "data/demographics_2024.csv")
 ```
+
+Go back to [home](home.html)

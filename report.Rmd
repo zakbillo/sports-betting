@@ -54,3 +54,5 @@ A line chart of the racial makeup of each state in 2024, with the percentage of 
 ## Discussion
 
 **Findings, expectations, insights**
+
+Go back to [home](home.html)

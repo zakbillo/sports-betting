@@ -686,3 +686,5 @@ ggplot(coef_df, aes(x = reorder(variable, abs(coefficient)),
 We compared a standard linear regression to a LASSO regularized model. Both models have sizeable error due to the extreme variability in state gambling revenues. While the linear model slightly outperforms LASSO in RMSE, the LASSO model achieves a much better MAPE (191% vs 344%), indicating more stable performance for low-revenue states.
 
 LASSO also provides valuable model simplification: only two predictors retain nonzero coefficients—pct_age_20_34 and pct_urban—while income, population, poverty, and education are shrunk to zero. This suggests strong multicollinearity among socioeconomic indicators, with LASSO consolidating their predictive signal into a smaller set of variables. The results highlight that demographic structure (pct_age_20_34) and urbanization are the strongest predictors of sports gambling markets.
+
+Go back to [home](home.html)
