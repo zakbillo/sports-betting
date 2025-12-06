@@ -33,7 +33,7 @@ scale_colour_discrete = scale_color_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
 ```
 
-### Exploratory Data Analysis
+## Exploratory Data Analysis
 
 Import Data
 

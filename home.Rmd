@@ -1,5 +1,10 @@
 ---
 title: "All In! Forecasting Sports Gambling Revenue in Illegal Markets"
+output: 
+  html_document:
+    lib_dir: libs
+    df_print: paged
+runtime: shiny  
 ---
 
 ```{r}
@@ -33,7 +38,7 @@ Scandals surrounding gambling in sports have reached the national stage in recen
 Here's a high-level overview of our project: 
 <iframe width="560" height="315" src="XYZ" frameborder="0" allowfullscreen></iframe>
 
-## Map 
+## Sports Gambling Revenue Across Legal States (2018-2024) 
 
 ```{r}
 # Turn off spherical geometry processing.

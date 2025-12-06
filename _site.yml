@@ -1,7 +1,7 @@
 name: "All In! Forecasting Sports Gambling Revenue in Illegal Markets"
 output_dir: "."
 navbar:
-  title: "ODDS ON"
+  title: "Slot Machine"
   left:
     - text: "Home"
       href: home.html
