@@ -19,13 +19,13 @@
             user-select: none;
         }
 
+        /*Cleaner, easier to read Neon Text */
         .neon-text {
+            color: #fef08a; /* Lighter yellow text core */
             text-shadow: 
-                0 0 5px #fff,
-                0 0 10px #fff,
-                0 0 20px #eab308,
-                0 0 30px #eab308,
-                0 0 40px #eab308;
+                0 0 2px #fff,   /* Tight outline */
+                0 0 10px #ca8a04, /* Dark gold inner glow */
+                0 0 20px #eab308; /* Soft outer glow */
         }
 
         .slot-machine-frame {
@@ -36,7 +36,7 @@
             border: 4px solid #444;
             border-radius: 20px;
             position: relative;
-            z-index: 20; /* FIX: Ensure frame is above background */
+            z-index: 20;
         }
 
         /* The gold trim */
@@ -106,7 +106,7 @@
             background: #333;
             border-radius: 0 10px 10px 0;
             border: 2px solid #555;
-            z-index: 10; /* FIX: Positive Z-index to be clickable */
+            z-index: 10;
         }
 
         .lever-arm {
@@ -118,7 +118,7 @@
             background: linear-gradient(to right, #ccc, #fff, #ccc);
             transform-origin: bottom center;
             transition: transform 0.5s ease;
-            z-index: 11; /* FIX: Positive Z-index to be clickable */
+            z-index: 11;
             border-radius: 10px;
             cursor: pointer;
         }
@@ -142,18 +142,6 @@
 
         .lever-arm.pulled {
             transform: scaleY(-1) translateY(100px); /* Simple flip visual */
-        }
-
-        .jackpot-text {
-            font-family: 'Orbitron', sans-serif;
-            opacity: 0;
-            transform: scale(0.5);
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .jackpot-text.show {
-            opacity: 1;
-            transform: scale(1);
         }
 
         .enter-btn {
@@ -195,13 +183,11 @@
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen text-white">
 
-    <!-- Sound Toggle Button -->
     <button id="sound-btn" class="sound-toggle" title="Toggle Sound">
         <svg id="icon-sound-on" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-400"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
         <svg id="icon-sound-off" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-gray-400 hidden"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
     </button>
 
-    <!-- Header / Title -->
     <div class="text-center mb-10 z-10 px-4">
         <h1 class="text-4xl md:text-6xl font-bold mb-4 font-[Orbitron] tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-200 to-yellow-400 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">
             ODDS ON
@@ -211,51 +197,36 @@
         </p>
     </div>
 
-    <!-- Main Slot Machine Area -->
     <div class="relative">
         
-        <!-- The Machine Frame -->
         <div class="slot-machine-frame p-6 md:p-8 w-[320px] md:w-[600px]">
             
-            <!-- Result Display (Win/Lose Text) -->
             <div class="h-16 flex items-center justify-center mb-4 bg-black/50 rounded border border-gray-700 overflow-hidden">
                 <div id="status-text" class="text-yellow-400 font-[Orbitron] text-xl tracking-widest">
                     PULL TO PLAY
                 </div>
             </div>
 
-            <!-- Reels Row -->
             <div class="grid grid-cols-3 gap-2 md:gap-4 h-[120px] md:h-[150px] mb-6">
                 
-                <!-- Reel 1 -->
                 <div class="reel-container">
-                    <div class="reel" id="reel1">
-                        <!-- Symbols injected by JS -->
-                    </div>
+                    <div class="reel" id="reel1"></div>
                 </div>
 
-                <!-- Reel 2 -->
                 <div class="reel-container">
-                    <div class="reel" id="reel2">
-                        <!-- Symbols injected by JS -->
-                    </div>
+                    <div class="reel" id="reel2"></div>
                 </div>
 
-                <!-- Reel 3 -->
                 <div class="reel-container">
-                    <div class="reel" id="reel3">
-                        <!-- Symbols injected by JS -->
-                    </div>
+                    <div class="reel" id="reel3"></div>
                 </div>
 
             </div>
 
-            <!-- Spin Button (Mobile Friendly alternative to lever) -->
             <button id="spin-btn-main" class="w-full bg-red-700 hover:bg-red-600 text-white font-bold py-4 rounded border-b-4 border-red-900 active:border-b-0 active:mt-1 transition-all md:hidden">
                 SPIN!
             </button>
             
-            <!-- Decorative Lights -->
             <div class="flex justify-between mt-4 md:mt-0">
                 <div class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
                 <div class="w-3 h-3 rounded-full bg-yellow-500 animate-pulse delay-75"></div>
@@ -266,7 +237,6 @@
 
         </div>
 
-        <!-- Desktop Lever (Visual) -->
         <div class="hidden md:block lever-base"></div>
         <div class="hidden md:block lever-arm" id="lever-arm">
             <div class="lever-knob" id="lever-knob"></div>
@@ -274,14 +244,12 @@
 
     </div>
 
-    <!-- Enter Button (Appears after win) -->
     <div id="enter-container" class="mt-12 text-center h-20">
         <button id="enter-btn" class="enter-btn px-10 py-4 rounded-full text-black font-bold text-xl uppercase tracking-wider">
             Enter Analysis
         </button>
     </div>
 
-    <!-- Footer -->
     <footer class="absolute bottom-4 text-gray-500 text-xs">
         <p>Data Science Final Project • [Zakari, Kimia, Law & Sukhman]</p>
     </footer>
@@ -291,7 +259,7 @@
         const symbols = ['🍒', '🍋', '🍇', '💎', '7️⃣', '💰', '🏈', '🏀'];
         const winningSymbol = '7️⃣'; // We force this result
         const reelHeight = 100; // Height of one symbol in px (matches CSS)
-        const totalSymbolsInReel = 20; // Number of symbols to generate per reel for the animation strip
+        const totalSymbolsInReel = 20; // Symbols per reel
         
         // DOM Elements
         const reels = [document.getElementById('reel1'), document.getElementById('reel2'), document.getElementById('reel3')];
@@ -307,10 +275,9 @@
         let isSpinning = false;
         let soundEnabled = true;
 
-        /* --- AUDIO SYSTEM (Web Audio API) --- */
+        /* --- AUDIO SYSTEM --- */
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         
-        // Helper: Resume audio context on first user interaction
         function initAudio() {
             if (audioCtx.state === 'suspended') {
                 audioCtx.resume();
@@ -318,10 +285,9 @@
         }
         window.addEventListener('click', initAudio, { once: true });
 
-        // Helper to create oscillators
         function playTone(freq, type, duration, startTime = 0, vol = 0.1) {
             if (!soundEnabled) return;
-            initAudio(); // Double check audio is ready
+            initAudio(); 
 
             const osc = audioCtx.createOscillator();
             const gainNode = audioCtx.createGain();
@@ -339,17 +305,15 @@
             osc.stop(audioCtx.currentTime + startTime + duration);
         }
 
-        // Sound: Mechanical Lever Pull / Click
+        // Sounds
         function playClickSound() {
             playTone(150, 'square', 0.1, 0, 0.1);
             playTone(100, 'sawtooth', 0.1, 0.05, 0.1);
         }
 
-        // Sound: Spinning Reel (Looping Ticking)
         let spinInterval;
         function startSpinSound() {
             if (!soundEnabled) return;
-            // Play a tick every 100ms
             spinInterval = setInterval(() => {
                 playTone(800, 'square', 0.05, 0, 0.02);
             }, 80);
@@ -359,15 +323,12 @@
             clearInterval(spinInterval);
         }
 
-        // Sound: Reel Stop (Thud)
         function playStopSound() {
-            playTone(100, 'triangle', 0.2, 0, 0.3); // Low thud
+            playTone(100, 'triangle', 0.2, 0, 0.3);
         }
 
-        // Sound: Win (Arcade Coin Shower)
         function playWinSound() {
             if (!soundEnabled) return;
-            const now = 0;
             // Arpeggio
             [523.25, 659.25, 783.99, 1046.50, 523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
                 playTone(freq, 'sine', 0.2, i * 0.1, 0.1);
@@ -376,7 +337,6 @@
             playTone(1567.98, 'square', 0.8, 0.8, 0.1);
         }
 
-        // Toggle Sound UI
         soundBtn.addEventListener('click', () => {
             soundEnabled = !soundEnabled;
             if(soundEnabled) {
@@ -392,8 +352,6 @@
 
 
         /* --- GAME LOGIC --- */
-
-        // Initialize Reels
         function initReels() {
             reels.forEach(reel => {
                 reel.innerHTML = '';
@@ -405,23 +363,21 @@
                 reel.innerHTML = html;
             });
         }
-
         initReels();
 
-        // Spin Logic
         function spin() {
             if (isSpinning) return;
             isSpinning = true;
 
-            // 1. UI Updates
+            // 1. UI Updates (UPDATED: White Pulsing text)
             statusText.innerText = "SPINNING...";
             statusText.classList.remove('neon-text', 'text-yellow-400');
-            statusText.classList.add('text-gray-400');
+            statusText.classList.add('text-white', 'animate-pulse'); // Bright white and pulsing
             enterBtn.classList.remove('visible');
 
             // 2. Audio & Visuals
-            playClickSound(); // Sound 1: Click
-            startSpinSound(); // Sound 2: Spinning loop
+            playClickSound(); 
+            startSpinSound(); 
 
             leverArm.classList.add('pulled');
             setTimeout(() => leverArm.classList.remove('pulled'), 500);
@@ -431,7 +387,6 @@
                 const targetSymbol = '💰'; 
                 
                 reel.classList.add('blur-spin');
-
                 reel.style.transition = 'none';
                 reel.style.transform = 'translateY(0)';
                 void reel.offsetWidth;
@@ -455,10 +410,9 @@
                     reel.style.transform = `translateY(${targetY}px)`;
                 });
 
-                // Cleanup after spin finishes
                 setTimeout(() => {
                     reel.classList.remove('blur-spin');
-                    playStopSound(); // Sound 3: Thud per reel
+                    playStopSound(); 
                     
                     if (index === 2) {
                         gameFinished();
@@ -469,21 +423,19 @@
 
         function gameFinished() {
             isSpinning = false;
-            stopSpinSound(); // Stop the ticking loop
-            
-            playWinSound(); // Sound 4: Win Music!
+            stopSpinSound(); 
+            playWinSound(); 
 
-            statusText.innerText = "JACKPOT! BAG SECURED 🤑";
+            statusText.innerText = "JACKPOT!!!🤑🤑🤑";
+            // Remove the temporary spin styles and apply the win styles
+            statusText.classList.remove('text-white', 'animate-pulse');
             statusText.classList.add('neon-text', 'text-yellow-400');
-            statusText.classList.remove('text-gray-400');
             
             setTimeout(() => {
                 enterBtn.classList.add('visible');
             }, 500);
         }
 
-        // Event Listeners
-        // We attach listeners to both the knob AND the arm in case user misses the knob slightly
         leverKnob.addEventListener('click', spin);
         leverArm.addEventListener('click', spin);
         spinBtnMain.addEventListener('click', spin);
