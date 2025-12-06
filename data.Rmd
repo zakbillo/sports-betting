@@ -75,7 +75,7 @@ revenue_growth_25=
   purrr::pluck(2)
 ```
 
-We realized website that was scrapped to obtain this data had dynamic filters that switched the year of the displayed data. To overcome the lack of static data, we manually scraped the tables for previous years and saved the data in a CSV format
+We realized website that was scraped to obtain this data had dynamic filters that switched the year of the displayed data. To overcome the lack of static data, we manually scraped the tables for previous years and saved the data in a CSV format
 
 ```{r importing csv}
 # 2018 Data

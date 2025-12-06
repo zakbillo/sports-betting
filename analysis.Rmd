@@ -96,6 +96,8 @@ state_growth_plot_data = total_state_revenue |>
 
 # Gambling Visuals {.tabset}
 
+Below are several plots exploring the gambling revenue data. The first is a plot of total US gambling revenue between 2018-2024. Second is a plot of US gambling revenue across that time period among the top 5 ranked states in gambling revenue in 2024. Finally, the third plot depicts how the top 5 ranked states in gambling revenue shifted from 2018-2024.
+
 ## Revenue by Year
 
 ```{r revenue-by-year}
@@ -249,6 +251,8 @@ plot_ly(data = plot_data) |>
 ```
 
 # Demographic Visuals {.tabset}
+
+Below are exploratory plots of the demographic data in 2024. The first plot shows the total population of each state in which gambling is legal, arranged by order of descending gambling revenue. The second plot shows gambling revenue by state in 2024. The third plot compares the first two plots. The fourth plot shows the racial makeup in percentage of the total population in each state in 2024, arranged in descending order of total gambling revenue. The fifth plot depicts the percentage of the total population in poverty and unemployed in 2024 in each state, arranged in descending order of total gambling revenue.
 
 ## Population
 

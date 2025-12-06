@@ -40,29 +40,28 @@ ui <- fluidPage(
         "year",
         "Select Year:",
         min = 2018,
-        max = 2023,
-        value = 2023,
+        max = 2024,
+        value = 2024,
         step = 1,
         sep = "",
-        animate = animationOptions(interval = 1000, loop = TRUE)
+        animate = animationOptions(interval = 2000, loop = FALSE)
       ),
       
       hr(),
       
       h5("Legend"),
-      p("Colors represent total revenue from sports betting."),
       
       hr(),
       
       h5("Data Source"),
-      p("State revenue data compiled from official reports."),
+      p("State revenue data compiled from official reports. Although sports betting is legal in Florida, New Mexico, Missouri, North Dakota,
+        and Washington, those states were missing from the dataset."),
       
       br(),
       
       actionButton("info", "About", icon = icon("info-circle"), 
                    class = "btn btn-info btn-sm"),
       
-      # Add download button
       br(),
       br(),
       downloadButton("downloadData", "Download Data", class = "btn btn-success btn-sm")
@@ -93,12 +92,9 @@ server <- function(input, output, session) {
   
   # Load data - CSV is now in same folder as app.R
   total_state_revenue <- reactive({
-    # Try to load the CSV file
     tryCatch({
-      # Since CSV is in same folder as app.R, just use the filename
       data <- read_csv("total_state_revenue.csv")
       
-      # Validate required columns exist
       required_cols <- c("State", "Year", "Revenue", "Taxes")
       if(!all(required_cols %in% names(data))) {
         missing_cols <- setdiff(required_cols, names(data))
@@ -110,7 +106,6 @@ server <- function(input, output, session) {
         return(NULL)
       }
       
-      # Clean up column names (remove any leading/trailing spaces)
       data <- data %>%
         rename_all(~gsub("\\s+", "_", .)) %>%
         mutate(
@@ -122,7 +117,6 @@ server <- function(input, output, session) {
       
       return(data)
     }, error = function(e) {
-      # Show error notification
       showNotification(
         paste("Error loading data:", e$message),
         type = "error",
@@ -134,7 +128,6 @@ server <- function(input, output, session) {
   
   # Get state boundaries
   us_states_sf <- reactive({
-    # Using maps package to get state boundaries
     states <- maps::map("state", plot = FALSE, fill = TRUE)
     
     st_as_sf(states) %>%
@@ -147,19 +140,15 @@ server <- function(input, output, session) {
     req(total_state_revenue())
     req(us_states_sf())
     
-    # Get the selected year
     selected_year <- input$year
     
-    # Prepare revenue data - ensure State names are lowercase for joining
     revenue_map_data <- total_state_revenue() %>%
       mutate(match_name = tolower(State))
     
-    # Join with state shapes and filter for selected year
     joined_data <- us_states_sf() %>%
       left_join(revenue_map_data, by = c("ID" = "match_name")) %>%
       filter(Year == selected_year)
     
-    # Check if we have data for selected year
     if(nrow(joined_data) == 0) {
       showNotification(
         paste("No data available for year", selected_year),
@@ -186,23 +175,27 @@ server <- function(input, output, session) {
       )
   })
   
-  # Create color palette
+  # Create CONSISTENT color palette based on ALL years of data
   palette <- reactive({
     req(total_state_revenue())
     
-    # Get revenue values, remove NAs
+    # Get ALL revenue values across ALL years, remove NAs
     revenue_values <- total_state_revenue()$Revenue
     revenue_values <- revenue_values[!is.na(revenue_values)]
     
     if(length(revenue_values) == 0) {
-      # Fallback if no valid revenue values
       revenue_values <- c(0, 1000000)
     }
     
+    # Use the full range across all years for consistent legend
+    min_val <- min(revenue_values, na.rm = TRUE)
+    max_val <- max(revenue_values, na.rm = TRUE)
+    
+    # Use a more contrasting color palette
     colorNumeric(
-      palette = "viridis",
-      domain = revenue_values,
-      na.color = "#cccccc"  # Gray for NA values
+      palette = "YlOrRd",  # Yellow-Orange-Red provides better visual contrast
+      domain = c(min_val, max_val),
+      na.color = "#cccccc"
     )
   })
   
@@ -225,7 +218,6 @@ server <- function(input, output, session) {
     data <- map_data()
     pal <- palette()
     
-    # Create labels for each state
     labels <- sprintf(
       "<strong>%s</strong><br/>
       Year: %s<br/>
@@ -242,16 +234,16 @@ server <- function(input, output, session) {
       clearControls() %>%
       addPolygons(
         fillColor = ~ifelse(is.na(Revenue), "#cccccc", pal(Revenue)),
-        weight = 2,
+        weight = 1,
         opacity = 1,
         color = "black",
         dashArray = "",
-        fillOpacity = 0.7,
+        fillOpacity = 0.7,  # Increased from 0.1 for better visibility
         highlightOptions = highlightOptions(
-          weight = 3,
+          weight = 5,
           color = "white",
           dashArray = "",
-          fillOpacity = 0.9,
+          fillOpacity = 0.9,  # Increased for better highlight
           bringToFront = TRUE
         ),
         label = labels,
@@ -268,7 +260,12 @@ server <- function(input, output, session) {
         opacity = 0.7,
         title = "Revenue ($)",
         position = "bottomright",
-        na.label = "No data"
+        na.label = "No data",
+        labFormat = labelFormat(
+          prefix = "$",
+          big.mark = ",",
+          digits = 0
+        )
       )
   })
   
@@ -331,7 +328,8 @@ server <- function(input, output, session) {
           tags$li("Click on any state to see detailed information"),
           tags$li("Hover over states to see revenue and tax data"),
           tags$li("Click the play button for automatic year-by-year animation"),
-          tags$li("Download the data using the 'Download Data' button")
+          tags$li("Download the data using the 'Download Data' button"),
+          tags$li("Legend scale remains consistent across years for easy comparison")
         ),
         br(),
         h5("Data Notes:"),
@@ -382,15 +380,6 @@ server <- function(input, output, session) {
         ))
       }
     }
-  })
-  
-  # Debug output to check data loading
-  output$debug <- renderPrint({
-    req(total_state_revenue())
-    cat("Data loaded successfully!\n")
-    cat("Rows:", nrow(total_state_revenue()), "\n")
-    cat("Columns:", paste(names(total_state_revenue()), collapse = ", "), "\n")
-    cat("Years available:", paste(sort(unique(total_state_revenue()$Year)), collapse = ", "), "\n")
   })
 }
 
