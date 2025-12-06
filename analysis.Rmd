@@ -2,13 +2,11 @@
 title: "Sports Betting Analysis"
 output: 
   html_document:
-    prettydoc::html_pretty:
-      theme: leonids   
-    highlight: pygments
+    theme: flatly       
+    highlight: pygments 
     toc: true
     toc_float: true
     code_folding: hide
-    css: styles.css
 ---
 
 ```{r setup, include=FALSE}
