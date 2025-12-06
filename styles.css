@@ -1,7 +1,7 @@
-/* 1. Import the same fonts as the landing page */
+/* Import the same fonts as the landing page */
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap');
 
-/* 2. Main Body Styling - Dark Slate Background */
+/* Main Body Styling - Dark Slate Background */
 body {
   background-color: #0f172a; /* Matches landing page background */
   color: #e2e8f0; /* Light gray text for readability */
@@ -9,7 +9,7 @@ body {
   font-size: 16px;
 }
 
-/* 3. Headers - Gold & Retro-Futuristic */
+/* Headers - Gold & Retro-Futuristic */
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Orbitron', sans-serif;
   color: #eab308; /* Gold/Yellow accent */
@@ -23,7 +23,7 @@ h1 {
   padding-bottom: 10px;
 }
 
-/* 4. Navigation Bar Overrides (For Cosmo Theme) */
+/* Navigation Bar Overrides (For Cosmo Theme) */
 .navbar-default {
   background-color: #1e293b !important; /* Slightly lighter slate */
   border-bottom: 3px solid #eab308 !important; /* Gold border bottom */
@@ -47,7 +47,7 @@ h1 {
   text-shadow: 0 0 8px #eab308;
 }
 
-/* 5. Code Chunks & Output */
+/* Code Chunks & Output */
 pre {
   background-color: #1e293b; /* Dark block background */
   border: 1px solid #475569;
@@ -61,7 +61,7 @@ code {
   font-family: 'Roboto Mono', monospace;
 }
 
-/* 6. Tables (Kable / DT) */
+/* Tables (Kable / DT) */
 .table {
   color: #e2e8f0;
   background-color: #1e293b;
@@ -75,7 +75,7 @@ code {
   background-color: #334155; /* Highlight row on hover */
 }
 
-/* 7. Links */
+/* Links */
 a {
   color: #38bdf8; /* Cyan/Light Blue for visibility */
   text-decoration: none;
@@ -86,7 +86,7 @@ a:hover {
   text-decoration: underline;
 }
 
-/* 8. Blockquotes */
+/* Blockquotes */
 blockquote {
   border-left: 5px solid #eab308;
   font-style: italic;

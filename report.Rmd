@@ -11,11 +11,7 @@ title: "Project Report"
 
 ## Motivation
 
-**Overview of project goals and overall motivation**
-
-Sports gambling has been on the rise in recent years. Whether you are watching sports, TV with ads, social media content, or even just taking the subway, you are being exposed in one way or another to sports betting advertisements. With little regulation and large-scale scandals surrounding sports betting in recent months, an analysis of how key demographic factors inform sports gambling will be critical in understanding how to create and implement programs to effectively reduce the burden of gambling addictions that are surely to be on the rise in the upcoming years. 
-
-We sought out to assess the nature of gambling revenue growth and shifts in gambling markets in the United States over the past few years, as well as what the distribution of demographic factors in relevant gambling states looks like. Additionally, we aimed to predict gambling revenue in states that have yet to legalize it, such as California, using 2024 gambling revenue and demographic data. 
+Scandals surrounding gambling in sports have reached the national stage in recent months, fueled by a meteoric rise over the last few years that has seemingly gone unchecked by our regulators. Whether you watch sports, TV, streaming, use social media, or take the subway, you've definitely been exposed to sports betting advertisements in one way or another. Our analysis focuses on the demographic factors underlying revenue earned in legal sports betting markets, including education & income status, age, and proximity to a major sports team. We then built a model to project the revenue generated in states with illegal markets and those likely to legalize soon—such as California. The overarching goal is to illustrate how the potential profitability of the sports gambling industry might compromise regulatory oversight. 
 
 ## Related Work
 
