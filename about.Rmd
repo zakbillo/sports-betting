@@ -80,10 +80,10 @@ font-size: 1.2rem; /* Larger Description Font */
 <p>Sukhman is a second-year Epidemiology MPH student (’26) focused on biostatistics, computational methods, and cancer epidemiology.</p>
 </div>
 
-<!-- Law -->
+<!-- Lawrence -->
 
 <div class="team-member">
-<img src="images/Headshot-2025.jpg" alt="Law">
+<img src="images/Headshot-2025.jpg" alt="Lawrence">
 <h3>Law</h3>
 <p>Lawrence is a second-year Epidemiology MPH student (‘26) with a focus on biostatistics, policy research and spatial analysis.</p>
 </div>
