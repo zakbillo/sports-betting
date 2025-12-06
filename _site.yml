@@ -23,4 +23,5 @@ output:
     theme: cosmo  
     css: styles.css
     includes:
+      in_header: header.html
       after_body: [footer.html]
