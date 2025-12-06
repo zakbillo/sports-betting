@@ -323,13 +323,53 @@ regulatory oversight.</p>
 <div id="section-sports-betting-revenue-by-state-2018-2024"
 class="section level2">
 <h2>Sports Betting Revenue by State (2018-2024)</h2>
-<div style="width: 100%; height: 800px;">
-<p><iframe 
-    src="https://zakaribillo.shinyapps.io/revenue-map/" 
-    style="width: 100%; height: 100%; border: none;"
-    title="Sports Betting Revenue Map"
-  ></iframe></p>
+<!-- Full-width section -->
+<section id="interactive-map" class="py-5" style="background-color: #f8f9fa;">
+<div class="container-fluid px-0">
+<pre><code>&lt;div class=&quot;row g-0&quot;&gt;
+  &lt;div class=&quot;col-12&quot;&gt;
+    &lt;!-- Map header --&gt;
+    &lt;div class=&quot;px-4 py-3&quot; style=&quot;background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;&quot;&gt;
+      &lt;h2 class=&quot;mb-0&quot;&gt;
+        &lt;i class=&quot;fas fa-map-marked-alt me-2&quot;&gt;&lt;/i&gt;
+        Interactive Sports Betting Revenue Map
+      &lt;/h2&gt;
+      &lt;small class=&quot;d-block mt-1&quot;&gt;Explore revenue data by state and year&lt;/small&gt;
+    &lt;/div&gt;
+    
+    &lt;!-- Map container --&gt;
+    &lt;div style=&quot;width: 100%; height: 700px; position: relative;&quot;&gt;
+      &lt;iframe 
+        src=&quot;https://zakaribillo.shinyapps.io/revenue-map/&quot; 
+        style=&quot;width: 100%; height: 100%; border: none;&quot;
+        title=&quot;Sports Betting Revenue Map&quot;
+        allowfullscreen
+      &gt;&lt;/iframe&gt;
+    &lt;/div&gt;
+    
+    &lt;!-- Controls below map --&gt;
+    &lt;div class=&quot;px-4 py-3 bg-white border-top&quot;&gt;
+      &lt;div class=&quot;row align-items-center&quot;&gt;
+        &lt;div class=&quot;col-md-8&quot;&gt;
+          &lt;div class=&quot;d-flex align-items-center&quot;&gt;
+            &lt;span class=&quot;badge bg-primary me-2&quot;&gt;Interactive&lt;/span&gt;
+            &lt;small class=&quot;text-muted&quot;&gt;
+              Use the slider to change years, hover over states for details
+            &lt;/small&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div class=&quot;col-md-4 text-end&quot;&gt;
+          &lt;a href=&quot;https://zakaribillo.shinyapps.io/revenue-map/&quot; 
+             class=&quot;btn btn-outline-primary btn-sm&quot; target=&quot;_blank&quot;&gt;
+            &lt;i class=&quot;fas fa-expand-alt me-1&quot;&gt;&lt;/i&gt; Open Full Screen
+          &lt;/a&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
 </div>
+</section>
 </div>
 
 <footer style="background-color: #1e293b; color: #cbd5e1; padding: 40px 20px; margin-top: 50px; border-top: 3px solid #eab308; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">

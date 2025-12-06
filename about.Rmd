@@ -71,7 +71,7 @@ font-size: 0.95rem;
 <!-- Sukhman -->
 
 <div class="team-member">
-<img src="images/IMG_1642.jpg" alt="Sukhman">
+<img src="images/IMG_1642.jpeg" alt="Sukhman">
 <h3>Sukhman</h3>
 <p>Sukhman is a second-year Epidemiology MPH student (’26) focused on biostatistics, computational methods, and cancer epidemiology.</p>
 </div>
