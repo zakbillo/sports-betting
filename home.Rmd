@@ -40,84 +40,13 @@ Here's a high-level overview of our project:
 
 ## Sports Gambling Revenue Across Legal States (2018-2024) 
 
-```{r}
-# Turn off spherical geometry processing.
-sf_use_s2(FALSE)
-
-# Import states' revenue data 
-total_state_revenue <- read_csv("data/total_state_revenue.csv")
-
-# Get US State boundaries (Shapes)
-# Set the CRS to 4326 (Lat/Lon) to ensure Leaflet renders it correctly
-us_states_sf <- st_as_sf(map("state", plot = FALSE, fill = TRUE)) %>%
-  st_set_crs(4326) %>%
-  mutate(ID = str_remove(ID, ":.*"))
-
-# 2. Prepare Data
-# Create a match_name column to join with the state shapes
-revenue_map_data <- total_state_revenue %>%
-  mutate(match_name = tolower(State))
-
-# Join Shapes with Data
-# Duplicates the state shape for EVERY year of data available.
-map_data <- us_states_sf %>%
-  left_join(revenue_map_data, by = c("ID" = "match_name")) %>%
-  filter(!is.na(Year)) %>% # Ensure we don't have empty years
-  # Create a unique ID for every single row (State + Year) for crosstalk, separating the layers so the slider can toggle them
-  mutate(unique_key = paste(State, Year))
-
-# Create "Shared Data"
-# Set the 'key' so crosstalk knows how to toggle rows uniqueely
-shared_map_data <- SharedData$new(map_data, key = ~unique_key)
-
-# Color Palette
-pal <- colorNumeric(palette = "viridis", domain = map_data$Revenue, na.color = "white")
-
-# Render the Interactive Map with Slider
-bscols(
-  widths = c(12, 12),
-  
-  # The Slider
-  filter_slider("year", "Select Year", shared_map_data, ~Year, step = 1, round = TRUE, animate = TRUE),
-  
-  # The Map
-  leaflet(shared_map_data) %>%
-    addProviderTiles(providers$CartoDB.Positron) %>%
-    setView(lng = -96, lat = 37.8, zoom = 4) %>%
-    addPolygons(
-      fillColor = ~pal(Revenue),
-      weight = 2,              # Thicker border
-      opacity = 1,
-      color = "black",         # Black border for high contrast
-      dashArray = "",          # Solid line (removed dash)
-      fillOpacity = 0.7,
-      highlightOptions = highlightOptions(
-        weight = 3,
-        color = "white",       # Highlight border becomes white on hover
-        dashArray = "",
-        fillOpacity = 0.9,
-        bringToFront = TRUE
-      ),
-      label = ~paste0(
-        "<strong>", str_to_title(ID), "</strong> (", Year, ")<br/>",
-        "Revenue: $", format(Revenue, big.mark = ",", scientific = FALSE), "<br/>",
-        "Taxes: $", format(Taxes, big.mark = ",", scientific = FALSE)
-      ) %>% lapply(htmltools::HTML),
-      labelOptions = labelOptions(
-        style = list("font-weight" = "normal", padding = "3px 8px"),
-        textsize = "15px",
-        direction = "auto"
-      )
-    ) %>%
-    addLegend(
-      pal = pal, 
-      values = map_data$Revenue, 
-      opacity = 0.7, 
-      title = "Revenue",
-      position = "bottomright"
-    )
-)
-```
+<div style="width: 100%; height: 800px;">
+  <iframe 
+    src="https://yourusername.shinyapps.io/revenue-map/" 
+    style="width: 100%; height: 100%; border: none;"
+    title="Sports Betting Revenue Map"
+  ></iframe>
+</div>
 
 
 

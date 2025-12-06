@@ -2,4 +2,20 @@
 title: 'About Us'
 ---
 
+# Zakari: 
+
+* "Zakari is an Epidemiology MPH candidate (’26) interested in cau"
+
+# Kimia: 
+
+* "Kimia is a second year Epidemiology MPH student (‘26) with an interest in biostatistics and data science, as well as humanitarian work"
+
+# Sukhman: 
+
+* "Sukhman is a second-year Epidemiology MPH student (’26) focused on biostatistics, computational methods, and cancer epidemiology"
+
+# Law: 
+
+* "Lawrence is a second-year Epidemiology MPH (‘26) student with a focus on Biostatistics, policy research and spatial analysis"
+
 Go back to [home](home.html)
