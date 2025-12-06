@@ -2,31 +2,32 @@
 title: 'Data Processing'
 output: 
   html_document:
-    theme: flatly       
+    theme: flatly        
     highlight: pygments 
     toc: true
     toc_float: true
-    code_folding: hide
+    code_folding: show
 ---
 
-```{r packages}
+```{r setup, include=FALSE}
 library(tidyverse)
 library(rvest)
 library(httr)
 library(jsonlite)
 library(glmnet)
-library(dplyr)
-library(webshot2)
-library(tidycensus)
 library(janitor)
+library(tidycensus)
+library(DT) # For interactive tables
 
+# Global options to keep the output clean
 knitr::opts_chunk$set(
-fig.width = 6,
-fig.asp = .6,
-out.width = "90%"
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%",
+  warning = FALSE,  
+  message = FALSE  
 )
-
-theme_set(theme_minimal() + theme(legend.position = "bottom"))
+  theme_set(theme_minimal() + theme(legend.position = "bottom"))
 
 options(
 ggplot2.continuous.colour = "viridis",
@@ -44,7 +45,11 @@ scale_fill_discrete = scale_fill_viridis_d
 
 ### Making the sports gambling dataset
 
-## Data scraping gambling revenue and growth
+Gambling Data {.tabset .tabset-pills}
+
+Web Scraping:
+
+Scrape the current 2024 state revenue and 2025 growth projections directly from the web
 
 ```{r scraping}
 url = "https://rg.org/statistics/us"
@@ -56,8 +61,6 @@ gambling_html |>
   html_table()
 ```
 
-## pull in 2024 revenue by state table 
-
 ```{r state revenue}
 state_revenue_24 = 
   gambling_html |> 
@@ -65,7 +68,7 @@ state_revenue_24 =
   first() 
 ```
 
-## pull in 2025 revenue growth by month
+Pull in 2025 revenue growth by month
 
 ```{r monthly growth}
 revenue_growth_25= 
@@ -74,7 +77,7 @@ revenue_growth_25=
   purrr::pluck(2)
 ```
 
-The website that was scrapped to obtain this data had dynamic filters that switched the year of the displayed data. Due to a lack of static data, we manually scraped the tables for previous years and saved the data in a CSV format
+We realized website that was scrapped to obtain this data had dynamic filters that switched the year of the displayed data. To overcome the lack of static data, we manually scraped the tables for previous years and saved the data in a CSV format
 
 ```{r importing csv}
 # 2018 Data
@@ -105,7 +108,7 @@ state_revenue_23  = read_csv("data/gambling_revenue_data/2023_state_revenue.csv"
 revenue_growth_24 = read_csv("data/gambling_revenue_data/2024_monthly_revenue.csv")
 ```
 
-## Cleaning the url scraped data so that it matches data types with the manually scraped data
+Clean the url scraped data so that it matches data types with the manually scraped data
 
 ```{r cleaning}
 # --- Clean Scraped Data to match CSV format ---
@@ -131,7 +134,7 @@ revenue_growth_25_clean = revenue_growth_25 |>
   )
 ```
 
-## Next, we want to combine the dataset
+Next, combine the dataset
 
 ```{r merging}
 # --- Create Master State Revenue File ---
@@ -195,16 +198,17 @@ monthly_grand_total = total_revenue_growth |>
 final_revenue_growth = bind_rows(total_revenue_growth, monthly_grand_total)
 ```
 
-## Saving relevant gambling datasets
+Save the relevant gambling datasets
 
 ```{r}
 write.csv(total_state_revenue, "data/total_state_revenue.csv") # state totals only
 write.csv(final_state_revenue, "data/final_state_revenue.csv") # totals mapped to raw data
 ```
 
-### Making the demographic dataset
+Demographics {.tabset .tabset-pills}
+We utilize the tidycensus package to pull 2024 ACS data for all states
 
-## Census Info
+Base Stats (Pop/Income)
 
 ```{r Income and Population}
 vars_base = c(
@@ -224,7 +228,7 @@ acs_base_2024 =
   clean_names()
 ```
 
-## Education %
+Educational Attainment
 
 ```{r Education (% with bachelor’s degree or higher)}
 # Pull raw ACS education data
@@ -254,7 +258,7 @@ educ_clean_2024 =
 
 ```
 
-## Age
+Age Distribution
 
 ```{r Age}
 age_2024 = get_acs(
@@ -293,7 +297,7 @@ median_age_2024 = get_acs(
   select(NAME, median_age = estimate)
 ```
 
-## Urban %
+Urbanization
 
 ```{r Urbanization (% living in urban areas)}
 urban_raw <-read_csv("data/Census_Urbanization_Data/DECENNIALDHC2020.P2-Data.csv")
@@ -311,7 +315,7 @@ urban_clean_2020 =
   )
 ```
 
-## Poverty %
+Poverty & Unemployment
 
 ```{r Poverty (% of population below poverty line)}
 poverty_2024 =
@@ -336,33 +340,6 @@ poverty_clean_2024 =
   )
 ```
 
-## Male %
-
-```{r % Male}
-# % Male
-sex_2024 = get_acs(
-  geography = "state",
-  variables = c(
-    male = "B01001_002",
-    total = "B01001_001"
-  ),
-  survey = "acs1",
-  year = 2024
-)
-
-sex_clean_2024 =
-  sex_2024 |>
-  group_by(NAME) |>
-  summarize(
-    male = sum(estimate[variable == "male"]),
-    total = sum(estimate[variable == "total"]),
-    .groups = "drop"
-  ) |>
-  mutate(pct_male = male / total)
-```
-
-## Unemployment rate
-
 ```{r Unemployment Rate}
 # Unemployment rate
 unemp_2024 = get_acs(
@@ -386,7 +363,7 @@ unemp_clean_2024 =
   mutate(unemployment_rate = unemployed / labor_force)
 ```
 
-## Race
+Racial Composition
 
 ```{r Race}
 race_2024 = get_acs(
@@ -421,7 +398,32 @@ race_clean_2024 =
   )
 ```
 
-## Internet Access
+Gender
+
+```{r % Male}
+# % Male
+sex_2024 = get_acs(
+  geography = "state",
+  variables = c(
+    male = "B01001_002",
+    total = "B01001_001"
+  ),
+  survey = "acs1",
+  year = 2024
+)
+
+sex_clean_2024 =
+  sex_2024 |>
+  group_by(NAME) |>
+  summarize(
+    male = sum(estimate[variable == "male"]),
+    total = sum(estimate[variable == "total"]),
+    .groups = "drop"
+  ) |>
+  mutate(pct_male = male / total)
+```
+
+Additional Indicators
 
 ```{r Internet Access}
 internet_2024 = get_acs(
@@ -445,8 +447,6 @@ internet_clean_2024 =
   mutate(pct_broadband = broadband / total)
 ```
 
-## GINI Index
-
 ```{r GINI Index}
 # here is the def if you do not know what this is: The Gini index, or Gini coefficient, is a measure of income, wealth, or consumption inequality within a population, ranging from 0 (perfect equality) to 1 (perfect inequality)
 
@@ -458,8 +458,6 @@ gini_2024 = get_acs(
 ) |>
   select(NAME, gini = estimate)
 ```
-
-## Renting
 
 ```{r Renting}
 rent_2024 = get_acs(
@@ -488,7 +486,7 @@ rent_clean_2024 =
   )
 ```
 
-### Merge into final dataset
+Merge into final dataset.
 
 ```{r Merge All Demographics + Gambling Revenue Together}
 #Rename so all are State
@@ -552,7 +550,7 @@ model_data_2024 =
   left_join(demographics_2024, by = "State")
 ```
 
-## Look at final dataset 
+Look at final dataset.
 
 ```{r Look at Final Dataset}
 #view(demographics_2024)
@@ -564,7 +562,7 @@ summary(model_data_2024)
 glimpse(model_data_2024)
 ```
 
-## Clean final dataset 
+Clean final dataset.
 
 ```{r Clean Final Dataset}
 model_clean_2024 <-
@@ -580,7 +578,7 @@ anti_join(model_data_2024, model_clean_2024, by = "State") |>
   select(State)
 ```
 
-## Save final datasets
+Save final datasets.
 
 ```{r}
 write.csv(model_clean_2024, "data/model_clean_2024.csv")

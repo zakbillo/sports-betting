@@ -10,8 +10,6 @@ navbar:
       href: data.html
     - text: "Analysis"
       href: analysis.html
-    - text: "Shiny"
-      href: flexdashboard.html      
     - text: "Project Report"
       href: report.html
     - text: "About Us"
