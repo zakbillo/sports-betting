@@ -302,7 +302,9 @@ $(document).ready(function () {
 <style>
 .team-grid {
 display: grid;
-grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+/* Auto-fit with a min of 300px ensures 2 per row on standard screens,
+or all 4 on very wide screens */
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 gap: 40px;
 margin-top: 50px;
 margin-bottom: 50px;
@@ -310,7 +312,7 @@ margin-bottom: 50px;
 
 .team-member {
 text-align: center;
-padding: 20px;
+padding: 30px; /* Increased padding */
 background-color: #f8f9fa;
 border-radius: 10px;
 transition: transform 0.3s ease;
@@ -322,36 +324,38 @@ box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
 .team-member img {
-width: 180px;
-height: 180px;
-border-radius: 50%; /* This makes the image circular /
-object-fit: cover; / Ensures image doesn't stretch /
-border: 5px solid #2c3e50; / Dark border matching theme */
-margin-bottom: 20px;
+width: 200px; /* Slightly larger images */
+height: 200px;
+border-radius: 50%;
+object-fit: cover;
+border: 5px solid #2c3e50;
+margin-bottom: 25px;
 }
 
 .team-member h3 {
 color: #2c3e50;
-margin-bottom: 10px;
-font-weight: 600;
+margin-bottom: 15px;
+font-weight: 700;
+font-size: 1.75rem; /* Larger Name Font */
 }
 
 .team-member p {
 color: #5d6d7e;
 line-height: 1.6;
-font-size: 0.95rem;
+font-size: 1.2rem; /* Larger Description Font */
 }
 </style>
 <div class="team-grid">
 <!-- Zakari -->
 <div class="team-member">
+<a href="https://zakaribillo.com" class="team-member-link" target="_blank">
 <img src="images/zlb%20headshot.jpg" alt="Zakari">
 <h3>
 Zakari
 </h3>
 <p>
-Zakari is an Epidemiology MPH candidate (’26) interested in causal
-inference, causal discovery, and algorithmic fairness.
+Zakari is a second-year Epidemiology MPH student (’26) interested in
+causal inference, causal discovery, and algorithmic fairness.
 </p>
 </div>
 <!-- Kimia -->
@@ -367,7 +371,7 @@ in biostatistics and data science, as well as humanitarian work.
 </div>
 <!-- Sukhman -->
 <div class="team-member">
-<img src="images/IMG_1642.jpeg" alt="Sukhman">
+<img src="images/IMG_1642.jpg" alt="Sukhman">
 <h3>
 Sukhman
 </h3>
@@ -383,8 +387,8 @@ biostatistics, computational methods, and cancer epidemiology.
 Law
 </h3>
 <p>
-Lawrence is a second-year Epidemiology MPH (’26) student with a focus on
-Biostatistics, policy research and spatial analysis.
+Lawrence is a second-year Epidemiology MPH student (’26) with a focus on
+biostatistics, policy research and spatial analysis.
 </p>
 </div>
 </div>
