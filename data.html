@@ -375,9 +375,13 @@ library(glmnet)
 library(dplyr)
 library(webshot2)
 library(tidycensus)
-library(janitor)
-
-knitr::opts_chunk$set(
+library(janitor)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;janitor&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     chisq.test, fisher.test</code></pre>
+<pre class="r"><code>knitr::opts_chunk$set(
 fig.width = 6,
 fig.asp = .6,
 out.width = &quot;90%&quot;
@@ -464,42 +468,42 @@ gambling_html = read_html(url)</code></pre>
 ## 
 ## [[4]]
 ## # A tibble: 3 × 3
-##   Challenge             `Key Stat (2025)`                                                                 Impact on Sports Bet…¹
-##   &lt;chr&gt;                 &lt;chr&gt;                                                                             &lt;chr&gt;                 
-## 1 Regulatory Compliance 39 U.S. states + Washington D.C. legalized sports betting, each with unique laws… Increases operational…
-## 2 Gambling Addiction    2.5M U.S. adults have severe gambling problems; 4-6M at risk (NCPG)               Drives demand for str…
-## 3 High Tax Rates        51% GGR tax in NY, RI, NH                                                         Limits profitability,…
+##   Challenge             `Key Stat (2025)`                 Impact on Sports Bet…¹
+##   &lt;chr&gt;                 &lt;chr&gt;                             &lt;chr&gt;                 
+## 1 Regulatory Compliance 39 U.S. states + Washington D.C.… Increases operational…
+## 2 Gambling Addiction    2.5M U.S. adults have severe gam… Drives demand for str…
+## 3 High Tax Rates        51% GGR tax in NY, RI, NH         Limits profitability,…
 ## # ℹ abbreviated name: ¹​`Impact on Sports Betting Industry`
 ## 
 ## [[5]]
 ## # A tibble: 6 × 3
-##   Trend                 `2025 Highlight`                                       `What It Means`                                  
-##   &lt;chr&gt;                 &lt;chr&gt;                                                  &lt;chr&gt;                                            
-## 1 Mobile Dominance      Over 80% of online gambling via mobile                 Convenience, accessibility drive user adoption   
-## 2 Bettor Engagement     20% of U.S. adults bet on sports                       Growing user base with strong financial incentiv…
-## 3 Popular Formats       Parlays = 27% of bets                                  Multi-leg bets boosting engagement and revenue   
-## 4 Media Integration     ESPN BET’s FanCenter syncs fantasy with live betting   Seamless convergence of sports media and wagering
-## 5 Major Event Impact    Super Bowl handle hit $1.39B                           Live events remain biggest customer acquisition …
-## 6 Demographic Expansion Bettor participation rose to 26%, driven by older ages Market broadening beyond young, tech-native users
+##   Trend                 `2025 Highlight`                         `What It Means`
+##   &lt;chr&gt;                 &lt;chr&gt;                                    &lt;chr&gt;          
+## 1 Mobile Dominance      Over 80% of online gambling via mobile   Convenience, a…
+## 2 Bettor Engagement     20% of U.S. adults bet on sports         Growing user b…
+## 3 Popular Formats       Parlays = 27% of bets                    Multi-leg bets…
+## 4 Media Integration     ESPN BET’s FanCenter syncs fantasy with… Seamless conve…
+## 5 Major Event Impact    Super Bowl handle hit $1.39B             Live events re…
+## 6 Demographic Expansion Bettor participation rose to 26%, drive… Market broaden…
 ## 
 ## [[6]]
 ## # A tibble: 3 × 3
-##   Technology                   `Use in Sports Betting`                                                    Impact on Bettors &amp; …¹
-##   &lt;chr&gt;                        &lt;chr&gt;                                                                      &lt;chr&gt;                 
-## 1 Artificial Intelligence (AI) Analyzes player performance metrics (e.g., speed, accuracy) and game tren… Enables more accurate…
-## 2 Machine Learning &amp; Big Data  Processes massive datasets to detect patterns and optimize in-game wagers  Shifts betting from i…
-## 3 Blockchain &amp; Web3            Creates transparent, decentralized betting platforms; uses smart contract… Improves trust, autom…
+##   Technology                   `Use in Sports Betting`    Impact on Bettors &amp; …¹
+##   &lt;chr&gt;                        &lt;chr&gt;                      &lt;chr&gt;                 
+## 1 Artificial Intelligence (AI) Analyzes player performan… Enables more accurate…
+## 2 Machine Learning &amp; Big Data  Processes massive dataset… Shifts betting from i…
+## 3 Blockchain &amp; Web3            Creates transparent, dece… Improves trust, autom…
 ## # ℹ abbreviated name: ¹​`Impact on Bettors &amp; Industry`
 ## 
 ## [[7]]
 ## # A tibble: 5 × 3
-##   Measure             Description                                                             Impact                            
-##   &lt;chr&gt;               &lt;chr&gt;                                                                   &lt;chr&gt;                             
-## 1 AI Risk Detection   Uses machine learning to identify harmful betting patterns in real time Enables early intervention        
-## 2 Loss Limits         Caps on daily, weekly, or monthly spending                              Prevents excessive losses         
-## 3 Self-Exclusion      Lets bettors block access for set periods                               Supports recovery and control     
-## 4 Education Campaigns Public awareness on gambling risks                                      Reduces stigma, promotes safer pl…
-## 5 Cooling-Off Periods Mandatory breaks between sessions                                       Encourages responsible pacing</code></pre>
+##   Measure             Description                                         Impact
+##   &lt;chr&gt;               &lt;chr&gt;                                               &lt;chr&gt; 
+## 1 AI Risk Detection   Uses machine learning to identify harmful betting … Enabl…
+## 2 Loss Limits         Caps on daily, weekly, or monthly spending          Preve…
+## 3 Self-Exclusion      Lets bettors block access for set periods           Suppo…
+## 4 Education Campaigns Public awareness on gambling risks                  Reduc…
+## 5 Cooling-Off Periods Mandatory breaks between sessions                   Encou…</code></pre>
 </div>
 <div id="pull-in-2024-revenue-by-state-table" class="section level2">
 <h2>pull in 2024 revenue by state table</h2>
@@ -521,7 +525,7 @@ data in a CSV format</p>
 <pre class="r"><code># 2018 Data
 revenue_growth_18 = read_csv(&quot;data/gambling_revenue_data/2018_monthly_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 8 Columns: 5
-## ── Column specification ────────────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Column specification ───────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): Month
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -530,7 +534,7 @@ revenue_growth_18 = read_csv(&quot;data/gambling_revenue_data/2018_monthly_reven
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>state_revenue_18  = read_csv(&quot;data/gambling_revenue_data/2018_state_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 40 Columns: 5
-## ── Column specification ────────────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Column specification ───────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): State
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -540,7 +544,7 @@ revenue_growth_18 = read_csv(&quot;data/gambling_revenue_data/2018_monthly_reven
 <pre class="r"><code># 2019 Data
 revenue_growth_19 = read_csv(&quot;data/gambling_revenue_data/2019_monthly_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 13 Columns: 5
-## ── Column specification ────────────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Column specification ───────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): Month
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -549,7 +553,7 @@ revenue_growth_19 = read_csv(&quot;data/gambling_revenue_data/2019_monthly_reven
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>state_revenue_19  = read_csv(&quot;data/gambling_revenue_data/2019_state_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 40 Columns: 5
-## ── Column specification ────────────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Column specification ───────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): State
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -559,7 +563,7 @@ revenue_growth_19 = read_csv(&quot;data/gambling_revenue_data/2019_monthly_reven
 <pre class="r"><code># 2020 Data
 revenue_growth_20 = read_csv(&quot;data/gambling_revenue_data/2020_monthly_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 13 Columns: 5
-## ── Column specification ────────────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Column specification ───────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): Month
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -568,7 +572,7 @@ revenue_growth_20 = read_csv(&quot;data/gambling_revenue_data/2020_monthly_reven
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>state_revenue_20  = read_csv(&quot;data/gambling_revenue_data/2020_state_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 40 Columns: 5
-## ── Column specification ────────────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Column specification ───────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): State
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -578,7 +582,7 @@ revenue_growth_20 = read_csv(&quot;data/gambling_revenue_data/2020_monthly_reven
 <pre class="r"><code># 2021 Data
 revenue_growth_21 = read_csv(&quot;data/gambling_revenue_data/2021_monthly_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 13 Columns: 5
-## ── Column specification ────────────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Column specification ───────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): Month
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -587,7 +591,7 @@ revenue_growth_21 = read_csv(&quot;data/gambling_revenue_data/2021_monthly_reven
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>state_revenue_21  = read_csv(&quot;data/gambling_revenue_data/2021_state_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 40 Columns: 5
-## ── Column specification ────────────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Column specification ───────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): State
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -597,7 +601,7 @@ revenue_growth_21 = read_csv(&quot;data/gambling_revenue_data/2021_monthly_reven
 <pre class="r"><code># 2022 Data
 revenue_growth_22 = read_csv(&quot;data/gambling_revenue_data/2022_monthly_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 13 Columns: 5
-## ── Column specification ────────────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Column specification ───────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): Month
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -606,7 +610,7 @@ revenue_growth_22 = read_csv(&quot;data/gambling_revenue_data/2022_monthly_reven
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>state_revenue_22  = read_csv(&quot;data/gambling_revenue_data/2022_state_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 40 Columns: 5
-## ── Column specification ────────────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Column specification ───────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): State
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -616,7 +620,7 @@ revenue_growth_22 = read_csv(&quot;data/gambling_revenue_data/2022_monthly_reven
 <pre class="r"><code># 2023 Data
 revenue_growth_23 = read_csv(&quot;data/gambling_revenue_data/2023_monthly_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 13 Columns: 5
-## ── Column specification ────────────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Column specification ───────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): Month
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -625,7 +629,7 @@ revenue_growth_23 = read_csv(&quot;data/gambling_revenue_data/2023_monthly_reven
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>state_revenue_23  = read_csv(&quot;data/gambling_revenue_data/2023_state_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 40 Columns: 5
-## ── Column specification ────────────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Column specification ───────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): State
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -635,7 +639,7 @@ revenue_growth_23 = read_csv(&quot;data/gambling_revenue_data/2023_monthly_reven
 <pre class="r"><code># 2024 Data
 revenue_growth_24 = read_csv(&quot;data/gambling_revenue_data/2024_monthly_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 13 Columns: 5
-## ── Column specification ────────────────────────────────────────────────────────────────────────────────────────────────────────
+## ── Column specification ───────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): Month
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -759,6 +763,12 @@ acs_base_2024 =
   clean_names()</code></pre>
 <pre><code>## Getting data from the 2024 1-year ACS</code></pre>
 <pre><code>## The 1-year ACS provides data for geographies with populations of 65,000 and greater.</code></pre>
+<pre><code>## Warning: • You have not set a Census API key. Users without a key are limited to 500
+## queries per day and may experience performance limitations.
+## ℹ For best results, get a Census API key at
+## http://api.census.gov/data/key_signup.html and then supply the key to the
+## `census_api_key()` function to use it throughout your tidycensus session.
+## This warning is displayed once per session.</code></pre>
 </div>
 <div id="education" class="section level2">
 <h2>Education %</h2>
@@ -834,10 +844,11 @@ median_age_2024 = get_acs(
 <pre><code>## New names:
 ## Rows: 53 Columns: 7
 ## ── Column specification
-## ──────────────────────────────────────────────────────────────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
+## ─────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
 ## (6): GEO_ID, NAME, P2_001N, P2_002N, P2_003N, P2_004N lgl (1): ...7
-## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ Specify the column types or set `show_col_types =
-## FALSE` to quiet this message.
+## ℹ Use `spec()` to retrieve the full column specification for this
+## data. ℹ Specify the column types or set `show_col_types = FALSE` to
+## quiet this message.
 ## • `` -&gt; `...7`</code></pre>
 <pre class="r"><code>urban_clean_2020 =
   urban_raw |&gt;
@@ -1088,75 +1099,105 @@ model_data_2024 =
 <h2>Look at final dataset</h2>
 <pre class="r"><code>#view(demographics_2024)
 summary(demographics_2024)</code></pre>
-<pre><code>##     State             total_pop        median_income    pct_bachelors    pct_age_20_34       pct_urban        pct_rural     
-##  Length:52          Min.   :  587618   Min.   : 27213   Min.   :0.2438   Min.   :0.05403   Min.   :0.3512   Min.   :0.0000  
-##  Class :character   1st Qu.: 1943709   1st Qu.: 72316   1st Qu.:0.3233   1st Qu.:0.06333   1st Qu.:0.6425   1st Qu.:0.1389  
-##  Mode  :character   Median : 4430372   Median : 77803   Median :0.3560   Median :0.06591   Median :0.7324   Median :0.2676  
-##                     Mean   : 6602198   Mean   : 80424   Mean   :0.3625   Mean   :0.06580   Mean   :0.7334   Mean   :0.2666  
-##                     3rd Qu.: 7676333   3rd Qu.: 88673   3rd Qu.:0.3915   3rd Qu.:0.06819   3rd Qu.:0.8611   3rd Qu.:0.3575  
-##                     Max.   :39431263   Max.   :109707   Max.   :0.6546   Max.   :0.08744   Max.   :1.0000   Max.   :0.6488  
-##   pct_poverty         pct_male      unemployment_rate   pct_white        pct_black          pct_asian         pct_hispanic    
-##  Min.   :0.07205   Min.   :0.4729   Min.   :0.01910   Min.   :0.2195   Min.   :0.003091   Min.   :0.001707   Min.   :0.02317  
-##  1st Qu.:0.10149   1st Qu.:0.4910   1st Qu.:0.03659   1st Qu.:0.5621   1st Qu.:0.036199   1st Qu.:0.019852   1st Qu.:0.06562  
-##  Median :0.11579   Median :0.4951   Median :0.04345   Median :0.6745   Median :0.069857   Median :0.030595   Median :0.11586  
-##  Mean   :0.12441   Mean   :0.4960   Mean   :0.04332   Mean   :0.6569   Mean   :0.106106   Mean   :0.046410   Mean   :0.15332  
-##  3rd Qu.:0.13418   3rd Qu.:0.5006   3rd Qu.:0.04891   3rd Qu.:0.7751   3rd Qu.:0.141908   3rd Qu.:0.050288   3rd Qu.:0.17378  
-##  Max.   :0.37308   Max.   :0.5273   Max.   :0.08448   Max.   :0.9011   Max.   :0.413152   Max.   :0.362609   Max.   :0.98877  
-##    median_age    pct_broadband         gini           pct_rent         pct_own      
-##  Min.   :32.50   Min.   :0.8626   Min.   :0.4222   Min.   :0.2449   Min.   :0.4090  
-##  1st Qu.:38.62   1st Qu.:0.9161   1st Qu.:0.4556   1st Qu.:0.2922   1st Qu.:0.6588  
-##  Median :39.40   Median :0.9280   Median :0.4665   Median :0.3201   Median :0.6799  
-##  Mean   :39.64   Mean   :0.9254   Mean   :0.4670   Mean   :0.3295   Mean   :0.6705  
-##  3rd Qu.:40.73   3rd Qu.:0.9368   3rd Qu.:0.4747   3rd Qu.:0.3412   3rd Qu.:0.7078  
-##  Max.   :45.40   Max.   :0.9529   Max.   :0.5338   Max.   :0.5910   Max.   :0.7551</code></pre>
+<pre><code>##     State             total_pop        median_income    pct_bachelors   
+##  Length:52          Min.   :  587618   Min.   : 27213   Min.   :0.2438  
+##  Class :character   1st Qu.: 1943709   1st Qu.: 72316   1st Qu.:0.3233  
+##  Mode  :character   Median : 4430372   Median : 77803   Median :0.3560  
+##                     Mean   : 6602198   Mean   : 80424   Mean   :0.3625  
+##                     3rd Qu.: 7676333   3rd Qu.: 88673   3rd Qu.:0.3915  
+##                     Max.   :39431263   Max.   :109707   Max.   :0.6546  
+##  pct_age_20_34       pct_urban        pct_rural       pct_poverty     
+##  Min.   :0.05403   Min.   :0.3512   Min.   :0.0000   Min.   :0.07205  
+##  1st Qu.:0.06333   1st Qu.:0.6425   1st Qu.:0.1389   1st Qu.:0.10149  
+##  Median :0.06591   Median :0.7324   Median :0.2676   Median :0.11579  
+##  Mean   :0.06580   Mean   :0.7334   Mean   :0.2666   Mean   :0.12441  
+##  3rd Qu.:0.06819   3rd Qu.:0.8611   3rd Qu.:0.3575   3rd Qu.:0.13418  
+##  Max.   :0.08744   Max.   :1.0000   Max.   :0.6488   Max.   :0.37308  
+##     pct_male      unemployment_rate   pct_white        pct_black       
+##  Min.   :0.4729   Min.   :0.01910   Min.   :0.2195   Min.   :0.003091  
+##  1st Qu.:0.4910   1st Qu.:0.03659   1st Qu.:0.5621   1st Qu.:0.036199  
+##  Median :0.4951   Median :0.04345   Median :0.6745   Median :0.069857  
+##  Mean   :0.4960   Mean   :0.04332   Mean   :0.6569   Mean   :0.106106  
+##  3rd Qu.:0.5006   3rd Qu.:0.04891   3rd Qu.:0.7751   3rd Qu.:0.141908  
+##  Max.   :0.5273   Max.   :0.08448   Max.   :0.9011   Max.   :0.413152  
+##    pct_asian         pct_hispanic       median_age    pct_broadband   
+##  Min.   :0.001707   Min.   :0.02317   Min.   :32.50   Min.   :0.8626  
+##  1st Qu.:0.019852   1st Qu.:0.06562   1st Qu.:38.62   1st Qu.:0.9161  
+##  Median :0.030595   Median :0.11586   Median :39.40   Median :0.9280  
+##  Mean   :0.046410   Mean   :0.15332   Mean   :39.64   Mean   :0.9254  
+##  3rd Qu.:0.050288   3rd Qu.:0.17378   3rd Qu.:40.73   3rd Qu.:0.9368  
+##  Max.   :0.362609   Max.   :0.98877   Max.   :45.40   Max.   :0.9529  
+##       gini           pct_rent         pct_own      
+##  Min.   :0.4222   Min.   :0.2449   Min.   :0.4090  
+##  1st Qu.:0.4556   1st Qu.:0.2922   1st Qu.:0.6588  
+##  Median :0.4665   Median :0.3201   Median :0.6799  
+##  Mean   :0.4670   Mean   :0.3295   Mean   :0.6705  
+##  3rd Qu.:0.4747   3rd Qu.:0.3412   3rd Qu.:0.7078  
+##  Max.   :0.5338   Max.   :0.5910   Max.   :0.7551</code></pre>
 <pre class="r"><code>glimpse(demographics_2024)</code></pre>
 <pre><code>## Rows: 52
 ## Columns: 19
-## $ State             &lt;chr&gt; &quot;Alabama&quot;, &quot;Alaska&quot;, &quot;Arizona&quot;, &quot;Arkansas&quot;, &quot;California&quot;, &quot;Colorado&quot;, &quot;Connecticut&quot;, &quot;Delaware&quot;, &quot;Di…
-## $ total_pop         &lt;dbl&gt; 5157699, 740133, 7582384, 3088354, 39431263, 5957494, 3675069, 1051917, 702250, 23372215, 11180878, …
-## $ median_income     &lt;dbl&gt; 66659, 95665, 81486, 62106, 100149, 97113, 96049, 87534, 109707, 77735, 79991, 100745, 81166, 83211,…
-## $ pct_bachelors     &lt;dbl&gt; 0.2985358, 0.3275460, 0.3473430, 0.2711732, 0.3812365, 0.4776638, 0.4256536, 0.3599157, 0.6546496, 0…
-## $ pct_age_20_34     &lt;dbl&gt; 0.06431007, 0.06822828, 0.06858898, 0.06647845, 0.06525038, 0.06598143, 0.06532394, 0.06061980, 0.07…
-## $ pct_urban         &lt;dbl&gt; 0.5773724, 0.6489949, 0.8928516, 0.5547613, 0.9423663, 0.8602671, 0.8625073, 0.8261212, 1.0000000, 0…
-## $ pct_rural         &lt;dbl&gt; 0.42262760, 0.35100513, 0.10714840, 0.44523869, 0.05763367, 0.13973293, 0.13749271, 0.17387883, 0.00…
-## $ pct_poverty       &lt;dbl&gt; 0.15188039, 0.10166801, 0.11680530, 0.15535744, 0.11802573, 0.09601167, 0.10195637, 0.09593718, 0.17…
-## $ pct_male          &lt;dbl&gt; 0.4828803, 0.5273390, 0.4989042, 0.4913705, 0.4989722, 0.5063738, 0.4911189, 0.4817519, 0.4728544, 0…
-## $ unemployment_rate &lt;dbl&gt; 0.04231466, 0.05961084, 0.04563755, 0.03817759, 0.05933599, 0.04277032, 0.04948289, 0.05106719, 0.05…
-## $ pct_white         &lt;dbl&gt; 0.6401166, 0.5870837, 0.5731275, 0.6818985, 0.3807584, 0.6935989, 0.6369799, 0.5816581, 0.3756454, 0…
-## $ pct_black         &lt;dbl&gt; 0.252458897, 0.025060361, 0.047592947, 0.141759980, 0.053529125, 0.042512338, 0.107578388, 0.2203928…
-## $ pct_asian         &lt;dbl&gt; 0.015431106, 0.059552810, 0.039926229, 0.017868418, 0.161028928, 0.034834445, 0.048035561, 0.0483108…
-## $ pct_hispanic      &lt;dbl&gt; 0.05951607, 0.07732259, 0.32122628, 0.09541361, 0.40752471, 0.23213586, 0.19232455, 0.11675161, 0.12…
-## $ median_age        &lt;dbl&gt; 39.6, 36.3, 39.4, 39.1, 38.4, 38.0, 41.2, 42.1, 34.9, 42.7, 38.0, 41.5, 37.8, 39.4, 38.3, 39.0, 38.0…
-## $ pct_broadband     &lt;dbl&gt; 0.9164410, 0.9359704, 0.9355612, 0.9076009, 0.9500471, 0.9489518, 0.9403395, 0.9428868, 0.9246952, 0…
-## $ gini              &lt;dbl&gt; 0.4745, 0.4395, 0.4623, 0.4721, 0.4852, 0.4611, 0.4989, 0.4478, 0.5244, 0.4799, 0.4730, 0.4542, 0.43…
-## $ pct_rent          &lt;dbl&gt; 0.2904826, 0.3348100, 0.3224346, 0.3288997, 0.4417975, 0.3405580, 0.3332788, 0.2622216, 0.5910181, 0…
-## $ pct_own           &lt;dbl&gt; 0.7095174, 0.6651900, 0.6775654, 0.6711003, 0.5582025, 0.6594420, 0.6667212, 0.7377784, 0.4089819, 0…</code></pre>
+## $ State             &lt;chr&gt; &quot;Alabama&quot;, &quot;Alaska&quot;, &quot;Arizona&quot;, &quot;Arkansas&quot;, &quot;Califor…
+## $ total_pop         &lt;dbl&gt; 5157699, 740133, 7582384, 3088354, 39431263, 5957494…
+## $ median_income     &lt;dbl&gt; 66659, 95665, 81486, 62106, 100149, 97113, 96049, 87…
+## $ pct_bachelors     &lt;dbl&gt; 0.2985358, 0.3275460, 0.3473430, 0.2711732, 0.381236…
+## $ pct_age_20_34     &lt;dbl&gt; 0.06431007, 0.06822828, 0.06858898, 0.06647845, 0.06…
+## $ pct_urban         &lt;dbl&gt; 0.5773724, 0.6489949, 0.8928516, 0.5547613, 0.942366…
+## $ pct_rural         &lt;dbl&gt; 0.42262760, 0.35100513, 0.10714840, 0.44523869, 0.05…
+## $ pct_poverty       &lt;dbl&gt; 0.15188039, 0.10166801, 0.11680530, 0.15535744, 0.11…
+## $ pct_male          &lt;dbl&gt; 0.4828803, 0.5273390, 0.4989042, 0.4913705, 0.498972…
+## $ unemployment_rate &lt;dbl&gt; 0.04231466, 0.05961084, 0.04563755, 0.03817759, 0.05…
+## $ pct_white         &lt;dbl&gt; 0.6401166, 0.5870837, 0.5731275, 0.6818985, 0.380758…
+## $ pct_black         &lt;dbl&gt; 0.252458897, 0.025060361, 0.047592947, 0.141759980, …
+## $ pct_asian         &lt;dbl&gt; 0.01543111, 0.05955281, 0.03992623, 0.01786842, 0.16…
+## $ pct_hispanic      &lt;dbl&gt; 0.05951607, 0.07732259, 0.32122628, 0.09541361, 0.40…
+## $ median_age        &lt;dbl&gt; 39.6, 36.3, 39.4, 39.1, 38.4, 38.0, 41.2, 42.1, 34.9…
+## $ pct_broadband     &lt;dbl&gt; 0.9164410, 0.9359704, 0.9355612, 0.9076009, 0.950047…
+## $ gini              &lt;dbl&gt; 0.4745, 0.4395, 0.4623, 0.4721, 0.4852, 0.4611, 0.49…
+## $ pct_rent          &lt;dbl&gt; 0.2904826, 0.3348100, 0.3224346, 0.3288997, 0.441797…
+## $ pct_own           &lt;dbl&gt; 0.7095174, 0.6651900, 0.6775654, 0.6711003, 0.558202…</code></pre>
 <pre class="r"><code>#view(model_data_2024)
 summary(model_data_2024)</code></pre>
-<pre><code>##     State              Revenue              Handle              Taxes                Hold          total_pop       
-##  Length:39          Min.   :9.209e+05   Min.   :9.237e+06   Min.   :8.288e+04   Min.   : 5.530   Min.   :  587618  
-##  Class :character   1st Qu.:5.414e+07   1st Qu.:5.132e+08   1st Qu.:8.523e+06   1st Qu.: 8.693   1st Qu.: 1828851  
-##  Mode  :character   Median :2.453e+08   Median :3.235e+09   Median :3.224e+07   Median : 9.610   Median : 4430372  
-##                     Mean   :4.095e+08   Mean   :4.669e+09   Mean   :8.348e+07   Mean   : 9.639   Mean   : 5877058  
-##                     3rd Qu.:5.592e+08   3rd Qu.:7.045e+09   3rd Qu.:8.977e+07   3rd Qu.:10.773   3rd Qu.: 7864231  
-##                     Max.   :2.059e+09   Max.   :2.295e+10   Max.   :1.050e+09   Max.   :13.960   Max.   :23372215  
-##                     NA&#39;s   :5           NA&#39;s   :7           NA&#39;s   :5           NA&#39;s   :7        NA&#39;s   :1         
-##  median_income    pct_bachelors    pct_age_20_34       pct_urban        pct_rural        pct_poverty         pct_male     
-##  Min.   : 59127   Min.   :0.2438   Min.   :0.05403   Min.   :0.3512   Min.   :0.05908   Min.   :0.07205   Min.   :0.4818  
-##  1st Qu.: 72256   1st Qu.:0.3230   1st Qu.:0.06180   1st Qu.:0.6123   1st Qu.:0.14076   1st Qu.:0.10120   1st Qu.:0.4914  
-##  Median : 77213   Median :0.3591   Median :0.06545   Median :0.7324   Median :0.26760   Median :0.11578   Median :0.4943  
-##  Mean   : 80034   Mean   :0.3606   Mean   :0.06491   Mean   :0.7186   Mean   :0.28143   Mean   :0.11909   Mean   :0.4961  
-##  3rd Qu.: 85670   3rd Qu.:0.4057   3rd Qu.:0.06752   3rd Qu.:0.8592   3rd Qu.:0.38770   3rd Qu.:0.12642   3rd Qu.:0.5005  
-##  Max.   :104828   Max.   :0.4827   Max.   :0.07733   Max.   :0.9409   Max.   :0.64880   Max.   :0.18688   Max.   :0.5137  
-##  NA&#39;s   :1        NA&#39;s   :1        NA&#39;s   :1         NA&#39;s   :1        NA&#39;s   :1         NA&#39;s   :1         NA&#39;s   :1       
-##  unemployment_rate   pct_white        pct_black          pct_asian         pct_hispanic       median_age    pct_broadband   
-##  Min.   :0.01910   Min.   :0.4635   Min.   :0.003091   Min.   :0.007063   Min.   :0.02317   Min.   :36.70   Min.   :0.8833  
-##  1st Qu.:0.03476   1st Qu.:0.5845   1st Qu.:0.038399   1st Qu.:0.019519   1st Qu.:0.05517   1st Qu.:39.10   1st Qu.:0.9128  
-##  Median :0.04311   Median :0.7066   Median :0.081159   Median :0.028946   Median :0.11309   Median :39.65   Median :0.9264  
-##  Mean   :0.04176   Mean   :0.6934   Mean   :0.100325   Mean   :0.038988   Mean   :0.13199   Mean   :40.07   Mean   :0.9253  
-##  3rd Qu.:0.04872   3rd Qu.:0.7934   3rd Qu.:0.139359   3rd Qu.:0.048242   3rd Qu.:0.17969   3rd Qu.:40.95   3rd Qu.:0.9394  
-##  Max.   :0.06283   Max.   :0.9011   Max.   :0.358802   Max.   :0.107183   Max.   :0.49114   Max.   :44.90   Max.   :0.9529  
-##  NA&#39;s   :1         NA&#39;s   :1        NA&#39;s   :1          NA&#39;s   :1          NA&#39;s   :1         NA&#39;s   :1       NA&#39;s   :1       
+<pre><code>##     State              Revenue              Handle              Taxes          
+##  Length:39          Min.   :9.209e+05   Min.   :9.237e+06   Min.   :8.288e+04  
+##  Class :character   1st Qu.:5.414e+07   1st Qu.:5.132e+08   1st Qu.:8.523e+06  
+##  Mode  :character   Median :2.453e+08   Median :3.235e+09   Median :3.224e+07  
+##                     Mean   :4.095e+08   Mean   :4.669e+09   Mean   :8.348e+07  
+##                     3rd Qu.:5.592e+08   3rd Qu.:7.045e+09   3rd Qu.:8.977e+07  
+##                     Max.   :2.059e+09   Max.   :2.295e+10   Max.   :1.050e+09  
+##                     NA&#39;s   :5           NA&#39;s   :7           NA&#39;s   :5          
+##       Hold          total_pop        median_income    pct_bachelors   
+##  Min.   : 5.530   Min.   :  587618   Min.   : 59127   Min.   :0.2438  
+##  1st Qu.: 8.693   1st Qu.: 1828851   1st Qu.: 72256   1st Qu.:0.3230  
+##  Median : 9.610   Median : 4430372   Median : 77213   Median :0.3591  
+##  Mean   : 9.639   Mean   : 5877058   Mean   : 80034   Mean   :0.3606  
+##  3rd Qu.:10.773   3rd Qu.: 7864231   3rd Qu.: 85670   3rd Qu.:0.4057  
+##  Max.   :13.960   Max.   :23372215   Max.   :104828   Max.   :0.4827  
+##  NA&#39;s   :7        NA&#39;s   :1          NA&#39;s   :1        NA&#39;s   :1       
+##  pct_age_20_34       pct_urban        pct_rural        pct_poverty     
+##  Min.   :0.05403   Min.   :0.3512   Min.   :0.05908   Min.   :0.07205  
+##  1st Qu.:0.06180   1st Qu.:0.6123   1st Qu.:0.14076   1st Qu.:0.10120  
+##  Median :0.06545   Median :0.7324   Median :0.26760   Median :0.11578  
+##  Mean   :0.06491   Mean   :0.7186   Mean   :0.28143   Mean   :0.11909  
+##  3rd Qu.:0.06752   3rd Qu.:0.8592   3rd Qu.:0.38770   3rd Qu.:0.12642  
+##  Max.   :0.07733   Max.   :0.9409   Max.   :0.64880   Max.   :0.18688  
+##  NA&#39;s   :1         NA&#39;s   :1        NA&#39;s   :1         NA&#39;s   :1        
+##     pct_male      unemployment_rate   pct_white        pct_black       
+##  Min.   :0.4818   Min.   :0.01910   Min.   :0.4635   Min.   :0.003091  
+##  1st Qu.:0.4914   1st Qu.:0.03476   1st Qu.:0.5845   1st Qu.:0.038399  
+##  Median :0.4943   Median :0.04311   Median :0.7066   Median :0.081159  
+##  Mean   :0.4961   Mean   :0.04176   Mean   :0.6934   Mean   :0.100325  
+##  3rd Qu.:0.5005   3rd Qu.:0.04872   3rd Qu.:0.7934   3rd Qu.:0.139359  
+##  Max.   :0.5137   Max.   :0.06283   Max.   :0.9011   Max.   :0.358802  
+##  NA&#39;s   :1        NA&#39;s   :1         NA&#39;s   :1        NA&#39;s   :1         
+##    pct_asian         pct_hispanic       median_age    pct_broadband   
+##  Min.   :0.007063   Min.   :0.02317   Min.   :36.70   Min.   :0.8833  
+##  1st Qu.:0.019519   1st Qu.:0.05517   1st Qu.:39.10   1st Qu.:0.9128  
+##  Median :0.028946   Median :0.11309   Median :39.65   Median :0.9264  
+##  Mean   :0.038988   Mean   :0.13199   Mean   :40.07   Mean   :0.9253  
+##  3rd Qu.:0.048242   3rd Qu.:0.17969   3rd Qu.:40.95   3rd Qu.:0.9394  
+##  Max.   :0.107183   Max.   :0.49114   Max.   :44.90   Max.   :0.9529  
+##  NA&#39;s   :1          NA&#39;s   :1         NA&#39;s   :1       NA&#39;s   :1       
 ##       gini           pct_rent         pct_own      
 ##  Min.   :0.4357   Min.   :0.2449   Min.   :0.5432  
 ##  1st Qu.:0.4561   1st Qu.:0.2933   1st Qu.:0.6667  
@@ -1168,29 +1209,29 @@ summary(model_data_2024)</code></pre>
 <pre class="r"><code>glimpse(model_data_2024)</code></pre>
 <pre><code>## Rows: 39
 ## Columns: 23
-## $ State             &lt;chr&gt; &quot;Arizona&quot;, &quot;Arkansas&quot;, &quot;Colorado&quot;, &quot;Connecticut&quot;, &quot;Delaware&quot;, &quot;Florida&quot;, &quot;Illinois&quot;, &quot;Indiana&quot;, &quot;Iow…
-## $ Revenue           &lt;dbl&gt; 427397087, 107275202, 475176731, 187349516, 14585100, NA, 1866642282, 484278308, 218482781, 14526324…
-## $ Handle            &lt;dbl&gt; 7959647194, NA, 6187564044, 2188745557, 216240459, NA, 14016684933, 5212332663, 2770339580, 25034925…
-## $ Taxes             &lt;dbl&gt; 42739709, 13945776, 31934112, 25760559, 8474813, NA, 280390692, 46245605, 14747588, 13873150, 386215…
-## $ Hold              &lt;dbl&gt; 5.53, NA, 7.87, 8.67, 6.99, NA, 13.52, 9.48, 8.07, 5.96, 10.43, 12.35, 10.68, 10.81, 8.91, 9.17, 9.9…
-## $ total_pop         &lt;dbl&gt; 7582384, 3088354, 5957494, 3675069, 1051917, 23372215, 12710158, 6924275, 3241488, 2970606, 4588372,…
-## $ median_income     &lt;dbl&gt; 81486, 62106, 97113, 96049, 87534, 77735, 83211, 71959, 75501, 75514, 64526, 60986, 76442, 102905, 1…
-## $ pct_bachelors     &lt;dbl&gt; 0.3473430, 0.2711732, 0.4776638, 0.4256536, 0.3599157, 0.3583638, 0.3923075, 0.3065626, 0.3205078, 0…
-## $ pct_age_20_34     &lt;dbl&gt; 0.06858898, 0.06647845, 0.06598143, 0.06532394, 0.06061980, 0.05823530, 0.06619965, 0.06760910, 0.06…
-## $ pct_urban         &lt;dbl&gt; 0.8928516, 0.5547613, 0.8602671, 0.8625073, 0.8261212, 0.9153419, 0.8692748, 0.7117627, 0.6315354, 0…
-## $ pct_rural         &lt;dbl&gt; 0.10714840, 0.44523869, 0.13973293, 0.13749271, 0.17387883, 0.08465805, 0.13072523, 0.28823726, 0.36…
-## $ pct_poverty       &lt;dbl&gt; 0.11680530, 0.15535744, 0.09601167, 0.10195637, 0.09593718, 0.12047232, 0.11578921, 0.12227667, 0.11…
-## $ pct_male          &lt;dbl&gt; 0.4989042, 0.4913705, 0.5063738, 0.4911189, 0.4817519, 0.4915494, 0.4941134, 0.4956135, 0.5005991, 0…
-## $ unemployment_rate &lt;dbl&gt; 0.04563755, 0.03817759, 0.04277032, 0.04948289, 0.05106719, 0.04555463, 0.05127461, 0.04096357, 0.03…
-## $ pct_white         &lt;dbl&gt; 0.5731275, 0.6818985, 0.6935989, 0.6369799, 0.5816581, 0.5418233, 0.6018963, 0.7601261, 0.8317260, 0…
-## $ pct_black         &lt;dbl&gt; 0.047592947, 0.141759980, 0.042512338, 0.107578388, 0.220392864, 0.147691821, 0.132154219, 0.0911964…
-## $ pct_asian         &lt;dbl&gt; 0.039926229, 0.017868418, 0.034834445, 0.048035561, 0.048310846, 0.030917994, 0.063933430, 0.0270886…
-## $ pct_hispanic      &lt;dbl&gt; 0.32122628, 0.09541361, 0.23213586, 0.19232455, 0.11675161, 0.28692565, 0.19376376, 0.09049554, 0.07…
-## $ median_age        &lt;dbl&gt; 39.4, 39.1, 38.0, 41.2, 42.1, 42.7, 39.4, 38.3, 39.0, 38.0, 39.3, 38.7, 44.9, 39.8, 40.1, 40.4, 39.3…
-## $ pct_broadband     &lt;dbl&gt; 0.9355612, 0.9076009, 0.9489518, 0.9403395, 0.9428868, 0.9425741, 0.9293433, 0.9198941, 0.9070880, 0…
-## $ gini              &lt;dbl&gt; 0.4623, 0.4721, 0.4611, 0.4989, 0.4478, 0.4799, 0.4802, 0.4523, 0.4357, 0.4557, 0.4711, 0.4922, 0.45…
-## $ pct_rent          &lt;dbl&gt; 0.3224346, 0.3288997, 0.3405580, 0.3332788, 0.2622216, 0.3195868, 0.3242589, 0.2928124, 0.2867372, 0…
-## $ pct_own           &lt;dbl&gt; 0.6775654, 0.6711003, 0.6594420, 0.6667212, 0.7377784, 0.6804132, 0.6757411, 0.7071876, 0.7132628, 0…</code></pre>
+## $ State             &lt;chr&gt; &quot;Arizona&quot;, &quot;Arkansas&quot;, &quot;Colorado&quot;, &quot;Connecticut&quot;, &quot;D…
+## $ Revenue           &lt;dbl&gt; 427397087, 107275202, 475176731, 187349516, 14585100…
+## $ Handle            &lt;dbl&gt; 7959647194, NA, 6187564044, 2188745557, 216240459, N…
+## $ Taxes             &lt;dbl&gt; 42739709, 13945776, 31934112, 25760559, 8474813, NA,…
+## $ Hold              &lt;dbl&gt; 5.53, NA, 7.87, 8.67, 6.99, NA, 13.52, 9.48, 8.07, 5…
+## $ total_pop         &lt;dbl&gt; 7582384, 3088354, 5957494, 3675069, 1051917, 2337221…
+## $ median_income     &lt;dbl&gt; 81486, 62106, 97113, 96049, 87534, 77735, 83211, 719…
+## $ pct_bachelors     &lt;dbl&gt; 0.3473430, 0.2711732, 0.4776638, 0.4256536, 0.359915…
+## $ pct_age_20_34     &lt;dbl&gt; 0.06858898, 0.06647845, 0.06598143, 0.06532394, 0.06…
+## $ pct_urban         &lt;dbl&gt; 0.8928516, 0.5547613, 0.8602671, 0.8625073, 0.826121…
+## $ pct_rural         &lt;dbl&gt; 0.10714840, 0.44523869, 0.13973293, 0.13749271, 0.17…
+## $ pct_poverty       &lt;dbl&gt; 0.11680530, 0.15535744, 0.09601167, 0.10195637, 0.09…
+## $ pct_male          &lt;dbl&gt; 0.4989042, 0.4913705, 0.5063738, 0.4911189, 0.481751…
+## $ unemployment_rate &lt;dbl&gt; 0.04563755, 0.03817759, 0.04277032, 0.04948289, 0.05…
+## $ pct_white         &lt;dbl&gt; 0.5731275, 0.6818985, 0.6935989, 0.6369799, 0.581658…
+## $ pct_black         &lt;dbl&gt; 0.047592947, 0.141759980, 0.042512338, 0.107578388, …
+## $ pct_asian         &lt;dbl&gt; 0.039926229, 0.017868418, 0.034834445, 0.048035561, …
+## $ pct_hispanic      &lt;dbl&gt; 0.32122628, 0.09541361, 0.23213586, 0.19232455, 0.11…
+## $ median_age        &lt;dbl&gt; 39.4, 39.1, 38.0, 41.2, 42.1, 42.7, 39.4, 38.3, 39.0…
+## $ pct_broadband     &lt;dbl&gt; 0.9355612, 0.9076009, 0.9489518, 0.9403395, 0.942886…
+## $ gini              &lt;dbl&gt; 0.4623, 0.4721, 0.4611, 0.4989, 0.4478, 0.4799, 0.48…
+## $ pct_rent          &lt;dbl&gt; 0.3224346, 0.3288997, 0.3405580, 0.3332788, 0.262221…
+## $ pct_own           &lt;dbl&gt; 0.6775654, 0.6711003, 0.6594420, 0.6667212, 0.737778…</code></pre>
 </div>
 <div id="clean-final-dataset" class="section level2">
 <h2>Clean final dataset</h2>
@@ -1202,12 +1243,14 @@ summary(model_data_2024)</code></pre>
 nrow(model_clean_2024)</code></pre>
 <pre><code>## [1] 32</code></pre>
 <pre class="r"><code>unique(model_clean_2024$State)</code></pre>
-<pre><code>##  [1] &quot;Arizona&quot;         &quot;Colorado&quot;        &quot;Connecticut&quot;     &quot;Delaware&quot;        &quot;Illinois&quot;        &quot;Indiana&quot;        
-##  [7] &quot;Iowa&quot;            &quot;Kansas&quot;          &quot;Kentucky&quot;        &quot;Louisiana&quot;       &quot;Maine&quot;           &quot;Maryland&quot;       
-## [13] &quot;Massachusetts&quot;   &quot;Michigan&quot;        &quot;Mississippi&quot;     &quot;Montana&quot;         &quot;Nevada&quot;          &quot;New Hampshire&quot;  
-## [19] &quot;New Jersey&quot;      &quot;New York&quot;        &quot;North Carolina&quot;  &quot;Ohio&quot;            &quot;Oregon&quot;          &quot;Pennsylvania&quot;   
-## [25] &quot;Rhode Island&quot;    &quot;South Dakota&quot;    &quot;Tennessee&quot;       &quot;Vermont&quot;         &quot;Virginia&quot;        &quot;Washington D.C.&quot;
-## [31] &quot;West Virginia&quot;   &quot;Wyoming&quot;</code></pre>
+<pre><code>##  [1] &quot;Arizona&quot;         &quot;Colorado&quot;        &quot;Connecticut&quot;     &quot;Delaware&quot;       
+##  [5] &quot;Illinois&quot;        &quot;Indiana&quot;         &quot;Iowa&quot;            &quot;Kansas&quot;         
+##  [9] &quot;Kentucky&quot;        &quot;Louisiana&quot;       &quot;Maine&quot;           &quot;Maryland&quot;       
+## [13] &quot;Massachusetts&quot;   &quot;Michigan&quot;        &quot;Mississippi&quot;     &quot;Montana&quot;        
+## [17] &quot;Nevada&quot;          &quot;New Hampshire&quot;   &quot;New Jersey&quot;      &quot;New York&quot;       
+## [21] &quot;North Carolina&quot;  &quot;Ohio&quot;            &quot;Oregon&quot;          &quot;Pennsylvania&quot;   
+## [25] &quot;Rhode Island&quot;    &quot;South Dakota&quot;    &quot;Tennessee&quot;       &quot;Vermont&quot;        
+## [29] &quot;Virginia&quot;        &quot;Washington D.C.&quot; &quot;West Virginia&quot;   &quot;Wyoming&quot;</code></pre>
 <pre class="r"><code>#See who was dropped
 anti_join(model_data_2024, model_clean_2024, by = &quot;State&quot;) |&gt;
   select(State)</code></pre>

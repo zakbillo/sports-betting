@@ -8,6 +8,13 @@ library(rvest)
 library(httr)
 library(jsonlite)
 library(patchwork)
+library(glmnet)
+library(webshot2)
+library(scales)
+library(corrplot)
+library(Metrics)
+library(kableExtra)
+library(viridis)
 
 knitr::opts_chunk$set(
 fig.width = 6,
@@ -33,6 +40,7 @@ scale_fill_discrete = scale_fill_viridis_d
 ```{r, message = FALSE}
 total_state_revenue = read_csv("data/total_state_revenue.csv")
 model_clean_2024 = read_csv("data/model_clean_2024.csv")
+demographics_2024 = read_csv("data/demographics_2024.csv")
 ```
 
 ## Gambling visuals
