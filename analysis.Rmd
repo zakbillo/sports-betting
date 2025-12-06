@@ -249,6 +249,8 @@ model_clean_2024 |>
 
 ### Let's build a predictive model!
 
+# Build training dataset 
+
 ```{r}
 # Build training dataset
 training_data <- model_clean_2024 |>
@@ -264,6 +266,8 @@ training_data <- model_clean_2024 |>
   ) |>
   drop_na()   # make sure no missing values in predictors or Revenue
 ```
+
+# Fit linear regression model
 
 ```{r}
 # Fit linear regression model
@@ -297,6 +301,8 @@ newdata_illegal <-
   drop_na()  # just in case a state is missing some demographic
 ```
 
+# Predict revenue if illegal states legalized gambling
+
 ```{r}
 # Predict revenue if these states legalized gambling
 
@@ -308,11 +314,15 @@ pred_illegal <-
   arrange(desc(predicted_revenue))
 ```
 
+# Compare distribution of real vs predicted
+
 ```{r}
 # Compare distribution of real vs predicted
 summary(training_data$Revenue)
 summary(pred_illegal$predicted_revenue)
 ```
+
+# Fit a LASSO regression model
 
 ```{r}
 # Fit LASSO regression model
@@ -349,6 +359,8 @@ lasso_model <- glmnet(
 lasso_cv$lambda.min #This is the penalty 
 ```
 
+# Build the prediction matrix for the non-gambling states
+
 ```{r Predictive model}
 # Build the prediction matrix for the non-gambling states
 X_new <- model.matrix(
@@ -370,6 +382,8 @@ pred_illegal_lasso <- pred_illegal_lasso |>
   mutate(predicted_revenue_lasso = pmax(predicted_revenue_lasso, 0))
 ```
 
+# Compare models 
+
 ```{r Compare models}
 summary(training_data$Revenue)
 summary(pred_illegal$predicted_revenue)          # from LM model
@@ -378,7 +392,7 @@ summary(pred_illegal_lasso$predicted_revenue_lasso)  # from LASSO model
 #LASSO better
 ```
 
-## Some tables and Figures
+## Predictive model tables and Figures
 
 Table of Predicted Annual Gambling Revenue for Non-Legal States (LASSO Model)
 
@@ -409,7 +423,7 @@ kable(pred_table, format = "html", caption = "Predicted Annual Gambling Revenue 
   kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover"))
 ```
 
-Bar Plot of Predicted Annual Gambling Revenue (if legalized)
+# Bar plot of predicted annual gambling revenue (if legalized)
 
 ```{r Bar Plot}
 pred_illegal_lasso_plot <- pred_illegal_lasso |>
@@ -430,7 +444,7 @@ ggplot(pred_illegal_lasso_plot, aes(x = State, y = predicted_revenue_lasso)) +
   theme_minimal(base_size = 13)
 ```
 
-Density Plot of Distribution of Actual vs Predicted Gambling Revenue
+# Density plot of distribution of actual vs predicted gambling revenue
 
 ```{r}
 compare_df <- tibble(
@@ -452,7 +466,7 @@ ggplot(compare_df, aes(x = revenue, fill = group)) +
   theme_minimal(base_size = 13)
 ```
 
-Scatterplot of Population vs Gambling Revenue Comparing Actual and Predicted states
+# Scatterplot of population vs gambling revenue comparing actual and predicted states
 
 ```{r}
 scatter_df <- bind_rows(
@@ -476,7 +490,7 @@ ggplot(scatter_df, aes(x = total_pop, y = Revenue, color = type)) +
   theme_minimal(base_size = 13)
 ```
 
-Table of Distribution Comparison of Actual vs. Predicted Revenue
+# Table of distribution comparison of actual vs. predicted revenue
 
 ```{r}
 summary_table <- tibble(
@@ -490,7 +504,7 @@ kable(summary_table, format = "html", caption = "Distribution Comparison: Actual
 ```
 
 ```{r}
-# 1. Prepare actual revenue table
+# Prepare actual revenue table
 actual_table <- training_data %>%
   select(State, Revenue) %>%
   mutate(
@@ -498,7 +512,7 @@ actual_table <- training_data %>%
     Revenue = as.numeric(Revenue)
   )
 
-# 2. Prepare predicted revenue table (LASSO)
+# Prepare predicted revenue table (LASSO)
 predicted_table <- pred_illegal_lasso %>%
   select(State, predicted_revenue_lasso) %>%
   rename(Revenue = predicted_revenue_lasso) %>%
@@ -506,7 +520,7 @@ predicted_table <- pred_illegal_lasso %>%
     revenue_source = "Predicted (Non-Legal States)"
   )
 
-# 3. Combine both tables
+# Combine both tables
 ranked_table <- bind_rows(actual_table, predicted_table) %>%
   arrange(desc(Revenue)) %>%
   mutate(
@@ -516,13 +530,13 @@ ranked_table <- bind_rows(actual_table, predicted_table) %>%
   select(Rank, State, Revenue, revenue_source)
 ```
 
-LASSO Cross-Validation Plot (lamda vs. cross-validation error)
+# LASSO cross-validation plot (lamda vs. cross-validation error)
 
 ```{r LASSO Cross-Validation Plot (λ vs CV error)}
 plot(lasso_cv)
 ```
 
-LASSO Coefficient Path Plot
+# LASSO coefficient path plot
 
 ```{r LASSO Coefficient Path Plot}
 plot(lasso_cv$glmnet.fit, xvar = "lambda", label = TRUE)
@@ -537,7 +551,7 @@ coef_df <- tibble(
   filter(variable != "(Intercept)")
 ```
 
-Plot of Actual vs. Predicted Revenue (LASSO)
+# Plot of actual vs. predicted revenue (LASSO)
 
 ```{r Actual vs Predicted}
 pred_lasso_train <- as.numeric(predict(lasso_model, newx = X_train))
@@ -559,7 +573,7 @@ theme_minimal(base_size = 13)
 
 ```
 
-Correlation Map of Potential Predictors
+# Correlation map of potential predictors (upper triangle only)
 
 ```{r CORR Map}
 predictor_mat <- training_data %>%
@@ -579,7 +593,7 @@ corrplot(
 )
 ```
 
-Scatterplot of Revenue vs. Each Predictor
+# Scatterplot of revenue vs. each predictor
 
 ```{r Rev vs each predictor scatter plot}
 plot_df <- training_data %>%
@@ -599,7 +613,7 @@ y = "Revenue"
 theme_minimal(base_size = 13)
 ```
 
-Table of Model Performance Comparison Between Linear Model and LASSO
+# Table of model performance comparison between linear model and LASSO
 
 ```{r}
 # --- Linear Model Predictions ---
@@ -634,7 +648,7 @@ model_metrics %>%
   kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover"))
 ```
 
-Column Chart of LASSO Coefficients at Lambda Min
+# Column chart of LASSO coefficients at lambda min
 
 ```{r}
 coef_mat <- as.matrix(coef(lasso_cv, s = "lambda.min"))
