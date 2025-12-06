@@ -17,47 +17,6 @@ Scandals surrounding gambling in sports have reached the national stage in recen
 Here's a high-level overview of our project: 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID_HERE" frameborder="0" allowfullscreen></iframe>
 
-## Sports Betting Revenue by State (2018-2024) 
+## Interactive Map
 
-## Sports Betting Revenue by State (2018-2024) 
-
-<div style="margin: 50px 0; border: 1px solid #334155; border-radius: 8px; overflow: hidden; background-color: #1e293b; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5);">
-
-  <div style="background-color: #0f172a; padding: 20px; border-bottom: 2px solid #fbbf24; text-align: center;">
-    <h2 style="margin: 0; color: #fbbf24; font-family: 'Orbitron', sans-serif; text-shadow: 0 0 10px rgba(251, 191, 36, 0.3);">
-      <i class="fa fa-map-marker" aria-hidden="true" style="margin-right: 10px;"></i>
-      Interactive Revenue Map
-    </h2>
-    <p style="margin: 5px 0 0 0; color: #94a3b8; font-size: 0.9rem;">
-      Explore revenue data by state and year (2018-2024)
-    </p>
-  </div>
-
-  <div style="width: 100%; height: 750px; position: relative; background-color: #020617;">
-    <iframe 
-      src="https://zakaribillo.shinyapps.io/revenue-map/" 
-      style="width: 100%; height: 100%; border: none;"
-      title="Sports Betting Revenue Map">
-    </iframe>
-  </div>
-
-  <div style="background-color: #1e293b; padding: 15px 20px; border-top: 1px solid #334155; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
-    
-    <div style="display: flex; align-items: center; gap: 10px;">
-      <span style="background-color: #fbbf24; color: #000; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 0.8rem;">
-        INTERACTIVE
-      </span>
-      <span style="color: #cbd5e1; font-size: 0.9rem; font-style: italic;">
-        Use the slider to change years, hover for details.
-      </span>
-    </div>
-
-    <div style="margin-top: 5px;">
-      <a href="https://zakaribillo.shinyapps.io/revenue-map/" target="_blank" 
-         style="display: inline-block; background-color: transparent; color: #fbbf24; border: 1px solid #fbbf24; padding: 5px 15px; border-radius: 5px; font-weight: bold; text-decoration: none; transition: all 0.3s ease;">
-        <i class="fa fa-expand" aria-hidden="true" style="margin-right: 5px;"></i> Full Screen
-      </a>
-    </div>
-
-  </div>
-</div>
+<iframe src="YOUR_SHINY_APP_URL" width="100%" height="800px" frameborder="0"></iframe>
