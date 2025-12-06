@@ -43,13 +43,11 @@ scale_fill_discrete = scale_fill_viridis_d
 * Sports gambling data was obtained from [Research Ground's US sports betting data](https://rg.org/statistics/us) (2018-2024).
 * Demographic data was obtained from publicly available [American Community Survey data](https://www.census.gov/programs-surveys/acs/data.html) (2024).
 
-### Making the sports gambling dataset
-
-Gambling Data {.tabset .tabset-pills}
+## Gambling Data 
 
 Web Scraping:
 
-Scrape the current 2024 state revenue and 2025 growth projections directly from the web
+Scrape the current 2024 state sports gambling revenue and 2025 growth projections directly from the web
 
 ```{r scraping}
 url = "https://rg.org/statistics/us"
@@ -205,7 +203,7 @@ write.csv(total_state_revenue, "data/total_state_revenue.csv") # state totals on
 write.csv(final_state_revenue, "data/final_state_revenue.csv") # totals mapped to raw data
 ```
 
-Demographics {.tabset .tabset-pills}
+## Demographics
 We utilize the tidycensus package to pull 2024 ACS data for all states
 
 Base Stats (Pop/Income)
@@ -486,7 +484,7 @@ rent_clean_2024 =
   )
 ```
 
-Merge into final dataset.
+## Merge into final sports gambling dataset
 
 ```{r Merge All Demographics + Gambling Revenue Together}
 #Rename so all are State
