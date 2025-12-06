@@ -33,6 +33,7 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
@@ -224,6 +225,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -325,12 +329,12 @@ div.tocify {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">Home</a>
+      <a class="navbar-brand" href="index.html">ODDS ON</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="home.html"></a>
+  <a href="home.html">Home</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -361,6 +365,14 @@ div.tocify {
 </div><!--/.navbar -->
 
 <div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
 
 
 
@@ -527,7 +539,7 @@ data in a CSV format</p>
 <pre class="r"><code># 2018 Data
 revenue_growth_18 = read_csv(&quot;data/gambling_revenue_data/2018_monthly_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 8 Columns: 5
-## ── Column specification ───────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): Month
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -536,7 +548,7 @@ revenue_growth_18 = read_csv(&quot;data/gambling_revenue_data/2018_monthly_reven
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>state_revenue_18  = read_csv(&quot;data/gambling_revenue_data/2018_state_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 40 Columns: 5
-## ── Column specification ───────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): State
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -546,7 +558,7 @@ revenue_growth_18 = read_csv(&quot;data/gambling_revenue_data/2018_monthly_reven
 <pre class="r"><code># 2019 Data
 revenue_growth_19 = read_csv(&quot;data/gambling_revenue_data/2019_monthly_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 13 Columns: 5
-## ── Column specification ───────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): Month
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -555,7 +567,7 @@ revenue_growth_19 = read_csv(&quot;data/gambling_revenue_data/2019_monthly_reven
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>state_revenue_19  = read_csv(&quot;data/gambling_revenue_data/2019_state_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 40 Columns: 5
-## ── Column specification ───────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): State
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -565,7 +577,7 @@ revenue_growth_19 = read_csv(&quot;data/gambling_revenue_data/2019_monthly_reven
 <pre class="r"><code># 2020 Data
 revenue_growth_20 = read_csv(&quot;data/gambling_revenue_data/2020_monthly_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 13 Columns: 5
-## ── Column specification ───────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): Month
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -574,7 +586,7 @@ revenue_growth_20 = read_csv(&quot;data/gambling_revenue_data/2020_monthly_reven
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>state_revenue_20  = read_csv(&quot;data/gambling_revenue_data/2020_state_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 40 Columns: 5
-## ── Column specification ───────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): State
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -584,7 +596,7 @@ revenue_growth_20 = read_csv(&quot;data/gambling_revenue_data/2020_monthly_reven
 <pre class="r"><code># 2021 Data
 revenue_growth_21 = read_csv(&quot;data/gambling_revenue_data/2021_monthly_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 13 Columns: 5
-## ── Column specification ───────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): Month
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -593,7 +605,7 @@ revenue_growth_21 = read_csv(&quot;data/gambling_revenue_data/2021_monthly_reven
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>state_revenue_21  = read_csv(&quot;data/gambling_revenue_data/2021_state_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 40 Columns: 5
-## ── Column specification ───────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): State
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -603,7 +615,7 @@ revenue_growth_21 = read_csv(&quot;data/gambling_revenue_data/2021_monthly_reven
 <pre class="r"><code># 2022 Data
 revenue_growth_22 = read_csv(&quot;data/gambling_revenue_data/2022_monthly_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 13 Columns: 5
-## ── Column specification ───────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): Month
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -612,7 +624,7 @@ revenue_growth_22 = read_csv(&quot;data/gambling_revenue_data/2022_monthly_reven
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>state_revenue_22  = read_csv(&quot;data/gambling_revenue_data/2022_state_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 40 Columns: 5
-## ── Column specification ───────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): State
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -622,7 +634,7 @@ revenue_growth_22 = read_csv(&quot;data/gambling_revenue_data/2022_monthly_reven
 <pre class="r"><code># 2023 Data
 revenue_growth_23 = read_csv(&quot;data/gambling_revenue_data/2023_monthly_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 13 Columns: 5
-## ── Column specification ───────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): Month
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -631,7 +643,7 @@ revenue_growth_23 = read_csv(&quot;data/gambling_revenue_data/2023_monthly_reven
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>state_revenue_23  = read_csv(&quot;data/gambling_revenue_data/2023_state_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 40 Columns: 5
-## ── Column specification ───────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): State
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -641,7 +653,7 @@ revenue_growth_23 = read_csv(&quot;data/gambling_revenue_data/2023_monthly_reven
 <pre class="r"><code># 2024 Data
 revenue_growth_24 = read_csv(&quot;data/gambling_revenue_data/2024_monthly_revenue.csv&quot;)</code></pre>
 <pre><code>## Rows: 13 Columns: 5
-## ── Column specification ───────────────────────────────────────────────
+## ── Column specification ────────────────────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr (1): Month
 ## dbl (4): Handle, Revenue, Hold, Taxes
@@ -846,11 +858,10 @@ median_age_2024 = get_acs(
 <pre><code>## New names:
 ## Rows: 53 Columns: 7
 ## ── Column specification
-## ─────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
+## ──────────────────────────────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
 ## (6): GEO_ID, NAME, P2_001N, P2_002N, P2_003N, P2_004N lgl (1): ...7
-## ℹ Use `spec()` to retrieve the full column specification for this
-## data. ℹ Specify the column types or set `show_col_types = FALSE` to
-## quiet this message.
+## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ Specify the column
+## types or set `show_col_types = FALSE` to quiet this message.
 ## • `` -&gt; `...7`</code></pre>
 <pre class="r"><code>urban_clean_2020 =
   urban_raw |&gt;
@@ -1274,31 +1285,32 @@ write.csv(demographics_2024, &quot;data/demographics_2024.csv&quot;)</code></pre
 <p>Go back to <a href="home.html">home</a></p>
 </div>
 
-<footer style="background-color: #1e293b; color: #cbd5e1; padding: 30px 0; margin-top: 50px; border-top: 3px solid #eab308;">
-  <div class="container">
-    <div class="row">
-      
-      <!-- Single Centered Column -->
-      <div class="col-xs-12" style="text-align: center;">
-        <p style="margin-bottom: 5px;">
-          <strong>Team:</strong> Zakari, Kimia, Law & Sukhman
-        </p>
-        <p>
-          <a href="https://github.com/zakbillo/sports-betting" target="_blank" style="color: #eab308; text-decoration: none;">
-            <i class="fa fa-github fa-lg"></i> View Our Source Code
-          </a>
-        </p>
-        <p style="font-size: 0.8em; color: #64748b;">
-          <em>"The house always wins... usually."</em>
-        </p>
-        
-        <!-- Added 2025 Line -->
-        <p style="font-size: 0.8em; color: #64748b; margin-top: 15px;">
-          2025 Data Science I (P8105) Final Project
-        </p>
-      </div>
+<footer style="background-color: #1e293b; color: #cbd5e1; padding: 40px 20px; margin-top: 50px; border-top: 3px solid #eab308; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+  
+  <div style="max-width: 900px; width: 100%;">
+    
+    <!-- Team Name - Made Larger -->
+    <p style="margin-bottom: 15px; font-size: 1.25rem; line-height: 1.5;">
+      <strong style="color: #ffffff;">Team:</strong> Zakari, Kimia, Law & Sukhman
+    </p>
+    
+    <!-- GitHub Link - Made Larger and added hover effect logic (if css allows, otherwise just clean style) -->
+    <p style="margin-bottom: 15px; font-size: 1.1rem;">
+      <a href="https://github.com/zakbillo/sports-betting" target="_blank" style="color: #eab308; text-decoration: none; font-weight: 500;">
+        <i class="fa fa-github fa-lg" style="margin-right: 5px;"></i> View Our Source Code
+      </a>
+    </p>
+    
+    <!-- Quote - Increased size slightly -->
+    <p style="font-size: 1rem; color: #94a3b8; margin-bottom: 20px; font-style: italic;">
+      "The house always wins... usually."
+    </p>
+    
+    <!-- 2025 Line - Made distinct but readable -->
+    <p style="font-size: 0.95rem; color: #64748b; margin-top: 20px; border-top: 1px solid #334155; padding-top: 20px; display: inline-block;">
+      2025 Data Science I (P8105) Final Project
+    </p>
 
-    </div>
   </div>
 </footer>
 
@@ -1336,6 +1348,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 <script>
 $(document).ready(function ()  {

@@ -30,6 +30,7 @@
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
@@ -221,6 +222,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -243,12 +247,12 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">Home</a>
+      <a class="navbar-brand" href="index.html">ODDS ON</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="home.html"></a>
+  <a href="home.html">Home</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -279,6 +283,14 @@ $(document).ready(function () {
 </div><!--/.navbar -->
 
 <div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
 
 
 
@@ -421,31 +433,32 @@ gambling revenue and economic measures.</p>
 <p>Go back to <a href="home.html">home</a></p>
 </div>
 
-<footer style="background-color: #1e293b; color: #cbd5e1; padding: 30px 0; margin-top: 50px; border-top: 3px solid #eab308;">
-  <div class="container">
-    <div class="row">
-      
-      <!-- Single Centered Column -->
-      <div class="col-xs-12" style="text-align: center;">
-        <p style="margin-bottom: 5px;">
-          <strong>Team:</strong> Zakari, Kimia, Law & Sukhman
-        </p>
-        <p>
-          <a href="https://github.com/zakbillo/sports-betting" target="_blank" style="color: #eab308; text-decoration: none;">
-            <i class="fa fa-github fa-lg"></i> View Our Source Code
-          </a>
-        </p>
-        <p style="font-size: 0.8em; color: #64748b;">
-          <em>"The house always wins... usually."</em>
-        </p>
-        
-        <!-- Added 2025 Line -->
-        <p style="font-size: 0.8em; color: #64748b; margin-top: 15px;">
-          2025 Data Science I (P8105) Final Project
-        </p>
-      </div>
+<footer style="background-color: #1e293b; color: #cbd5e1; padding: 40px 20px; margin-top: 50px; border-top: 3px solid #eab308; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+  
+  <div style="max-width: 900px; width: 100%;">
+    
+    <!-- Team Name - Made Larger -->
+    <p style="margin-bottom: 15px; font-size: 1.25rem; line-height: 1.5;">
+      <strong style="color: #ffffff;">Team:</strong> Zakari, Kimia, Law & Sukhman
+    </p>
+    
+    <!-- GitHub Link - Made Larger and added hover effect logic (if css allows, otherwise just clean style) -->
+    <p style="margin-bottom: 15px; font-size: 1.1rem;">
+      <a href="https://github.com/zakbillo/sports-betting" target="_blank" style="color: #eab308; text-decoration: none; font-weight: 500;">
+        <i class="fa fa-github fa-lg" style="margin-right: 5px;"></i> View Our Source Code
+      </a>
+    </p>
+    
+    <!-- Quote - Increased size slightly -->
+    <p style="font-size: 1rem; color: #94a3b8; margin-bottom: 20px; font-style: italic;">
+      "The house always wins... usually."
+    </p>
+    
+    <!-- 2025 Line - Made distinct but readable -->
+    <p style="font-size: 0.95rem; color: #64748b; margin-top: 20px; border-top: 1px solid #334155; padding-top: 20px; display: inline-block;">
+      2025 Data Science I (P8105) Final Project
+    </p>
 
-    </div>
   </div>
 </footer>
 
@@ -481,6 +494,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

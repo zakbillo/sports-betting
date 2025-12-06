@@ -30,6 +30,7 @@
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
@@ -223,6 +224,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -245,12 +249,12 @@ $(document).ready(function () {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">Home</a>
+      <a class="navbar-brand" href="index.html">ODDS ON</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="home.html"></a>
+  <a href="home.html">Home</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -282,6 +286,14 @@ $(document).ready(function () {
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
 
 
 <h1 class="title toc-ignore">Analysis</h1>
@@ -290,13 +302,13 @@ $(document).ready(function () {
 
 
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching core tidyverse packages ─────────────── tidyverse 2.0.0 ──
+<pre><code>## ── Attaching core tidyverse packages ──────────────────────────────────────── tidyverse 2.0.0 ──
 ## ✔ dplyr     1.1.4     ✔ readr     2.1.5
 ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
 ## ✔ ggplot2   3.5.2     ✔ tibble    3.3.0
 ## ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
 ## ✔ purrr     1.1.0     
-## ── Conflicts ───────────────────────────────── tidyverse_conflicts() ──
+## ── Conflicts ────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()
 ## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
@@ -373,18 +385,14 @@ scale_colour_discrete = scale_color_viridis_d
 scale_fill_discrete = scale_fill_viridis_d</code></pre>
 <div id="exploratory-data-analysis" class="section level3">
 <h3>Exploratory Data Analysis</h3>
-</div>
-<div id="import-data" class="section level2">
-<h2>Import Data</h2>
+<p>Import Data</p>
 <pre class="r"><code>total_state_revenue = read_csv(&quot;data/total_state_revenue.csv&quot;)
 model_clean_2024 = read_csv(&quot;data/model_clean_2024.csv&quot;)
 demographics_2024 = read_csv(&quot;data/demographics_2024.csv&quot;)</code></pre>
 </div>
 <div id="gambling-visuals" class="section level2">
 <h2>Gambling visuals</h2>
-</div>
-<div id="plot-gambling-revenue-by-year" class="section level1">
-<h1>Plot gambling revenue by year</h1>
+<p>Plot gambling revenue by year</p>
 <pre class="r"><code># Aggregate total revenue by year
 yearly_revenue_summary = total_state_revenue |&gt; 
   group_by(Year) |&gt; 
@@ -404,10 +412,7 @@ yearly_revenue_summary |&gt;
     y = &quot;Total Revenue&quot;
   )</code></pre>
 <p><img src="analysis_files/figure-html/Plotting%20gambling%20revenue%20by%20Year-1.png" width="90%" /></p>
-</div>
-<div id="plotting-gambling-revenue-by-state-over-time"
-class="section level1">
-<h1>Plotting gambling revenue by state over time</h1>
+<p>Plotting gambling revenue by state over time</p>
 <pre class="r"><code># Identify top 5 states by 2024 revenue to keep things looking clean
 top_states = total_state_revenue |&gt; 
   filter(Year == 2019) |&gt; 
@@ -434,12 +439,7 @@ ggplot(state_growth_plot_data, aes(x = Year, y = Revenue, fill = State_Group)) +
     fill = &quot;State&quot;
   )</code></pre>
 <p><img src="analysis_files/figure-html/Plotting%20gambling%20revenue%20by%20State%20Over%20time-1.png" width="90%" /></p>
-</div>
-<div
-id="plotting-revenue-rank-top-5-gambling-markets-by-year-since-2018"
-class="section level1">
-<h1>Plotting revenue rank: top 5 gambling markets by year since
-2018</h1>
+<p>Plotting revenue rank: top 5 gambling markets by year since 2018</p>
 <pre class="r"><code># Calculate Ranks for every state, every year
 ranked_data = total_state_revenue |&gt; 
   group_by(Year) |&gt; 
@@ -486,13 +486,10 @@ plot_data |&gt;
 <pre><code>## Warning: Removed 7 rows containing missing values or values outside the scale
 ## range (`geom_text()`).</code></pre>
 <p><img src="analysis_files/figure-html/plotting%20revenue%20rank:%20top%205%20gambling%20markets%20by%20year%20since%202018-1.png" width="90%" /></p>
+</div>
 <div id="demographic-visuals" class="section level2">
 <h2>Demographic visuals</h2>
-</div>
-</div>
-<div id="plot-of-total-population-in-2024-by-state"
-class="section level1">
-<h1>Plot of Total Population in 2024 by State</h1>
+<p>Plot of Total Population in 2024 by State</p>
 <pre class="r"><code>population_plot = 
   model_clean_2024 |&gt; 
     filter(State != &quot;Washington D.C.&quot;) |&gt; #drop DC bc all demographic data is NA
@@ -509,10 +506,7 @@ class="section level1">
         y = &quot;Total Population&quot;,
         title = &quot;Total Population by State in 2024&quot;
       )</code></pre>
-</div>
-<div id="plot-of-gambling-revenue-in-2024-by-state"
-class="section level1">
-<h1>Plot of Gambling Revenue in 2024 by State</h1>
+<p>Plot of Gambling Revenue in 2024 by State</p>
 <pre class="r"><code>revenue_plot = 
   model_clean_2024 |&gt; 
     filter(State != &quot;Washington D.C.&quot;) |&gt; #drop DC bc all demographic data is NA
@@ -530,19 +524,13 @@ class="section level1">
         y = &quot;Revenue&quot;,
         title = &quot;Gambling Revenue by State in 2024&quot;
       )</code></pre>
-</div>
-<div
-id="patchwork-plot-of-total-population-and-gambling-revenue-in-2024-by-state"
-class="section level1">
-<h1>Patchwork Plot of Total Population and Gambling Revenue in 2024 by
-State</h1>
+<p>Patchwork Plot of Total Population and Gambling Revenue in 2024 by
+State</p>
 <pre class="r"><code>combined_revenue_population = (population_plot + revenue_plot)
 
 combined_revenue_population</code></pre>
 <p><img src="analysis_files/figure-html/unnamed-chunk-4-1.png" width="90%" /></p>
-</div>
-<div id="racial-makeup-of-states-in-2024" class="section level1">
-<h1>Racial Makeup of States in 2024</h1>
+<p>Racial Makeup of States in 2024</p>
 <pre class="r"><code>model_clean_2024 |&gt; 
   filter(State != &quot;Washington D.C.&quot;) |&gt; #drop DC bc all demographic data is NA
   select(State, Revenue, pct_white, pct_black, pct_asian, pct_hispanic) |&gt; 
@@ -569,10 +557,7 @@ combined_revenue_population</code></pre>
         fill = &quot;Race&quot;
     ) </code></pre>
 <p><img src="analysis_files/figure-html/unnamed-chunk-5-1.png" width="90%" /></p>
-</div>
-<div id="poverty-and-unemployment-rate-by-state-in-2024"
-class="section level1">
-<h1>Poverty % and Unemployment Rate by State in 2024</h1>
+<p>Poverty % and Unemployment Rate by State in 2024</p>
 <pre class="r"><code>model_clean_2024 |&gt; 
   filter(State != &quot;Washington D.C.&quot;) |&gt; #drop DC bc all demographic data is NA
   select(State, Revenue, unemployment_rate, pct_poverty) |&gt; 
@@ -601,10 +586,7 @@ class="section level1">
 <p><img src="analysis_files/figure-html/unnamed-chunk-6-1.png" width="90%" /></p>
 <div id="lets-build-a-predictive-model" class="section level3">
 <h3>Let’s build a predictive model!</h3>
-</div>
-</div>
-<div id="build-training-dataset" class="section level1">
-<h1>Build training dataset</h1>
+<p>Build training dataset</p>
 <pre class="r"><code># Build training dataset
 training_data &lt;- model_clean_2024 |&gt;
   select(
@@ -618,9 +600,7 @@ training_data &lt;- model_clean_2024 |&gt;
     pct_poverty
   ) |&gt;
   drop_na()   # make sure no missing values in predictors or Revenue</code></pre>
-</div>
-<div id="fit-linear-regression-model" class="section level1">
-<h1>Fit linear regression model</h1>
+<p>Fit linear regression model</p>
 <pre class="r"><code># Fit linear regression model
 
 # Model: Revenue = β0 + β1 * total_pop + β2 * median_income + ... + error
@@ -671,10 +651,7 @@ newdata_illegal &lt;-
     pct_poverty
   ) |&gt;
   drop_na()  # just in case a state is missing some demographic</code></pre>
-</div>
-<div id="predict-revenue-if-illegal-states-legalized-gambling"
-class="section level1">
-<h1>Predict revenue if illegal states legalized gambling</h1>
+<p>Predict revenue if illegal states legalized gambling</p>
 <pre class="r"><code># Predict revenue if these states legalized gambling
 
 pred_illegal &lt;-
@@ -683,10 +660,7 @@ pred_illegal &lt;-
     predicted_revenue = predict(fit_lm, newdata = newdata_illegal)
   ) |&gt;
   arrange(desc(predicted_revenue))</code></pre>
-</div>
-<div id="compare-distribution-of-real-vs-predicted"
-class="section level1">
-<h1>Compare distribution of real vs predicted</h1>
+<p>Compare distribution of real vs predicted</p>
 <pre class="r"><code># Compare distribution of real vs predicted
 summary(training_data$Revenue)</code></pre>
 <pre><code>##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
@@ -694,9 +668,7 @@ summary(training_data$Revenue)</code></pre>
 <pre class="r"><code>summary(pred_illegal$predicted_revenue)</code></pre>
 <pre><code>##       Min.    1st Qu.     Median       Mean    3rd Qu.       Max. 
 ## -191325313   78725694  339787241  636990268  454658976 3706182311</code></pre>
-</div>
-<div id="fit-a-lasso-regression-model" class="section level1">
-<h1>Fit a LASSO regression model</h1>
+<p>Fit a LASSO regression model</p>
 <pre class="r"><code># Fit LASSO regression model
 
 # Build design matrix (same predictors as your LM model)
@@ -730,10 +702,7 @@ lasso_model &lt;- glmnet(
 
 lasso_cv$lambda.min #This is the penalty </code></pre>
 <pre><code>## [1] 10761247</code></pre>
-</div>
-<div id="build-the-prediction-matrix-for-the-non-gambling-states"
-class="section level1">
-<h1>Build the prediction matrix for the non-gambling states</h1>
+<p>Build the prediction matrix for the non-gambling states</p>
 <pre class="r"><code># Build the prediction matrix for the non-gambling states
 X_new &lt;- model.matrix(
   ~ total_pop + median_income + pct_bachelors +
@@ -752,9 +721,7 @@ pred_illegal_lasso &lt;-
 
 pred_illegal_lasso &lt;- pred_illegal_lasso |&gt; 
   mutate(predicted_revenue_lasso = pmax(predicted_revenue_lasso, 0))</code></pre>
-</div>
-<div id="compare-models" class="section level1">
-<h1>Compare models</h1>
+<p>Compare models</p>
 <pre class="r"><code>summary(training_data$Revenue)</code></pre>
 <pre><code>##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
 ## 9.209e+05 6.063e+07 4.274e+08 4.438e+08 5.993e+08 2.059e+09</code></pre>
@@ -765,6 +732,8 @@ pred_illegal_lasso &lt;- pred_illegal_lasso |&gt;
 <pre><code>##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
 ## 0.000e+00 6.132e+07 2.018e+08 6.279e+08 4.718e+08 3.612e+09</code></pre>
 <pre class="r"><code>#LASSO better</code></pre>
+</div>
+</div>
 <div id="predictive-model-tables-and-figures" class="section level2">
 <h2>Predictive model tables and Figures</h2>
 <p>Table of Predicted Annual Gambling Revenue for Non-Legal States
@@ -1374,11 +1343,7 @@ $0
 </tr>
 </tbody>
 </table>
-</div>
-</div>
-<div id="bar-plot-of-predicted-annual-gambling-revenue-if-legalized"
-class="section level1">
-<h1>Bar plot of predicted annual gambling revenue (if legalized)</h1>
+<p>Bar plot of predicted annual gambling revenue (if legalized)</p>
 <pre class="r"><code>pred_illegal_lasso_plot &lt;- pred_illegal_lasso |&gt;
   mutate(predicted_revenue_lasso = pmax(predicted_revenue_lasso, 0)) |&gt;
   arrange(predicted_revenue_lasso) |&gt;
@@ -1396,12 +1361,8 @@ ggplot(pred_illegal_lasso_plot, aes(x = State, y = predicted_revenue_lasso)) +
   ) +
   theme_minimal(base_size = 13)</code></pre>
 <p><img src="analysis_files/figure-html/Bar%20Plot-1.png" width="90%" /></p>
-</div>
-<div
-id="density-plot-of-distribution-of-actual-vs-predicted-gambling-revenue"
-class="section level1">
-<h1>Density plot of distribution of actual vs predicted gambling
-revenue</h1>
+<p>Density plot of distribution of actual vs predicted gambling
+revenue</p>
 <pre class="r"><code>compare_df &lt;- tibble(
   group = c(rep(&quot;Actual Revenue (Legal States)&quot;, nrow(training_data)),
             rep(&quot;Predicted Revenue (Non-Legal States)&quot;, nrow(pred_illegal_lasso))),
@@ -1420,12 +1381,8 @@ ggplot(compare_df, aes(x = revenue, fill = group)) +
   ) +
   theme_minimal(base_size = 13)</code></pre>
 <p><img src="analysis_files/figure-html/unnamed-chunk-13-1.png" width="90%" /></p>
-</div>
-<div
-id="scatterplot-of-population-vs-gambling-revenue-comparing-actual-and-predicted-states"
-class="section level1">
-<h1>Scatterplot of population vs gambling revenue comparing actual and
-predicted states</h1>
+<p>Scatterplot of population vs gambling revenue comparing actual and
+predicted states</p>
 <pre class="r"><code>scatter_df &lt;- bind_rows(
   training_data |&gt; mutate(type = &quot;Actual Revenue&quot;),
   pred_illegal_lasso |&gt; 
@@ -1446,12 +1403,7 @@ ggplot(scatter_df, aes(x = total_pop, y = Revenue, color = type)) +
   ) +
   theme_minimal(base_size = 13)</code></pre>
 <p><img src="analysis_files/figure-html/unnamed-chunk-14-1.png" width="90%" /></p>
-</div>
-<div
-id="table-of-distribution-comparison-of-actual-vs.-predicted-revenue"
-class="section level1">
-<h1>Table of distribution comparison of actual vs. predicted
-revenue</h1>
+<p>Table of distribution comparison of actual vs. predicted revenue</p>
 <pre class="r"><code>summary_table &lt;- tibble(
   Metric = c(&quot;Min&quot;, &quot;1st Quartile&quot;, &quot;Median&quot;, &quot;Mean&quot;, &quot;3rd Quartile&quot;, &quot;Max&quot;),
   Actual_Revenue = summary(training_data$Revenue)[c(1,2,3,4,5,6)],
@@ -1570,15 +1522,10 @@ ranked_table &lt;- bind_rows(actual_table, predicted_table) %&gt;%
     Revenue = scales::dollar(Revenue)
   ) %&gt;%
   select(Rank, State, Revenue, revenue_source)</code></pre>
-</div>
-<div id="lasso-cross-validation-plot-lamda-vs.-cross-validation-error"
-class="section level1">
-<h1>LASSO cross-validation plot (lamda vs. cross-validation error)</h1>
+<p>LASSO cross-validation plot (lamda vs. cross-validation error)</p>
 <pre class="r"><code>plot(lasso_cv)</code></pre>
 <p><img src="analysis_files/figure-html/LASSO%20Cross-Validation%20Plot%20(%CE%BB%20vs%20CV%20error)-1.png" width="90%" /></p>
-</div>
-<div id="lasso-coefficient-path-plot" class="section level1">
-<h1>LASSO coefficient path plot</h1>
+<p>LASSO coefficient path plot</p>
 <pre class="r"><code>plot(lasso_cv$glmnet.fit, xvar = &quot;lambda&quot;, label = TRUE)</code></pre>
 <p><img src="analysis_files/figure-html/LASSO%20Coefficient%20Path%20Plot-1.png" width="90%" /></p>
 <pre class="r"><code>coef_mat &lt;- as.matrix(coef(lasso_cv, s = &quot;lambda.min&quot;))
@@ -1587,10 +1534,7 @@ coef_df &lt;- tibble(
   coefficient = coef_mat[, 1]
 ) %&gt;%
   filter(variable != &quot;(Intercept)&quot;)</code></pre>
-</div>
-<div id="plot-of-actual-vs.-predicted-revenue-lasso"
-class="section level1">
-<h1>Plot of actual vs. predicted revenue (LASSO)</h1>
+<p>Plot of actual vs. predicted revenue (LASSO)</p>
 <pre class="r"><code>pred_lasso_train &lt;- as.numeric(predict(lasso_model, newx = X_train))
 
 training_data_lasso &lt;- training_data %&gt;%
@@ -1608,10 +1552,7 @@ y = &quot;Predicted Revenue&quot;
 ) +
 theme_minimal(base_size = 13)</code></pre>
 <p><img src="analysis_files/figure-html/Actual%20vs%20Predicted-1.png" width="90%" /></p>
-</div>
-<div id="correlation-map-of-potential-predictors-upper-triangle-only"
-class="section level1">
-<h1>Correlation map of potential predictors (upper triangle only)</h1>
+<p>Correlation map of potential predictors (upper triangle only)</p>
 <pre class="r"><code>predictor_mat &lt;- training_data %&gt;%
   select(total_pop, median_income, pct_bachelors, pct_age_20_34,
          pct_urban, pct_poverty) %&gt;%
@@ -1628,10 +1569,7 @@ corrplot(
   tl.srt = 45
 )</code></pre>
 <p><img src="analysis_files/figure-html/CORR%20Map-1.png" width="90%" /></p>
-</div>
-<div id="scatterplot-of-revenue-vs.-each-predictor"
-class="section level1">
-<h1>Scatterplot of revenue vs. each predictor</h1>
+<p>Scatterplot of revenue vs. each predictor</p>
 <pre class="r"><code>plot_df &lt;- training_data %&gt;%
 select(Revenue, total_pop, median_income, pct_bachelors,
 pct_age_20_34, pct_urban, pct_poverty) %&gt;%
@@ -1648,12 +1586,8 @@ y = &quot;Revenue&quot;
 ) +
 theme_minimal(base_size = 13)</code></pre>
 <p><img src="analysis_files/figure-html/Rev%20vs%20each%20predictor%20scatter%20plot-1.png" width="90%" /></p>
-</div>
-<div
-id="table-of-model-performance-comparison-between-linear-model-and-lasso"
-class="section level1">
-<h1>Table of model performance comparison between linear model and
-LASSO</h1>
+<p>Table of model performance comparison between linear model and
+LASSO</p>
 <pre class="r"><code># --- Linear Model Predictions ---
 lm_pred &lt;- predict(fit_lm)
 
@@ -1739,10 +1673,7 @@ $132,201,269
 </tr>
 </tbody>
 </table>
-</div>
-<div id="column-chart-of-lasso-coefficients-at-lambda-min"
-class="section level1">
-<h1>Column chart of LASSO coefficients at lambda min</h1>
+<p>Column chart of LASSO coefficients at lambda min</p>
 <pre class="r"><code>coef_mat &lt;- as.matrix(coef(lasso_cv, s = &quot;lambda.min&quot;))
 
 coef_df &lt;- tibble(
@@ -1853,31 +1784,32 @@ gambling markets.</p>
 <p>Go back to <a href="home.html">home</a></p>
 </div>
 
-<footer style="background-color: #1e293b; color: #cbd5e1; padding: 30px 0; margin-top: 50px; border-top: 3px solid #eab308;">
-  <div class="container">
-    <div class="row">
-      
-      <!-- Single Centered Column -->
-      <div class="col-xs-12" style="text-align: center;">
-        <p style="margin-bottom: 5px;">
-          <strong>Team:</strong> Zakari, Kimia, Law & Sukhman
-        </p>
-        <p>
-          <a href="https://github.com/zakbillo/sports-betting" target="_blank" style="color: #eab308; text-decoration: none;">
-            <i class="fa fa-github fa-lg"></i> View Our Source Code
-          </a>
-        </p>
-        <p style="font-size: 0.8em; color: #64748b;">
-          <em>"The house always wins... usually."</em>
-        </p>
-        
-        <!-- Added 2025 Line -->
-        <p style="font-size: 0.8em; color: #64748b; margin-top: 15px;">
-          2025 Data Science I (P8105) Final Project
-        </p>
-      </div>
+<footer style="background-color: #1e293b; color: #cbd5e1; padding: 40px 20px; margin-top: 50px; border-top: 3px solid #eab308; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+  
+  <div style="max-width: 900px; width: 100%;">
+    
+    <!-- Team Name - Made Larger -->
+    <p style="margin-bottom: 15px; font-size: 1.25rem; line-height: 1.5;">
+      <strong style="color: #ffffff;">Team:</strong> Zakari, Kimia, Law & Sukhman
+    </p>
+    
+    <!-- GitHub Link - Made Larger and added hover effect logic (if css allows, otherwise just clean style) -->
+    <p style="margin-bottom: 15px; font-size: 1.1rem;">
+      <a href="https://github.com/zakbillo/sports-betting" target="_blank" style="color: #eab308; text-decoration: none; font-weight: 500;">
+        <i class="fa fa-github fa-lg" style="margin-right: 5px;"></i> View Our Source Code
+      </a>
+    </p>
+    
+    <!-- Quote - Increased size slightly -->
+    <p style="font-size: 1rem; color: #94a3b8; margin-bottom: 20px; font-style: italic;">
+      "The house always wins... usually."
+    </p>
+    
+    <!-- 2025 Line - Made distinct but readable -->
+    <p style="font-size: 0.95rem; color: #64748b; margin-top: 20px; border-top: 1px solid #334155; padding-top: 20px; display: inline-block;">
+      2025 Data Science I (P8105) Final Project
+    </p>
 
-    </div>
   </div>
 </footer>
 
@@ -1913,6 +1845,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
