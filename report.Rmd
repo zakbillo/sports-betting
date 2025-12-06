@@ -4,10 +4,10 @@ title: "Project Report"
 
 ## Group Members
 
-* Kimia Faroughi (UNI: ksf2129)
-* Lawrence Zicari (UNI: lz3015)
-* Sukhman Parhar (UNI: sp4436)
-* Zakari Billo (UNI: zlb2008)
+**Kimia Faroughi (UNI: ksf2129)**
+**Lawrence Zicari (UNI: lz3015)**
+**Sukhman Parhar (UNI: sp4436)**
+**Zakari Billo (UNI: zlb2008)**
 
 ## Motivation
 
@@ -67,7 +67,7 @@ Our analysis has illustrated a dynamic shift in U.S gambling revenue trends sinc
 
 Our projections show that several non-legalized states have the demographic capacity to become major contributors to the national gambling market if sports betting were to be approved. In our analysis, we found that states such as California, Texas, Florida, and Georgia are expected to generate more revenue than most established states due to their large populations, sizable young-adult demographics, and substantial urban centers. This analysis shows how expanding sports gambling to just a handful of these large states could dramatically reshape the national market, potentially increasing the industry’s size by billions of dollars. At the same time, the states with more modest projected markets tend to be smaller, more rural, or have demographic profiles associated with lower gambling participation. While these estimates cannot fully capture behavioral or cultural differences across states, they provide a data-driven view of how rapidly the sports gambling industry could grow and which populations may be most vulnerable to associated harms if gambling becomes more widely accessible.
 
-** Limitations **
+**Limitations**
 
 Some states that have legalized sports gambling were not included in our model because the data automatically excluded certain states, such as Florida and New Mexico. These states have specific policies that alter the reporting of gambling revenue, and our data source did not collect these. This led to a reduced sample size and may affect the accuracy of our projected model. 
 

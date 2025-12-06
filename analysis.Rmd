@@ -36,7 +36,8 @@ knitr::opts_chunk$set(
   echo = TRUE
 )
 
-theme_set(theme_minimal() + 
+# Increased base size for better readability of demographic plots
+theme_set(theme_minimal(base_size = 15) + 
           theme(legend.position = "bottom",
                 plot.title = element_text(face = "bold", hjust = 0.5),
                 plot.subtitle = element_text(hjust = 0.5, color = "gray50")))
@@ -51,17 +52,18 @@ scale_fill_discrete = scale_fill_viridis_d
 ```
 
 <style type="text/css">
+/* General styling for website compatibility */
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 h1, h2, h3 {
-  color: #2c3e50;
-  font-weight: 600;
+color: #2c3e50;
+font-weight: 600;
 }
 .main-container {
-  max-width: 1200px;
-  margin-left: auto;
-  margin-right: auto;
+max-width: 1500px;
+margin-left: auto;
+margin-right: auto;
 }
 </style>
 
@@ -73,78 +75,15 @@ h1, h2, h3 {
 total_state_revenue = read_csv("data/total_state_revenue.csv")
 model_clean_2024 = read_csv("data/model_clean_2024.csv")
 demographics_2024 = read_csv("data/demographics_2024.csv")
-```
 
-# Gambling Visuals {.tabset}
-
-## Revenue by Year
-
-```{r revenue-by-year}
-# Aggregate total revenue by year
+# Pre-calculate yearly revenue summary for the Revenue by Year plot
 yearly_revenue_summary = total_state_revenue |> 
   group_by(Year) |> 
   summarize(Total_Revenue = sum(Revenue, na.rm = TRUE))
 
-yearly_revenue_summary |> 
-  ggplot(aes(x = Year, y = Total_Revenue)) +
-  geom_col(aes(fill = as.factor(Year)), show.legend = FALSE) +
-  geom_text(aes(label = scales::dollar(Total_Revenue, scale = 1e-9, suffix = "B")), 
-            vjust = -0.5) + # Add labels in Billions
-  scale_y_continuous(labels = scales::dollar_format()) +
-  scale_x_continuous(breaks = 2018:2024) +
-  labs(
-    title = "Total US Gambling Revenue (2018-2024)",
-    subtitle = "Aggregated revenue across all states",
-    x = "Year",
-    y = "Total Revenue"
-  )
-```
-
-## Growth by State
-
-```{r growth-by-state-fixed}
-# Aggregate total revenue by year
-yearly_revenue_summary = total_state_revenue |> 
-  group_by(Year) |> 
-  summarize(Total_Revenue = sum(Revenue, na.rm = TRUE))
-
-# Create the plot
-plot_ly(
-  data = yearly_revenue_summary |> mutate(Year = as.factor(Year)),
-  x = ~Year,
-  y = ~Total_Revenue, 
-  type = "bar", 
-  color = ~Year,
-  text = ~scales::dollar(Total_Revenue / 1e9, scale = 1, suffix = "B"),
-  textposition = "outside",
-  hoverinfo = "x+y+text"
-) |> 
-  layout(
-    title = "Total US Gambling Revenue (2018-2024)",
-    xaxis = list(
-      title = "Year"
-    ),
-    yaxis = list(
-      title = "Total Revenue",
-      tickformat = "$,",
-      tickprefix = "$"
-    ),
-    showlegend = FALSE
-  )
-```
-
-## Market Rank Shifts
-
-```{r market-rank-shifts}
-# Calculate Ranks for every state, every year
-ranked_data = total_state_revenue |> 
-  group_by(Year) |> 
-  mutate(Rank = min_rank(desc(Revenue))) |> 
-  ungroup()
-
-# Identify top 5 states by 2024 revenue to keep things looking clean
+# Pre-calculate data for Growth by State plot
 top_states = total_state_revenue |> 
-  filter(Year == 2019) |> 
+  filter(Year == 2024) |> 
   slice_max(Revenue, n = 5) |> 
   pull(State)
 
@@ -155,7 +94,42 @@ state_growth_plot_data = total_state_revenue |>
   group_by(Year, State_Group) |> 
   summarize(Revenue = sum(Revenue, na.rm = TRUE), .groups = "drop") |> 
   mutate(State_Group = fct_reorder(State_Group, Revenue, .desc = TRUE))
+```
 
+# Gambling Visuals {.tabset}
+
+## Revenue by Year
+
+```{r revenue-by-year}
+# Plotly bar chart showing total revenue by year
+plot_ly(
+  data = yearly_revenue_summary |> mutate(Year = as.factor(Year)),
+  x = ~Year,
+  y = ~Total_Revenue, 
+  type = "bar", 
+  color = ~Year,
+  # Use dollar format for text labels
+  text = ~scales::dollar(Total_Revenue / 1e9, accuracy = 0.01, suffix = "B"),
+  textposition = "outside",
+  hoverinfo = "x+y+text"
+) |> 
+  layout(
+    title = "Total US Gambling Revenue (2018-2024)",
+    xaxis = list(
+      title = "Year"
+    ),
+    yaxis = list(
+      title = "Total Revenue",
+      tickformat = "$,"
+    ),
+    showlegend = FALSE
+  )
+```
+
+## Growth by State
+
+```{r growth-by-state-fixed}
+# Plotly stacked bar chart showing revenue growth by state over time
 state_growth_plot_data |> 
   plot_ly(
     x = ~Year,
@@ -163,7 +137,6 @@ state_growth_plot_data |>
     type = "bar", 
     color = ~State_Group,
     text = ~scales::dollar(Revenue),
-    textposition = "outside",
     hoverinfo = "x+y+text"
   ) |> 
   layout(
@@ -181,24 +154,63 @@ state_growth_plot_data |>
   )
 ```
 
+## Market Rank Shifts
+
+```{r market-rank-shifts}
+# Plotly bar chart showing 2024 Revenue by State, ranked by Revenue (descending)
+revenue_2024 = total_state_revenue |> 
+  filter(Year == 2024, Revenue > 0) |>
+  mutate(
+    State = fct_reorder(State, Revenue, .desc = TRUE),
+    Rank = min_rank(desc(Revenue))
+  )
+
+ordered_states = as.character(revenue_2024$State)
+
+revenue_2024 |> 
+  plot_ly(
+    x = ~State,
+    y = ~Revenue, 
+    type = "bar", 
+    color = ~State,
+    text = ~paste0("Rank ", Rank, ": ", scales::dollar(Revenue, accuracy = 0.01)),
+    hoverinfo = "text"
+  ) |> 
+  layout(
+    title = "Gambling Revenue and Market Rank (2024)",
+    xaxis = list(
+      title = "State (Ranked by Revenue)",
+      tickangle = 90,        
+      tickmode = "array",           
+      tickvals = ordered_states,  
+      ticktext = ordered_states
+      ),
+    yaxis = list(
+      title = "Revenue",
+      tickformat = "$,"
+    ),
+    showlegend = FALSE
+  )
+```
+
 # Demographic Visuals {.tabset}
 
 ## Population
 
 ```{r population-plot}
-# Population plot:
-population_plot = 
+# Order by Revenue (descending), not population
+population_plot_data = 
   model_clean_2024 |> 
   filter(State != "Washington D.C.") |> 
     mutate(
       State = as.factor(State),
-      State = fct_reorder(State, total_pop, .desc = TRUE)
+      State = fct_reorder(State, Revenue, .desc = TRUE) # Ordering by Revenue
     )
 
-ordered_states = as.character(population_plot$State)
+ordered_states = as.character(population_plot_data$State)
 
 population_plot = 
-  population_plot |> 
+  population_plot_data |> 
   plot_ly(
     x = ~State,
     y = ~total_pop, 
@@ -211,7 +223,7 @@ population_plot =
   layout(
     title = "Total Population by State (2024)",
     xaxis = list(
-      title = "State",
+      title = "State (sorted by descending 2024 Revenue)",
       tickangle = 90,        
       tickmode = "array",           
       tickvals = ordered_states,  
@@ -229,18 +241,19 @@ population_plot
 ## Revenue
 
 ```{r revenue-plot}
-revenue_plot = 
+# Order by Revenue (descending), not population
+revenue_plot_data = 
   model_clean_2024 |> 
   filter(State != "Washington D.C.") |> 
     mutate(
       State = as.factor(State),
-      State = fct_reorder(State, total_pop, .desc = TRUE)
+      State = fct_reorder(State, Revenue, .desc = TRUE) # Ordering by Revenue
     )
 
-ordered_states = as.character(revenue_plot$State)
+ordered_states = as.character(revenue_plot_data$State)
 
 revenue_plot = 
-  revenue_plot |> 
+  revenue_plot_data |> 
   plot_ly(
     x = ~State,
     y = ~Revenue, 
@@ -253,7 +266,7 @@ revenue_plot =
   layout(
     title = "Gambling Revenue by State (2024)",
     xaxis = list(
-      title = "State (sorted by population)",
+      title = "State (sorted by descending 2024 Revenue)",
       tickangle = 90,        
       tickmode = "array",           
       tickvals = ordered_states,  
@@ -272,6 +285,7 @@ revenue_plot
 ## Comparison
 
 ```{r combined-plots}
+# Use the Plotly objects created in the previous chunks
 combined_revenue_population = 
   subplot(
     population_plot, 
@@ -283,7 +297,7 @@ combined_revenue_population =
     titleX = TRUE
   ) |> 
   layout(
-    title = "Population vs Revenue Comparison by State",
+    title = "Population vs Revenue Comparison by State (Sorted by Revenue)",
     showlegend = FALSE
   )
 
@@ -293,7 +307,7 @@ combined_revenue_population
 ## Racial Makeup
 
 ```{r racial-makeup}
-race_plot = 
+race_plot_data = 
   model_clean_2024 |> 
   filter(State != "Washington D.C.") |> 
   select(State, Revenue, pct_white, pct_black, pct_asian, pct_hispanic) |> 
@@ -310,35 +324,38 @@ race_plot =
                   labels = c("% White", "% Black", "% Asian", "% Hispanic"))
   )
 
-race_plot |> 
+race_plot_data |> 
   plot_ly(
     x = ~State,
     y = ~percentage,
     color = ~race,
     type = 'scatter',
     mode = 'lines+markers',
-    text = ~paste(State, ": ", round(percentage, 1), "%"),
+    # Format hover text to two decimal places
+    text = ~paste(State, ": ", sprintf("%.2f%%", percentage)),
     hoverinfo = 'text',         
     line = list(width = 2)
   ) |> 
   layout(
     title = "Racial Makeup by State (2024)",    
     xaxis = list(
-      title = "State (sorted by revenue)",
+      title = "State (sorted by descending 2024 Revenue)",
       tickangle = 90            
     ),
     yaxis = list(
       title = "Percentage of Population", 
-      tickformat = "%"
+      # Assuming percentage values are stored as raw percents (e.g., 50.5 for 50.5%)
+      tickformat = ".1f%"
     ),
-    showlegend = TRUE 
+    showlegend = TRUE,
+    font = list(size = 13)
   )
 ```
 
 ## Economic Stats
 
 ```{r economic-stats}
-economic_plot = 
+economic_plot_data = 
   model_clean_2024 |> 
     filter(State != "Washington D.C.") |> 
     select(State, Revenue, unemployment_rate, pct_poverty) |> 
@@ -355,28 +372,31 @@ economic_plot =
                     labels = c("% in Poverty", "% Unemployed"))
     )
 
-economic_plot |> 
+economic_plot_data |> 
   plot_ly(
     x = ~State,
     y = ~percentage,
     color = ~measure,
     type = 'scatter',
     mode = 'lines+markers',
-    text = ~paste(State, ": ", round(percentage, 1), "%"),
+    # Format hover text to two decimal places
+    text = ~paste(State, ": ", sprintf("%.2f%%", percentage)),
     hoverinfo = 'text',         
     line = list(width = 2)
   ) |> 
   layout(
     title = "Poverty & Unemployment by State (2024)",    
     xaxis = list(
-      title = "State (sorted by revenue)",
+      title = "State (sorted by descending 2024 Revenue)",
       tickangle = 90            
     ),
     yaxis = list(
       title = "Percentage of Population", 
-      tickformat = "%"
+      # Assuming percentage values are stored as raw percents (e.g., 5.5 for 5.5%)
+      tickformat = ".1f%"
     ),
-    showlegend = TRUE 
+    showlegend = TRUE,
+    font = list(size = 13)
   )
 ```
 
@@ -504,6 +524,7 @@ ggplot(compare_df, aes(x = revenue, fill = group)) +
   scale_x_continuous(labels = scales::dollar) +
   labs(
     title = "Distribution of Actual vs Predicted Gambling Revenue",
+    # Set the x-axis title 
     x = "Revenue",
     y = "Density",
     fill = ""
@@ -625,7 +646,8 @@ ggplot(plot_df, aes(x = value, y = Revenue)) +
   scale_y_continuous(labels = scales::dollar) +
   labs(
     title = "Revenue vs Key Demographic Predictors (Legal States)",
-    x = "Predictor Value",
+    # Set x to NULL so the facet titles serve as the x-axis labels
+    x = NULL, 
     y = "Revenue"
   ) +
   theme_minimal(base_size = 13)
