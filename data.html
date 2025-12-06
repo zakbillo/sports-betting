@@ -483,12 +483,11 @@ href="https://www.census.gov/programs-surveys/acs/data.html">American
 Community Survey data</a> (2024).</li>
 </ul>
 </div>
-<div id="making-the-sports-gambling-dataset" class="section level3">
-<h3>Making the sports gambling dataset</h3>
-<p>Gambling Data {.tabset .tabset-pills}</p>
+<div id="gambling-data" class="section level2">
+<h2>Gambling Data</h2>
 <p>Web Scraping:</p>
-<p>Scrape the current 2024 state revenue and 2025 growth projections
-directly from the web</p>
+<p>Scrape the current 2024 state sports gambling revenue and 2025 growth
+projections directly from the web</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>url <span class="ot">=</span> <span class="st">&quot;https://rg.org/statistics/us&quot;</span></span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>gambling_html <span class="ot">=</span> <span class="fu">read_html</span>(url)</span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>gambling_html <span class="sc">|&gt;</span></span>
@@ -705,8 +704,11 @@ manually scraped data</p>
 <p>Save the relevant gambling datasets</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">write.csv</span>(total_state_revenue, <span class="st">&quot;data/total_state_revenue.csv&quot;</span>) <span class="co"># state totals only</span></span>
 <span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">write.csv</span>(final_state_revenue, <span class="st">&quot;data/final_state_revenue.csv&quot;</span>) <span class="co"># totals mapped to raw data</span></span></code></pre></div>
-<p>Demographics {.tabset .tabset-pills} We utilize the tidycensus
-package to pull 2024 ACS data for all states</p>
+</div>
+<div id="demographics" class="section level2">
+<h2>Demographics</h2>
+<p>We utilize the tidycensus package to pull 2024 ACS data for all
+states</p>
 <p>Base Stats (Pop/Income)</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>vars_base <span class="ot">=</span> <span class="fu">c</span>(</span>
 <span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="at">median_income =</span> <span class="st">&quot;B19013_001&quot;</span>,</span>
@@ -943,7 +945,10 @@ package to pull 2024 ACS data for all states</p>
 <span id="cb20-22"><a href="#cb20-22" tabindex="-1"></a>    <span class="at">pct_rent =</span> renter <span class="sc">/</span> total,</span>
 <span id="cb20-23"><a href="#cb20-23" tabindex="-1"></a>    <span class="at">pct_own =</span> owner <span class="sc">/</span> total</span>
 <span id="cb20-24"><a href="#cb20-24" tabindex="-1"></a>  )</span></code></pre></div>
-<p>Merge into final dataset.</p>
+</div>
+<div id="merge-into-final-sports-gambling-dataset"
+class="section level2">
+<h2>Merge into final sports gambling dataset</h2>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="co">#Rename so all are State</span></span>
 <span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>acs_base_2024 <span class="ot">=</span> acs_base_2024 <span class="sc">|&gt;</span> <span class="fu">rename</span>(<span class="at">State =</span> name)</span>
 <span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>educ_clean_2024 <span class="ot">=</span> educ_clean_2024 <span class="sc">|&gt;</span> <span class="fu">rename</span>(<span class="at">State =</span> NAME)</span>

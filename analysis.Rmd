@@ -155,39 +155,96 @@ state_growth_plot_data |>
 ## Market Rank Shifts
 
 ```{r market-rank-shifts}
-# Plotly bar chart showing 2024 Revenue by State, ranked by Revenue (descending)
-revenue_2024 = total_state_revenue |> 
-  filter(Year == 2024, Revenue > 0) |>
-  mutate(
-    State = fct_reorder(State, Revenue, .desc = TRUE),
-    Rank = min_rank(desc(Revenue))
-  )
+# --- Data Processing ---
+ranked_data = total_state_revenue |> 
+  group_by(Year) |> 
+  # Calculate rank, putting NAs last
+  mutate(Rank = min_rank(desc(Revenue))) |> 
+  ungroup()
 
-ordered_states = as.character(revenue_2024$State)
+# Identify "States of Interest" (Top 5 at any point)
+focus_states = ranked_data |> 
+  filter(Rank <= 5) |> 
+  pull(State) |> 
+  unique()
 
-revenue_2024 |> 
-  plot_ly(
-    x = ~State,
-    y = ~Revenue, 
-    type = "bar", 
+# Filter dataset
+plot_data = ranked_data |> 
+  filter(State %in% focus_states) |> 
+  filter(!is.na(Rank)) |>  # Remove years where rank is NA (not legalized yet)
+  arrange(Year) 
+
+# --- Create Label Dataframes for Ends of Lines ---
+# Left Side Labels (2018)
+labels_start = plot_data |> 
+  filter(Year == min(Year)) |> 
+  mutate(label_text = paste0("#", Rank, " ", State))
+
+# Right Side Labels (2024)
+labels_end = plot_data |> 
+  filter(Year == max(Year)) |> 
+  mutate(label_text = paste0(State, " #", Rank))
+
+# --- Build Plotly Object ---
+plot_ly(data = plot_data) |> 
+  
+  # The Main Lines and Dots
+  add_trace(
+    x = ~Year, 
+    y = ~Rank, 
     color = ~State,
-    text = ~paste0("Rank ", Rank, ": ", scales::dollar(Revenue, accuracy = 0.01)),
+    type = 'scatter', 
+    mode = 'lines+markers',
+    line = list(width = 3),
+    marker = list(size = 8),
+    # Custom Hover Text
+    text = ~paste0("<b>", State, "</b><br>Year: ", Year, "<br>Rank: ", Rank, "<br>Revenue: ", scales::dollar(Revenue)),
     hoverinfo = "text"
   ) |> 
-  layout(
-    title = "Gambling Revenue and Market Rank (2024)",
-    xaxis = list(
-      title = "State (Ranked by Revenue)",
-      tickangle = 90,        
-      tickmode = "array",           
-      tickvals = ordered_states,  
-      ticktext = ordered_states
-      ),
-    yaxis = list(
-      title = "Revenue",
-      tickformat = "$,"
-    ),
+  
+  # Left Side Text Labels (Start of line)
+  add_text(
+    data = labels_start,
+    x = ~Year, 
+    y = ~Rank, 
+    text = ~label_text,
+    color = ~State,
+    textposition = "middle left",
+    hoverinfo = "skip",
     showlegend = FALSE
+  ) |> 
+  
+  # Right Side Text Labels (End of line)
+  add_text(
+    data = labels_end,
+    x = ~Year, 
+    y = ~Rank, 
+    text = ~label_text,
+    color = ~State,
+    textposition = "middle right",
+    hoverinfo = "skip",
+    showlegend = FALSE
+  ) |> 
+  
+  # Layout Settings
+  layout(
+    title = list(text = "<b>Shift in Top Gambling Markets (2018-2024)</b>"),
+    showlegend = FALSE, 
+    xaxis = list(
+      title = "",
+      dtick = 1, 
+      range = c(2017, 2025), 
+      showgrid = FALSE
+    ),
+    yaxis = list(
+      title = "Revenue Rank",
+      autorange = "reversed", 
+      zeroline = FALSE,
+      showgrid = FALSE,
+      tickmode = "array",
+      tickvals = 1:max(plot_data$Rank, na.rm = TRUE) 
+    ),
+    margin = list(l = 100, r = 100) 
   )
 ```
 
