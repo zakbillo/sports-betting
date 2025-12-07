@@ -117,16 +117,14 @@ plot_ly(
 ) |> 
   layout(
     title = "Total US Gambling Revenue (2018-2024)",
-    xaxis = list(
-      title = "Year"
-    ),
+    xaxis = list(title = "Year"),
     yaxis = list(
       title = "Total Revenue (US$)",
       tickprefix = "$",
       ticksuffix = "B"
     ),
     showlegend = FALSE,
-    width = 900,
+    # REMOVED width = 900
     height = 600
   )
 ```
@@ -163,7 +161,7 @@ state_growth_plot_data |>
     ),
     barmode = "stack",
     showlegend = TRUE,
-    width = 900,
+    # REMOVED width = 900
     height = 600
   )
 ```
@@ -213,12 +211,11 @@ plot_ly(data = plot_data) |>
     mode = 'lines+markers',
     line = list(width = 3),
     marker = list(size = 5),
-    # Custom Hover Text
     text = ~paste0("<b>", State, "</b><br>Year: ", Year, "<br>Rank: ", Rank, "<br>Revenue: $", round(Revenue/1e6, 1), "M"),
     hoverinfo = "text"
   ) |> 
   
-  # Left Side Text Labels (Start of line)
+  # Left Side Labels
   add_text(
     data = labels_start,
     x = ~Year, 
@@ -230,7 +227,7 @@ plot_ly(data = plot_data) |>
     showlegend = FALSE
   ) |> 
   
-  # Right Side Text Labels (End of line)
+  # Right Side Labels
   add_text(
     data = labels_end,
     x = ~Year, 
@@ -261,8 +258,8 @@ plot_ly(data = plot_data) |>
       tickvals = 1:max(plot_data$Rank, na.rm = TRUE) 
     ),
     margin = list(l = 100, r = 100),
-    width = 900,
-    height = 300
+    # REMOVED width = 900
+    height = 400
   )
 ```
 
@@ -585,9 +582,11 @@ X_new <- model.matrix(
 pred_illegal_lasso <- newdata_illegal |>
   mutate(
     predicted_revenue_lasso = as.numeric(predict(lasso_model, newx = X_new)),
-    predicted_revenue_lasso = pmax(predicted_revenue_lasso, 0) # Remove negative predictions
+    predicted_revenue_lasso = pmax(predicted_revenue_lasso, 0) 
   ) |>
   arrange(desc(predicted_revenue_lasso))
+
+
 ```
 
 ## Prediction Results
@@ -616,7 +615,7 @@ kable(pred_table, format = "html") |>
 
 ```{r visualizing-predictions}
 pred_illegal_lasso_plot <- pred_illegal_lasso |>
-  mutate(State = factor(State, levels = State)) # Maintain sorted order
+  mutate(State = reorder(State, predicted_revenue_lasso))
 
 ggplot(pred_illegal_lasso_plot, aes(x = State, y = predicted_revenue_lasso / 1e6)) +
   geom_col(fill = "steelblue") +
