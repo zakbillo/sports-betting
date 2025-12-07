@@ -25,16 +25,16 @@ library(viridis)
 library(plotly)
 
 knitr::opts_chunk$set(
-  fig.width = 8,
-  fig.asp = .6,
-  out.width = "90%",
+  fig.width = 10,  # Increased width for better fit
+  fig.asp = 0.6,
+  out.width = "95%",  # Increased from 90%
   fig.align = "center",
   message = FALSE,
   warning = FALSE,
   echo = TRUE
 )
 
-# Increased base size for better readability of demographic plots
+# Set theme
 theme_set(theme_minimal(base_size = 15) + 
           theme(legend.position = "bottom",
                 plot.title = element_text(face = "bold", hjust = 0.5),
@@ -47,26 +47,10 @@ options(
 
 scale_colour_discrete = scale_color_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
-scientific_10 <- function(x) {
-  parse(text=gsub("e", " %*% 10^", scales::scientific_format()(x)))
-}
 ```
 
-<style type="text/css">
-/* General styling for website compatibility */
-body {
-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-h1, h2, h3 {
-color: #2c3e50;
-font-weight: 600;
-}
-.main-container {
-max-width: 1500px;
-margin-left: auto;
-margin-right: auto;
-}
-</style>
+<style type="text/css"> /* Add these CSS rules to prevent graph overflow */ .plotly.html-widget { width: 100% !important; max-width: 100% !important; overflow: hidden !important; } .main-container { max-width: 1400px !important; margin: 0 auto !important; padding: 20px !important; } /* Ensure graphs don't overflow their containers */ .html-widget { margin: 10px 0 !important; padding: 10px 0 !important; } /* Better spacing between sections */ .section.level2 { margin-top: 40px !important; margin-bottom: 20px !important; } /* Fix for floating TOC */ .tocify { position: fixed !important; max-height: 80vh !important; overflow-y: auto !important; } body { padding-right: 300px !important; /* Space for TOC */ } @media (max-width: 1200px) { body { padding-right: 20px !important; } .tocify { display: none !important; } } </style>
+
 
 ```{r import-data, echo=FALSE}
 total_state_revenue = read_csv("data/total_state_revenue.csv")
@@ -124,8 +108,9 @@ plot_ly(
       ticksuffix = "B"
     ),
     showlegend = FALSE,
-    # REMOVED width = 900
-    height = 600
+    margin = list(l = 50, r = 50, b = 50, t = 50, pad = 4),
+    autosize = TRUE,
+    height = 450
   )
 ```
 
@@ -161,8 +146,9 @@ state_growth_plot_data |>
     ),
     barmode = "stack",
     showlegend = TRUE,
-    # REMOVED width = 900
-    height = 600
+    margin = list(l = 50, r = 50, b = 50, t = 50, pad = 4),
+    autosize = TRUE,
+    height = 450
   )
 ```
 
@@ -257,9 +243,9 @@ plot_ly(data = plot_data) |>
       tickmode = "array",
       tickvals = 1:max(plot_data$Rank, na.rm = TRUE) 
     ),
-    margin = list(l = 100, r = 100),
-    # REMOVED width = 900
-    height = 400
+    margin = list(l = 80, r = 80, b = 50, t = 50, pad = 4),
+    autosize = TRUE,
+    height = 450
   )
 ```
 
@@ -309,15 +295,17 @@ rpc_plot = rpc_plot_data |>
       tickangle = 0,
       tickmode = "array",
       tickvals = ordered_states_rpc,
-      ticktext = ordered_states_rpc
+      ticktext = ordered_states_rpc,
+      automargin = TRUE
     ),
     xaxis = list(
       title = "Revenue Per Capita ($)",
       tickprefix = "$"
     ),
     showlegend = FALSE,
-    width = 700,
-    height = 500 # Increased height slightly to fit all states clearly
+    margin = list(l = 50, r = 50, b = 100, t = 50, pad = 4),
+    autosize = TRUE,
+    height = 600
   )
 
 rpc_plot
@@ -367,9 +355,9 @@ revenue_plot <- revenue_plot_data %>%
       ticksuffix = "M"
     ),
     showlegend = FALSE,
-    width = 900,
-    height = 600,
-    margin = list(l = 10, r = 50) 
+    margin = list(l = 50, r = 50, b = 100, t = 50, pad = 4),
+    autosize = TRUE,
+    height = 600
   )
 
 revenue_plot
@@ -388,13 +376,14 @@ combined_revenue_population =
     shareX = FALSE,  
     titleY = TRUE,
     titleX = TRUE,
-    margin = 0.05    
+    margin = 0.07    
   ) |> 
   layout(
     title = "Per Capita vs Total Revenue Comparison",
     showlegend = FALSE,
-    width = 900,
-    height = 800    
+    margin = list(l = 50, r = 50, b = 100, t = 50, pad = 4),
+    autosize = TRUE,
+    height = 850    
   )
 
 combined_revenue_population
@@ -454,10 +443,10 @@ race_plot_data |>
     ),
     barmode = "stack",
     showlegend = TRUE,
-    legend = list(orientation = "h", y = -0.05, x = 0.5, xanchor = "center"), 
-    width = 900,
-    height = 800, 
-    margin = list(l = 10, r = 20, b = 50, t = 50)
+    legend = list(orientation = "h", y = -0.1, x = 0.5, xanchor = "center"), 
+    margin = list(l = 50, r = 50, b = 100, t = 50, pad = 4),
+    autosize = TRUE,
+    height = 600
   )
 ```
 
@@ -511,10 +500,10 @@ economic_plot_data |>
       ticksuffix = "%"
     ),
     showlegend = TRUE,
-    legend = list(orientation = "h", y = -0.05, x = 0.5, xanchor = "center"),
-    width = 900,
-    height = 800, 
-    margin = list(l = 10, r = 20, b = 50, t = 50)
+    legend = list(orientation = "h", y = -0.1, x = 0.5, xanchor = "center"),
+    margin = list(l = 50, r = 50, b = 100, t = 50, pad = 4),
+    autosize = TRUE,
+    height = 600
   )
 ```
 
