@@ -70,7 +70,7 @@ output:
 </div>
 
 <div class="team-member">
-  <a href="suparhar.github.io" class="team-member-link" target="_blank">
+  <a href="https://suparhar.github.io/" class="team-member-link" target="_blank">
     <img src="images/IMG_1642.jpg" alt="Sukhman">
   </a>
   <h3>Sukhman</h3>
