@@ -251,7 +251,7 @@ plot_ly(data = plot_data) |>
 
 # Demographic Visuals {.tabset}
 
-Below are exploratory plots of the demographic data in 2024. The first plot shows the per capita revenue for each state. The second plot shows gambling revenue by state in 2024. The third plot compares the first two plots. The fourth plot shows the racial makeup in percentage of the total population in each state in 2024, arranged in descending order of total gambling revenue. The fifth plot depicts the percentage of the total population in poverty and unemployed in 2024 in each state, arranged in descending order of total gambling revenue.
+Below are exploratory plots of the demographic data in 2024. The first plot shows the per capita revenue for each state. The second plot shows gambling revenue by state in 2024.The third plot shows the racial makeup in percentage of the total population in each state in 2024, arranged in descending order of total gambling revenue. The fourth plot depicts the percentage of the total population in poverty and unemployed in 2024 in each state, arranged in descending order of total gambling revenue.
 
 ## Population
 
@@ -364,32 +364,6 @@ revenue_plot
 ```
 
 *This bar chart shows gambling revenue by state in 2024, arranged in descending order. New York leads significantly, followed by Pennsylvania, Illinois, and Nevada. The chart demonstrates the concentration of gambling revenue among a few large states, with a steep drop-off after the top performers. This pattern reflects both population size and market maturity.*
-
-## Comparison
-
-```{r combined-plots}
-combined_revenue_population = 
-  subplot(
-    rpc_plot,       
-    revenue_plot, 
-    nrows = 2,        
-    shareX = FALSE,  
-    titleY = TRUE,
-    titleX = TRUE,
-    margin = 0.07    
-  ) |> 
-  layout(
-    title = "Per Capita vs Total Revenue Comparison",
-    showlegend = FALSE,
-    margin = list(l = 50, r = 50, b = 100, t = 50, pad = 4),
-    autosize = TRUE,
-    height = 850    
-  )
-
-combined_revenue_population
-```
-
-*This combined visualization places population and revenue side-by-side for direct comparison. The alignment reveals that while population is a strong driver of gambling revenue, the relationship isn't perfectly linear. States with similar populations can have vastly different revenue outcomes, highlighting the influence of other factors like urbanization, regulatory environment, and gambling culture.*
 
 ## Racial Makeup
 
