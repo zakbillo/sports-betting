@@ -5,8 +5,6 @@ output:
     lib_dir: libs
     theme: flatly       
     highlight: pygments 
-    toc: true
-    toc_float: true
     code_folding: hide
 ---
 
@@ -17,6 +15,4 @@ Scandals surrounding gambling in sports have reached the national stage in recen
 Here's a high-level overview of our project: 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID_HERE" frameborder="0" allowfullscreen></iframe>
 
-## Interactive Map
-
-<iframe src="https://zakaribillo.shinyapps.io/revenue-map/" width="150%" height="800px" frameborder="0"></iframe>
+<iframe src="https://zakaribillo.shinyapps.io/revenue-map/" width="100%" height="800px" frameborder="0"></iframe>

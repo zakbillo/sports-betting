@@ -40,14 +40,14 @@ scale_fill_discrete = scale_fill_viridis_d
 
 ### Data Sources 
 
-# * Sports gambling data was obtained from [Research Ground's US sports betting data](https://rg.org/statistics/us) (2018-2024).
+* Sports gambling data was obtained from [Research Ground's US sports betting data](https://rg.org/statistics/us) (2018-2024).
 # * Demographic data was obtained from publicly available [American Community Survey data](https://www.census.gov/programs-surveys/acs/data.html) (2024).
 
-## Gambling Data 
+# Gambling Data 
 
-# Web Scraping:
+### Web Scraping:
 
-# Scrape the current 2024 state sports gambling revenue and 2025 growth projections directly from the web
+Scrape the current 2024 state sports gambling revenue and 2025 growth projections directly from the web
 
 ```{r scraping}
 url = "https://rg.org/statistics/us"
@@ -66,7 +66,7 @@ state_revenue_24 =
   first() 
 ```
 
-# Pull in 2025 revenue growth by month
+Pull in 2025 revenue growth by month
 
 ```{r monthly growth}
 revenue_growth_25= 
@@ -75,7 +75,7 @@ revenue_growth_25=
   purrr::pluck(2)
 ```
 
-# We realized website that was scraped to obtain this data had dynamic filters that switched the year of the displayed data. To overcome the lack of static data, we manually scraped the tables for previous years and saved the data in a CSV format
+We realized website that was scraped to obtain this data had dynamic filters that switched the year of the displayed data. To overcome the lack of static data, we manually scraped the tables for previous years and saved the data in a CSV format
 
 ```{r importing csv}
 # 2018 Data
@@ -132,7 +132,7 @@ revenue_growth_25_clean = revenue_growth_25 |>
   )
 ```
 
-# Next, combine the dataset
+Next, combine the dataset
 
 ```{r merging}
 # --- Create Master State Revenue File ---
@@ -196,18 +196,18 @@ monthly_grand_total = total_revenue_growth |>
 final_revenue_growth = bind_rows(total_revenue_growth, monthly_grand_total)
 ```
 
-# Save the relevant gambling datasets
+Save the relevant gambling datasets
 
 ```{r}
 write.csv(total_state_revenue, "data/total_state_revenue.csv") # state totals only
 write.csv(final_state_revenue, "data/final_state_revenue.csv") # totals mapped to raw data
 ```
 
-## Demographics
+# Demographics
 
-#We utilize the tidycensus package to pull 2024 ACS data for all states
+We utilize the tidycensus package to pull 2024 ACS data for all states
 
-#Base Stats (Pop/Income)
+Base Stats (Pop/Income)
 
 ```{r Income and Population}
 vars_base = c(
@@ -227,7 +227,7 @@ acs_base_2024 =
   clean_names()
 ```
 
-# Educational Attainment
+Educational Attainment
 
 ```{r Education (% with bachelor’s degree or higher)}
 # Pull raw ACS education data
@@ -257,7 +257,7 @@ educ_clean_2024 =
 
 ```
 
-# Age Distribution
+Age Distribution
 
 ```{r Age}
 age_2024 = get_acs(
@@ -314,7 +314,7 @@ urban_clean_2020 =
   )
 ```
 
-# Poverty & Unemployment
+Poverty & Unemployment
 
 ```{r Poverty (% of population below poverty line)}
 poverty_2024 =
@@ -362,7 +362,7 @@ unemp_clean_2024 =
   mutate(unemployment_rate = unemployed / labor_force)
 ```
 
-# Racial Composition
+Racial Composition
 
 ```{r Race}
 race_2024 = get_acs(
@@ -422,7 +422,7 @@ sex_clean_2024 =
   mutate(pct_male = male / total)
 ```
 
-# Additional Indicators
+Additional Indicators
 
 ```{r Internet Access}
 internet_2024 = get_acs(
@@ -485,7 +485,7 @@ rent_clean_2024 =
   )
 ```
 
-## Final Datasets
+# Final Datasets
 
 ```{r Merge All Demographics + Gambling Revenue Together}
 #Rename so all are State
@@ -549,7 +549,7 @@ model_data_2024 =
   left_join(demographics_2024, by = "State")
 ```
 
-# Look at final dataset.
+Look at final dataset.
 
 ```{r Look at Final Dataset}
 #view(demographics_2024)
@@ -561,7 +561,7 @@ summary(model_data_2024)
 glimpse(model_data_2024)
 ```
 
-# Clean final dataset.
+Clean final dataset.
 
 ```{r Clean Final Dataset}
 model_clean_2024 <-
@@ -577,7 +577,7 @@ anti_join(model_data_2024, model_clean_2024, by = "State") |>
   select(State)
 ```
 
-# Save final datasets
+Save final datasets
 
 ```{r}
 write.csv(model_clean_2024, "data/model_clean_2024.csv")
