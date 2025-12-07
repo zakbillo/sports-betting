@@ -703,7 +703,30 @@ kable(summary_table, format = "html", caption = "Distribution Comparison: Actual
 ## LASSO Cross-Validation
 
 ```{r lasso-cv-plot}
-plot(lasso_cv)
+# Extract the data from the lasso_cv object
+cv_data <- tibble(
+  lambda = lasso_cv$lambda,
+  mse    = lasso_cv$cvm,   # Mean Squared Error
+  cvup   = lasso_cv$cvup,  # Upper error bound
+  cvlo   = lasso_cv$cvlo   # Lower error bound
+)
+
+# Plot using ggplot2 
+ggplot(cv_data, aes(x = -log(lambda), y = mse)) +
+  # Add the error bars (grey vertical lines)
+  geom_errorbar(aes(ymin = cvlo, ymax = cvup), color = "gray", width = 0.05) +
+  # Add the red dots
+  geom_point(color = "red", size = 1.5) +
+  # Add the vertical dotted lines for lambda.min and lambda.1se
+  geom_vline(xintercept = -log(lasso_cv$lambda.min), linetype = "dotted") +
+  geom_vline(xintercept = -log(lasso_cv$lambda.1se), linetype = "dotted") +
+  # Labels and Theme
+  labs(
+    title = "LASSO Cross-Validation",
+    x = "-Log(Lambda)",
+    y = "Mean-Squared Error"
+  ) +
+  theme_minimal(base_size = 13)
 ```
 
 *This figure shows the LASSO model's cross-validation process. Each point represents the model's prediction error at a given penalty value (lambda). The selected λ minimizes mean-squared error, balancing model simplicity and predictive accuracy. The curve illustrates how adding too many predictors increases variance, while stronger penalization improves stability.*
