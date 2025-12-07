@@ -41,25 +41,20 @@ scale_fill_discrete = scale_fill_viridis_d
 ### Data Sources 
 
 * Sports gambling data was obtained from [Research Ground's US sports betting data](https://rg.org/statistics/us) (2018-2024).
-# * Demographic data was obtained from publicly available [American Community Survey data](https://www.census.gov/programs-surveys/acs/data.html) (2024).
+* Demographic data was obtained from publicly available [American Community Survey data](https://www.census.gov/programs-surveys/acs/data.html) (2024).
 
 # Gambling Data 
 
 ### Web Scraping:
 
 Scrape the current 2024 state sports gambling revenue and 2025 growth projections directly from the web
-
 ```{r scraping}
 url = "https://rg.org/statistics/us"
 gambling_html = read_html(url)
-```
 
-```{r}
 gambling_html |>
   html_table()
-```
 
-```{r state revenue}
 state_revenue_24 = 
   gambling_html |> 
   html_table() |> 
@@ -67,7 +62,6 @@ state_revenue_24 =
 ```
 
 Pull in 2025 revenue growth by month
-
 ```{r monthly growth}
 revenue_growth_25= 
   gambling_html |> 
@@ -76,7 +70,6 @@ revenue_growth_25=
 ```
 
 We realized website that was scraped to obtain this data had dynamic filters that switched the year of the displayed data. To overcome the lack of static data, we manually scraped the tables for previous years and saved the data in a CSV format
-
 ```{r importing csv}
 # 2018 Data
 revenue_growth_18 = read_csv("data/gambling_revenue_data/2018_monthly_revenue.csv")
@@ -106,8 +99,7 @@ state_revenue_23  = read_csv("data/gambling_revenue_data/2023_state_revenue.csv"
 revenue_growth_24 = read_csv("data/gambling_revenue_data/2024_monthly_revenue.csv")
 ```
 
-Clean the url scraped data so that it matches data types with the manually scraped data
-
+Clean the url of the scraped data so that it matches data types with the manually scraped data
 ```{r cleaning}
 # --- Clean Scraped Data to match CSV format ---
 # Function to remove '$', ',' and '%', convert to numeric and to handle '-' corresponding to missing data
@@ -133,7 +125,6 @@ revenue_growth_25_clean = revenue_growth_25 |>
 ```
 
 Next, combine the dataset
-
 ```{r merging}
 # --- Create Master State Revenue File ---
 total_state_revenue_raw = bind_rows(
@@ -197,7 +188,6 @@ final_revenue_growth = bind_rows(total_revenue_growth, monthly_grand_total)
 ```
 
 Save the relevant gambling datasets
-
 ```{r}
 write.csv(total_state_revenue, "data/total_state_revenue.csv") # state totals only
 write.csv(final_state_revenue, "data/final_state_revenue.csv") # totals mapped to raw data
@@ -208,7 +198,6 @@ write.csv(final_state_revenue, "data/final_state_revenue.csv") # totals mapped t
 We utilize the tidycensus package to pull 2024 ACS data for all states
 
 Base Stats (Pop/Income)
-
 ```{r Income and Population}
 vars_base = c(
   median_income = "B19013_001",
@@ -228,7 +217,6 @@ acs_base_2024 =
 ```
 
 Educational Attainment
-
 ```{r Education (% with bachelor’s degree or higher)}
 # Pull raw ACS education data
 educ_2024 = get_acs(
@@ -258,7 +246,6 @@ educ_clean_2024 =
 ```
 
 Age Distribution
-
 ```{r Age}
 age_2024 = get_acs(
   geography = "state",
@@ -297,7 +284,6 @@ median_age_2024 = get_acs(
 ```
 
 Urbanization
-
 ```{r Urbanization (% living in urban areas)}
 urban_raw <-read_csv("data/Census_Urbanization_Data/DECENNIALDHC2020.P2-Data.csv")
 
@@ -315,7 +301,6 @@ urban_clean_2020 =
 ```
 
 Poverty & Unemployment
-
 ```{r Poverty (% of population below poverty line)}
 poverty_2024 =
   get_acs(
@@ -363,7 +348,6 @@ unemp_clean_2024 =
 ```
 
 Racial Composition
-
 ```{r Race}
 race_2024 = get_acs(
   geography = "state",
@@ -398,7 +382,6 @@ race_clean_2024 =
 ```
 
 Gender
-
 ```{r % Male}
 # % Male
 sex_2024 = get_acs(
@@ -423,7 +406,6 @@ sex_clean_2024 =
 ```
 
 Additional Indicators
-
 ```{r Internet Access}
 internet_2024 = get_acs(
   geography = "state",
@@ -444,9 +426,7 @@ internet_clean_2024 =
     .groups = "drop"
   ) |>
   mutate(pct_broadband = broadband / total)
-```
 
-```{r GINI Index}
 # here is the def if you do not know what this is: The Gini index, or Gini coefficient, is a measure of income, wealth, or consumption inequality within a population, ranging from 0 (perfect equality) to 1 (perfect inequality)
 
 gini_2024 = get_acs(
@@ -456,9 +436,7 @@ gini_2024 = get_acs(
   year = 2024
 ) |>
   select(NAME, gini = estimate)
-```
 
-```{r Renting}
 rent_2024 = get_acs(
   geography = "state",
   variables = c(
@@ -486,7 +464,6 @@ rent_clean_2024 =
 ```
 
 # Final Datasets
-
 ```{r Merge All Demographics + Gambling Revenue Together}
 #Rename so all are State
 acs_base_2024 = acs_base_2024 |> rename(State = name)
@@ -547,11 +524,7 @@ revenue_2024 =
 model_data_2024 =
   revenue_2024 |>
   left_join(demographics_2024, by = "State")
-```
 
-Look at final dataset.
-
-```{r Look at Final Dataset}
 #view(demographics_2024)
 summary(demographics_2024)
 glimpse(demographics_2024)
@@ -562,7 +535,6 @@ glimpse(model_data_2024)
 ```
 
 Clean final dataset.
-
 ```{r Clean Final Dataset}
 model_clean_2024 <-
   model_data_2024 |>
@@ -575,11 +547,7 @@ unique(model_clean_2024$State)
 #See who was dropped
 anti_join(model_data_2024, model_clean_2024, by = "State") |>
   select(State)
-```
 
-Save final datasets
-
-```{r}
 write.csv(model_clean_2024, "data/model_clean_2024.csv")
 write.csv(demographics_2024, "data/demographics_2024.csv")
 ```
