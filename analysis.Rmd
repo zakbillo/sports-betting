@@ -397,7 +397,7 @@ combined_revenue_population =
   layout(
     title = "Population vs Revenue Comparison",
     showlegend = FALSE,
-    width = 900,
+    width = 100,
     height = 300
   )
 
@@ -591,6 +591,8 @@ pred_illegal_lasso <- newdata_illegal |>
 ```
 
 ## Prediction Results
+
+LASSO regression predictions per state.
 
 ```{r prediction-results}
 pred_table <- pred_illegal_lasso |>
