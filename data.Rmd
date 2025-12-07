@@ -6,7 +6,7 @@ output:
     highlight: pygments 
     toc: true
     toc_float: true
-    code_folding: show
+    code_folding: hide
 ---
 
 ```{r setup, include=FALSE}
@@ -242,7 +242,6 @@ educ_clean_2024 =
     .groups = "drop"
   ) |>
   mutate(pct_bachelors = ba_plus / total)
-
 ```
 
 Age Distribution

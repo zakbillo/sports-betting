@@ -47,6 +47,9 @@ options(
 
 scale_colour_discrete = scale_color_viridis_d
 scale_fill_discrete = scale_fill_viridis_d
+scientific_10 <- function(x) {
+  parse(text=gsub("e", " %*% 10^", scales::scientific_format()(x)))
+}
 ```
 
 <style type="text/css">
@@ -118,7 +121,7 @@ plot_ly(
       title = "Year"
     ),
     yaxis = list(
-      title = "Total Revenue (Billions $)",
+      title = "Total Revenue (US$)",
       tickprefix = "$",
       ticksuffix = "B"
     ),
@@ -154,7 +157,7 @@ state_growth_plot_data |>
       tickvals = 2018:2024
     ),
     yaxis = list(
-      title = "Revenue (Billions $)",
+      title = "Revenue (US$)",
       tickprefix = "$",
       ticksuffix = "B"
     ),
@@ -287,8 +290,8 @@ population_plot =
   population_plot_data |> 
   mutate(pop_millions = total_pop / 1e6) |> 
   plot_ly(
-    x = ~State,
-    y = ~pop_millions, 
+    y = ~State,
+    x = ~pop_millions, 
     type = "bar", 
     color = ~State,
     text = ~paste0(round(pop_millions, 2), "M"),
@@ -300,16 +303,16 @@ population_plot =
     )
     ) |> 
   layout(
-    title = "Total Population by State (2024)",
-    xaxis = list(
+    title = "Total Population Size by State (2024)",
+    yaxis = list(
       title = "State (sorted by descending 2024 Revenue)",
-      tickangle = 90,        
+      tickangle = 0,        
       tickmode = "array",            
       tickvals = ordered_states,   
       ticktext = ordered_states
       ),
-    yaxis = list(
-      title = "Total Population (Millions)",
+    xaxis = list(
+      title = "Total Population Size (Millions)",
       ticksuffix = "M"
     ),
     showlegend = FALSE,
@@ -648,7 +651,7 @@ ggplot(compare_df, aes(x = revenue / 1e6, fill = group)) +
   scale_x_continuous(labels = function(x) paste0("$", x, "M")) +
   labs(
     title = "Distribution of Actual vs Predicted Gambling Revenue",
-    x = "Revenue (Millions $)",
+    x = "Revenue (Millions US$)",
     y = "Density",
     fill = ""
   ) +
