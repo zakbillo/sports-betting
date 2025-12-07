@@ -268,60 +268,62 @@ plot_ly(data = plot_data) |>
 
 # Demographic Visuals {.tabset}
 
-Below are exploratory plots of the demographic data in 2024. The first plot shows the total population of each state in which gambling is legal, arranged by order of descending gambling revenue. The second plot shows gambling revenue by state in 2024. The third plot compares the first two plots. The fourth plot shows the racial makeup in percentage of the total population in each state in 2024, arranged in descending order of total gambling revenue. The fifth plot depicts the percentage of the total population in poverty and unemployed in 2024 in each state, arranged in descending order of total gambling revenue.
+Below are exploratory plots of the demographic data in 2024. The first plot shows the per capita revenue for each state. The second plot shows gambling revenue by state in 2024. The third plot compares the first two plots. The fourth plot shows the racial makeup in percentage of the total population in each state in 2024, arranged in descending order of total gambling revenue. The fifth plot depicts the percentage of the total population in poverty and unemployed in 2024 in each state, arranged in descending order of total gambling revenue.
 
 ## Population
 
 ```{r population-plot}
-# Order by Revenue (descending)
-population_plot_data = 
-  model_clean_2024 |> 
-  filter(State != "Washington D.C.") |> 
+# Create data with Revenue Per Capita
+rpc_plot_data = model_clean_2024 |>
+  filter(State != "Washington D.C.") |>
   mutate(
+    # Calculate the new metric
+    revenue_per_capita = Revenue / total_pop,
+
+    # Reorder State by Revenue Per Capita so the chart is sorted
     State = as.factor(State),
-    State = fct_reorder(State, Revenue, .desc = TRUE) 
-  ) |> 
-  arrange(State) # Ensure data is physically sorted to match factor order
+    State = fct_reorder(State, revenue_per_capita, .desc = FALSE)
+  ) |>
+  arrange(State)
 
 # Extract the order for the axis
-ordered_states = levels(population_plot_data$State)
+ordered_states_rpc = levels(rpc_plot_data$State)
 
-population_plot = 
-  population_plot_data |> 
-  mutate(pop_millions = total_pop / 1e6) |> 
+rpc_plot = rpc_plot_data |>
   plot_ly(
     y = ~State,
-    x = ~pop_millions, 
-    type = "bar", 
-    color = ~State,
-    text = ~paste0(round(pop_millions, 2), "M"),
+    x = ~revenue_per_capita,
+    type = "bar",
+    # Changed color to a fixed value for all bars
+    marker = list(color = "steelblue"),
+    # Format text as currency
+    text = ~paste0("$", round(revenue_per_capita, 2)),
     textposition = "outside",
     hovertemplate = paste0(
-      "<b>State:</b> %{x}<br>",
-      "<b>Population:</b> %{y:.2f}M<br>",
+      "<b>State:</b> %{y}<br>",
+      "<b>Rev/Capita:</b> %{text}<br>",
       "<extra></extra>"
     )
-    ) |> 
+  ) |>
   layout(
-    title = "Total Population Size by State (2024)",
+    title = "Gambling Revenue Per Capita by State (2024)",
     yaxis = list(
-      title = "State (sorted by descending 2024 Revenue)",
-      tickangle = 0,        
-      tickmode = "array",            
-      tickvals = ordered_states,   
-      ticktext = ordered_states
-      ),
+      title = "", # Removed title for cleaner look in wide format
+      tickangle = 0,
+      tickmode = "array",
+      tickvals = ordered_states_rpc,
+      ticktext = ordered_states_rpc
+    ),
     xaxis = list(
-      title = "Total Population Size (Millions)",
-      ticksuffix = "M"
+      title = "Revenue Per Capita ($)",
+      tickprefix = "$"
     ),
     showlegend = FALSE,
-    width = 900,
-    height = 300
+    width = 700,
+    height = 500 # Increased height slightly to fit all states clearly
   )
 
-population_plot
-
+rpc_plot
 ```
 
 *This bar chart displays the total population of each state where gambling is legal, sorted by descending 2024 gambling revenue. Larger states like New York, Pennsylvania, and Illinois occupy the top positions, reflecting their large population bases. However, population size alone doesn't determine revenue rank—smaller states like Nevada punch above their weight due to tourism and established gambling infrastructure.*
@@ -329,56 +331,51 @@ population_plot
 ## Revenue
 
 ```{r revenue-plot}
-# Order by Revenue (descending)
-revenue_plot_data = 
-  model_clean_2024 |> 
-  filter(State != "Washington D.C.") |> 
+revenue_plot_data <- model_clean_2024 %>%
+  filter(State != "Washington D.C.") %>%
   mutate(
     State = as.factor(State),
-    State = fct_reorder(State, Revenue, .desc = TRUE) 
-  ) |> 
-  arrange(State) # Ensure data is physically sorted
+    State = fct_reorder(State, Revenue) 
+  ) %>%
+  arrange(State)
 
-# Extract order
-ordered_states = levels(revenue_plot_data$State)
-
-revenue_plot = 
-  revenue_plot_data |> 
-  mutate(revenue_millions = Revenue / 1e6) |> 
+# Create Plot
+revenue_plot <- revenue_plot_data %>%
+  mutate(revenue_millions = Revenue / 1e6) %>%
   plot_ly(
-    x = ~State,
-    y = ~revenue_millions, 
+    y = ~State,                 
+    x = ~revenue_millions,      
     type = "bar", 
-    color = ~State,
+    orientation = 'h',          
+    marker = list(color = "steelblue"), 
     text = ~paste0("$", round(revenue_millions, 1), "M"),
     textposition = "outside",
     hovertemplate = paste0(
-      "<b>State:</b> %{x}<br>",
-      "<b>Revenue:</b> $%{y:.1f}M<br>",
+      "<b>State:</b> %{y}<br>",
+      "<b>Revenue:</b> $%{x:.1f}M<br>",
       "<extra></extra>"
     )
-    ) |> 
+  ) %>%
   layout(
     title = "Gambling Revenue by State (2024)",
-    xaxis = list(
-      title = "State (sorted by descending 2024 Revenue)",
-      tickangle = 90,        
-      tickmode = "array",            
-      tickvals = ordered_states,   
-      ticktext = ordered_states
-      ),
     yaxis = list(
+      title = "",           
+      tickvals = levels(revenue_plot_data$State),    
+      ticktext = levels(revenue_plot_data$State),
+      automargin = TRUE     
+    ),
+    xaxis = list(
       title = "Revenue (Millions $)",
       tickprefix = "$",
       ticksuffix = "M"
     ),
     showlegend = FALSE,
     width = 900,
-    height = 300
+    height = 600,
+    margin = list(l = 10, r = 50) 
   )
 
 revenue_plot
-
 ```
 
 *This bar chart shows gambling revenue by state in 2024, arranged in descending order. New York leads significantly, followed by Pennsylvania, Illinois, and Nevada. The chart demonstrates the concentration of gambling revenue among a few large states, with a steep drop-off after the top performers. This pattern reflects both population size and market maturity.*
@@ -386,26 +383,24 @@ revenue_plot
 ## Comparison
 
 ```{r combined-plots}
-# Use the Plotly objects created in the previous chunks
 combined_revenue_population = 
   subplot(
-    population_plot, 
+    rpc_plot,       
     revenue_plot, 
-    nrows = 2,       
-    shareX = TRUE,     
-    shareY = FALSE,
+    nrows = 2,        
+    shareX = FALSE,  
     titleY = TRUE,
-    titleX = TRUE
+    titleX = TRUE,
+    margin = 0.05    
   ) |> 
   layout(
-    title = "Population vs Revenue Comparison",
+    title = "Per Capita vs Total Revenue Comparison",
     showlegend = FALSE,
-    width = 100,
-    height = 300
+    width = 900,
+    height = 800    
   )
 
 combined_revenue_population
-
 ```
 
 *This combined visualization places population and revenue side-by-side for direct comparison. The alignment reveals that while population is a strong driver of gambling revenue, the relationship isn't perfectly linear. States with similar populations can have vastly different revenue outcomes, highlighting the influence of other factors like urbanization, regulatory environment, and gambling culture.*
@@ -413,8 +408,7 @@ combined_revenue_population
 ## Racial Makeup
 
 ```{r racial-makeup}
-race_plot_data = 
-  model_clean_2024 |> 
+race_plot_data = model_clean_2024 |> 
   filter(State != "Washington D.C.") |> 
   select(State, Revenue, pct_white, pct_black, pct_asian, pct_hispanic) |> 
   pivot_longer(
@@ -423,48 +417,50 @@ race_plot_data =
     values_to = "percentage"
   ) |> 
   mutate(
-      State = as.factor(State),
-      State = fct_reorder(State, Revenue, .desc = TRUE), 
-      race = factor(race, 
-                    levels = c("pct_white", "pct_black", "pct_asian", "pct_hispanic"),
-                    labels = c("White", "Black", "Asian", "Hispanic"))
+    State = as.factor(State),
+    State = fct_reorder(State, Revenue), 
+    race = factor(race, 
+                  levels = c("pct_white", "pct_black", "pct_asian", "pct_hispanic"),
+                  labels = c("White", "Black", "Asian", "Hispanic"))
   ) |> 
   arrange(State)
 
-# Extract order for consistent axis
 ordered_states_race = levels(race_plot_data$State)
 
 race_plot_data |> 
   plot_ly(
-    x = ~State,
-    y = ~percentage * 100,  # Convert to percentage
+    y = ~State,              
+    x = ~percentage * 100,    
     color = ~race,
     type = 'bar',
+    orientation = 'h',     
     hovertemplate = paste0(
-      "<b>State:</b> %{x}<br>",
+      "<b>State:</b> %{y}<br>",
       "<b>Race:</b> %{fullData.name}<br>",
-      "<b>Percentage:</b> %{y:.1f}%<br>",
+      "<b>Percentage:</b> %{x:.1f}%<br>",
       "<extra></extra>"
     )
   ) |> 
   layout(
-    title = "Racial Makeup by State (Sorted by Revenue)",     
-    xaxis = list(
-      title = "State",
-      tickangle = 90,
+    title = "Racial Makeup by State (Sorted by Revenue)",      
+    yaxis = list(
+      title = "",         
       tickmode = "array",
       tickvals = ordered_states_race,
-      ticktext = ordered_states_race
+      ticktext = ordered_states_race,
+      automargin = TRUE
     ),
-    yaxis = list(
+    xaxis = list(
       title = "Percentage of Population", 
       ticksuffix = "%",
       range = c(0, 100)
     ),
     barmode = "stack",
     showlegend = TRUE,
+    legend = list(orientation = "h", y = -0.05, x = 0.5, xanchor = "center"), 
     width = 900,
-    height = 500
+    height = 800, 
+    margin = list(l = 10, r = 20, b = 50, t = 50)
   )
 ```
 
@@ -473,54 +469,55 @@ race_plot_data |>
 ## Economic Stats
 
 ```{r economic-stats}
-economic_plot_data = 
-  model_clean_2024 |> 
-    filter(State != "Washington D.C.") |> 
-    select(State, Revenue, unemployment_rate, pct_poverty) |> 
-    pivot_longer(
-      cols = c("pct_poverty", "unemployment_rate"),
-      names_to = "measure",
-      values_to = "percentage"
-    ) |> 
-    mutate(
-        State = as.factor(State),
-        State = fct_reorder(State, Revenue, .desc = TRUE),
-        measure = factor(measure, 
-                         levels = c("pct_poverty", "unemployment_rate"),
-                         labels = c("% in Poverty", "% Unemployed"))
-    ) |> 
-    arrange(State)
+economic_plot_data = model_clean_2024 |> 
+  filter(State != "Washington D.C.") |> 
+  select(State, Revenue, unemployment_rate, pct_poverty) |> 
+  pivot_longer(
+    cols = c("pct_poverty", "unemployment_rate"),
+    names_to = "measure",
+    values_to = "percentage"
+  ) |> 
+  mutate(
+    State = as.factor(State),
+    State = fct_reorder(State, Revenue), 
+    measure = factor(measure, 
+                     levels = c("pct_poverty", "unemployment_rate"),
+                     labels = c("% in Poverty", "% Unemployed"))
+  ) |> 
+  arrange(State)
 
-# Extract order
 ordered_states_econ = levels(economic_plot_data$State)
 
 economic_plot_data |> 
   plot_ly(
-    x = ~State,
-    y = ~percentage * 100,  # Convert to percentage
+    y = ~State,                
+    x = ~percentage * 100,    
     color = ~measure,
     type = 'scatter',
     mode = 'lines+markers',
+    orientation = 'h',         
     text = ~paste(State, ": ", sprintf("%.1f%%", percentage * 100)),
-    hoverinfo = 'text',          
+    hoverinfo = 'text',
     line = list(width = 2)
   ) |> 
   layout(
-    title = "Poverty & Unemployment (Sorted by Revenue)",     
-    xaxis = list(
-      title = "State",
-      tickangle = 90,
+    title = "Poverty & Unemployment (Sorted by Revenue)",      
+    yaxis = list(
+      title = "",              # Clean look
       tickmode = "array",
       tickvals = ordered_states_econ,
-      ticktext = ordered_states_econ
+      ticktext = ordered_states_econ,
+      automargin = TRUE
     ),
-    yaxis = list(
+    xaxis = list(
       title = "Percentage of Population", 
       ticksuffix = "%"
     ),
     showlegend = TRUE,
+    legend = list(orientation = "h", y = -0.05, x = 0.5, xanchor = "center"),
     width = 900,
-    height = 500
+    height = 800, 
+    margin = list(l = 10, r = 20, b = 50, t = 50)
   )
 ```
 
@@ -779,33 +776,6 @@ ggplot(plot_df, aes(x = value, y = Revenue / 1e6)) +
 ```
 
 *These scatterplots show the relationship between individual demographic predictors and observed gambling revenue. While population and urbanization show clearer positive associations, other variables, such as poverty or median income, exhibit weak or inconsistent relationships. This reinforces the idea that gambling revenue is driven by a combination of demographic scale and specific high-engagement age groups rather than socioeconomic factors alone.*
-
-## Feature Importance
-
-```{r feature-importance}
-coef_mat <- as.matrix(coef(lasso_cv, s = "lambda.min"))
-
-coef_df <- tibble(
-  variable = rownames(coef_mat),
-  coefficient = coef_mat[, "lambda.min"]
-) %>%
-  filter(variable != "(Intercept)") %>%
-  arrange(desc(abs(coefficient)))
-
-ggplot(coef_df, aes(x = reorder(variable, abs(coefficient)), 
-                    y = coefficient, 
-                    fill = coefficient > 0)) +
-  geom_col() +
-  coord_flip() +
-  scale_fill_manual(values = c("TRUE" = "#1b9e77", "FALSE" = "#d95f02"), guide = "none") +
-  labs(
-    title = "LASSO Coefficients at λ_min",
-    subtitle = "Positive (Green) vs Negative (Orange) Impact",
-    x = "",
-    y = "Coefficient Estimate"
-  ) +
-  theme_minimal(base_size = 13)
-```
 
 ## Model Performance
 

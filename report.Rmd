@@ -79,6 +79,6 @@ Our projections show that several non-legalized states have the demographic capa
 
 **Limitations**
 
-Some states that have legalized sports gambling were not included in our model because the data automatically excluded certain states, such as Florida and New Mexico. These states have specific policies that alter the reporting of gambling revenue, and our data source did not collect these. This led to a reduced sample size and may affect the accuracy of our projected model. 
+Some states that have legalized sports gambling were not included in our model because the data excluded certain states, such as Florida and New Mexico. These states have specific policies that alter the reporting of gambling revenue, and our data source did not collect these. This led to a reduced sample size and may affect the accuracy of our projected model. 
 
 Go back [home](home.html)
