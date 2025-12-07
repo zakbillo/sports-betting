@@ -474,20 +474,32 @@ div.tocify {
 
 <div id="data-sources" class="section level3">
 <h3>Data Sources</h3>
-<ul>
-<li>Sports gambling data was obtained from <a
-href="https://rg.org/statistics/us">Research Ground’s US sports betting
-data</a> (2018-2024).</li>
-<li>Demographic data was obtained from publicly available <a
-href="https://www.census.gov/programs-surveys/acs/data.html">American
-Community Survey data</a> (2024).</li>
-</ul>
 </div>
+<div
+id="sports-gambling-data-was-obtained-from-research-grounds-us-sports-betting-data-2018-2024."
+class="section level1">
+<h1>* Sports gambling data was obtained from <a
+href="https://rg.org/statistics/us">Research Ground’s US sports betting
+data</a> (2018-2024).</h1>
+</div>
+<div
+id="demographic-data-was-obtained-from-publicly-available-american-community-survey-data-2024."
+class="section level1">
+<h1>* Demographic data was obtained from publicly available <a
+href="https://www.census.gov/programs-surveys/acs/data.html">American
+Community Survey data</a> (2024).</h1>
 <div id="gambling-data" class="section level2">
 <h2>Gambling Data</h2>
-<p>Web Scraping:</p>
-<p>Scrape the current 2024 state sports gambling revenue and 2025 growth
-projections directly from the web</p>
+</div>
+</div>
+<div id="web-scraping" class="section level1">
+<h1>Web Scraping:</h1>
+</div>
+<div
+id="scrape-the-current-2024-state-sports-gambling-revenue-and-2025-growth-projections-directly-from-the-web"
+class="section level1">
+<h1>Scrape the current 2024 state sports gambling revenue and 2025
+growth projections directly from the web</h1>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>url <span class="ot">=</span> <span class="st">&quot;https://rg.org/statistics/us&quot;</span></span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>gambling_html <span class="ot">=</span> <span class="fu">read_html</span>(url)</span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>gambling_html <span class="sc">|&gt;</span></span>
@@ -583,15 +595,21 @@ projections directly from the web</p>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>  gambling_html <span class="sc">|&gt;</span> </span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="fu">html_table</span>() <span class="sc">|&gt;</span> </span>
 <span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="fu">first</span>() </span></code></pre></div>
-<p>Pull in 2025 revenue growth by month</p>
+</div>
+<div id="pull-in-2025-revenue-growth-by-month" class="section level1">
+<h1>Pull in 2025 revenue growth by month</h1>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>revenue_growth_25<span class="ot">=</span> </span>
 <span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>  gambling_html <span class="sc">|&gt;</span> </span>
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="fu">html_table</span>() <span class="sc">|&gt;</span> </span>
 <span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  purrr<span class="sc">::</span><span class="fu">pluck</span>(<span class="dv">2</span>)</span></code></pre></div>
-<p>We realized website that was scraped to obtain this data had dynamic
+</div>
+<div
+id="we-realized-website-that-was-scraped-to-obtain-this-data-had-dynamic-filters-that-switched-the-year-of-the-displayed-data.-to-overcome-the-lack-of-static-data-we-manually-scraped-the-tables-for-previous-years-and-saved-the-data-in-a-csv-format"
+class="section level1">
+<h1>We realized website that was scraped to obtain this data had dynamic
 filters that switched the year of the displayed data. To overcome the
 lack of static data, we manually scraped the tables for previous years
-and saved the data in a CSV format</p>
+and saved the data in a CSV format</h1>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># 2018 Data</span></span>
 <span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>revenue_growth_18 <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/gambling_revenue_data/2018_monthly_revenue.csv&quot;</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>state_revenue_18  <span class="ot">=</span> <span class="fu">read_csv</span>(<span class="st">&quot;data/gambling_revenue_data/2018_state_revenue.csv&quot;</span>)</span>
@@ -641,7 +659,9 @@ manually scraped data</p>
 <span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a>    <span class="fu">across</span>(<span class="fu">c</span>(Handle, Revenue, Taxes, Hold), clean_money_col)</span>
 <span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a>  )</span></code></pre></div>
-<p>Next, combine the dataset</p>
+</div>
+<div id="next-combine-the-dataset" class="section level1">
+<h1>Next, combine the dataset</h1>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># --- Create Master State Revenue File ---</span></span>
 <span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>total_state_revenue_raw <span class="ot">=</span> <span class="fu">bind_rows</span>(</span>
 <span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  state_revenue_18 <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">Year =</span> <span class="dv">2018</span>, <span class="at">Hold =</span> Hold <span class="sc">*</span> <span class="dv">100</span>),</span>
@@ -701,15 +721,16 @@ manually scraped data</p>
 <span id="cb8-57"><a href="#cb8-57" tabindex="-1"></a></span>
 <span id="cb8-58"><a href="#cb8-58" tabindex="-1"></a><span class="co"># Bind the Grand Total to the clean data</span></span>
 <span id="cb8-59"><a href="#cb8-59" tabindex="-1"></a>final_revenue_growth <span class="ot">=</span> <span class="fu">bind_rows</span>(total_revenue_growth, monthly_grand_total)</span></code></pre></div>
-<p>Save the relevant gambling datasets</p>
+</div>
+<div id="save-the-relevant-gambling-datasets" class="section level1">
+<h1>Save the relevant gambling datasets</h1>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">write.csv</span>(total_state_revenue, <span class="st">&quot;data/total_state_revenue.csv&quot;</span>) <span class="co"># state totals only</span></span>
 <span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">write.csv</span>(final_state_revenue, <span class="st">&quot;data/final_state_revenue.csv&quot;</span>) <span class="co"># totals mapped to raw data</span></span></code></pre></div>
-</div>
 <div id="demographics" class="section level2">
 <h2>Demographics</h2>
-<p>We utilize the tidycensus package to pull 2024 ACS data for all
+<p>#We utilize the tidycensus package to pull 2024 ACS data for all
 states</p>
-<p>Base Stats (Pop/Income)</p>
+<p>#Base Stats (Pop/Income)</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>vars_base <span class="ot">=</span> <span class="fu">c</span>(</span>
 <span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="at">median_income =</span> <span class="st">&quot;B19013_001&quot;</span>,</span>
 <span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="at">total_pop =</span> <span class="st">&quot;B01003_001&quot;</span></span>
@@ -725,7 +746,10 @@ states</p>
 <span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>  <span class="fu">select</span>(NAME, variable, estimate) <span class="sc">|&gt;</span></span>
 <span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> variable, <span class="at">values_from =</span> estimate) <span class="sc">|&gt;</span></span>
 <span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>  <span class="fu">clean_names</span>()</span></code></pre></div>
-<p>Educational Attainment</p>
+</div>
+</div>
+<div id="educational-attainment" class="section level1">
+<h1>Educational Attainment</h1>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># Pull raw ACS education data</span></span>
 <span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>educ_2024 <span class="ot">=</span> <span class="fu">get_acs</span>(</span>
 <span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="at">geography =</span> <span class="st">&quot;state&quot;</span>,</span>
@@ -750,7 +774,9 @@ states</p>
 <span id="cb11-22"><a href="#cb11-22" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
 <span id="cb11-23"><a href="#cb11-23" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb11-24"><a href="#cb11-24" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pct_bachelors =</span> ba_plus <span class="sc">/</span> total)</span></code></pre></div>
-<p>Age Distribution</p>
+</div>
+<div id="age-distribution" class="section level1">
+<h1>Age Distribution</h1>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>age_2024 <span class="ot">=</span> <span class="fu">get_acs</span>(</span>
 <span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>  <span class="at">geography =</span> <span class="st">&quot;state&quot;</span>,</span>
 <span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>  <span class="at">variables =</span> <span class="fu">c</span>(</span>
@@ -799,7 +825,9 @@ states</p>
 <span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>    <span class="at">pct_urban =</span> urban <span class="sc">/</span> total,</span>
 <span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>    <span class="at">pct_rural =</span> rural <span class="sc">/</span> total</span>
 <span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a>  )</span></code></pre></div>
-<p>Poverty &amp; Unemployment</p>
+</div>
+<div id="poverty-unemployment" class="section level1">
+<h1>Poverty &amp; Unemployment</h1>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>poverty_2024 <span class="ot">=</span></span>
 <span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>  <span class="fu">get_acs</span>(</span>
 <span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>    <span class="at">geography =</span> <span class="st">&quot;state&quot;</span>,</span>
@@ -840,7 +868,9 @@ states</p>
 <span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
 <span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb15-20"><a href="#cb15-20" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">unemployment_rate =</span> unemployed <span class="sc">/</span> labor_force)</span></code></pre></div>
-<p>Racial Composition</p>
+</div>
+<div id="racial-composition" class="section level1">
+<h1>Racial Composition</h1>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>race_2024 <span class="ot">=</span> <span class="fu">get_acs</span>(</span>
 <span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>  <span class="at">geography =</span> <span class="st">&quot;state&quot;</span>,</span>
 <span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>  <span class="at">variables =</span> <span class="fu">c</span>(</span>
@@ -892,7 +922,9 @@ states</p>
 <span id="cb17-18"><a href="#cb17-18" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">&quot;drop&quot;</span></span>
 <span id="cb17-19"><a href="#cb17-19" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb17-20"><a href="#cb17-20" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pct_male =</span> male <span class="sc">/</span> total)</span></code></pre></div>
-<p>Additional Indicators</p>
+</div>
+<div id="additional-indicators" class="section level1">
+<h1>Additional Indicators</h1>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>internet_2024 <span class="ot">=</span> <span class="fu">get_acs</span>(</span>
 <span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>  <span class="at">geography =</span> <span class="st">&quot;state&quot;</span>,</span>
 <span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>  <span class="at">variables =</span> <span class="fu">c</span>(</span>
@@ -945,10 +977,8 @@ states</p>
 <span id="cb20-22"><a href="#cb20-22" tabindex="-1"></a>    <span class="at">pct_rent =</span> renter <span class="sc">/</span> total,</span>
 <span id="cb20-23"><a href="#cb20-23" tabindex="-1"></a>    <span class="at">pct_own =</span> owner <span class="sc">/</span> total</span>
 <span id="cb20-24"><a href="#cb20-24" tabindex="-1"></a>  )</span></code></pre></div>
-</div>
-<div id="merge-into-final-sports-gambling-dataset"
-class="section level2">
-<h2>Merge into final sports gambling dataset</h2>
+<div id="final-datasets" class="section level2">
+<h2>Final Datasets</h2>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="co">#Rename so all are State</span></span>
 <span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>acs_base_2024 <span class="ot">=</span> acs_base_2024 <span class="sc">|&gt;</span> <span class="fu">rename</span>(<span class="at">State =</span> name)</span>
 <span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>educ_clean_2024 <span class="ot">=</span> educ_clean_2024 <span class="sc">|&gt;</span> <span class="fu">rename</span>(<span class="at">State =</span> NAME)</span>
@@ -1008,7 +1038,10 @@ class="section level2">
 <span id="cb21-57"><a href="#cb21-57" tabindex="-1"></a>model_data_2024 <span class="ot">=</span></span>
 <span id="cb21-58"><a href="#cb21-58" tabindex="-1"></a>  revenue_2024 <span class="sc">|&gt;</span></span>
 <span id="cb21-59"><a href="#cb21-59" tabindex="-1"></a>  <span class="fu">left_join</span>(demographics_2024, <span class="at">by =</span> <span class="st">&quot;State&quot;</span>)</span></code></pre></div>
-<p>Look at final dataset.</p>
+</div>
+</div>
+<div id="look-at-final-dataset." class="section level1">
+<h1>Look at final dataset.</h1>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="co">#view(demographics_2024)</span></span>
 <span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="fu">summary</span>(demographics_2024)</span></code></pre></div>
 <pre><code>##     State             total_pop        median_income    pct_bachelors   
@@ -1144,7 +1177,9 @@ class="section level2">
 ## $ gini              &lt;dbl&gt; 0.4623, 0.4721, 0.4611, 0.4989, 0.4478, 0.4799, 0.48…
 ## $ pct_rent          &lt;dbl&gt; 0.3224346, 0.3288997, 0.3405580, 0.3332788, 0.262221…
 ## $ pct_own           &lt;dbl&gt; 0.6775654, 0.6711003, 0.6594420, 0.6667212, 0.737778…</code></pre>
-<p>Clean final dataset.</p>
+</div>
+<div id="clean-final-dataset." class="section level1">
+<h1>Clean final dataset.</h1>
 <div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>model_clean_2024 <span class="ot">&lt;-</span></span>
 <span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>  model_data_2024 <span class="sc">|&gt;</span></span>
 <span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a>  <span class="fu">drop_na</span>(Revenue, Handle, Taxes, Hold)</span>
@@ -1174,35 +1209,159 @@ class="section level2">
 ## 5 New Mexico  
 ## 6 North Dakota
 ## 7 Washington</code></pre>
-<p>Save final datasets.</p>
+</div>
+<div id="save-final-datasets" class="section level1">
+<h1>Save final datasets</h1>
 <div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a><span class="fu">write.csv</span>(model_clean_2024, <span class="st">&quot;data/model_clean_2024.csv&quot;</span>)</span>
 <span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a><span class="fu">write.csv</span>(demographics_2024, <span class="st">&quot;data/demographics_2024.csv&quot;</span>)</span></code></pre></div>
 <p>Go back <a href="home.html">home</a></p>
 </div>
 
-<footer class="site-footer">
-  <div class="footer-content">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Expansive Footer</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
     
-    <p class="footer-team">
-      Team: Zakari, Kimia, Lawrence & Sukhman
-    </p>
-    
-    <p class="footer-links">
-      <a href="https://github.com/zakbillo/sports-betting" target="_blank">
-        <i class="fa fa-github fa-lg"></i> View Our Source Code
-      </a>
-    </p>
-    
-    <p class="footer-quote">
-      "The house always wins... usually."
-    </p>
-    
-    <div class="footer-copyright">
-      2025 Data Science I (P8105) Final Project
-    </div>
+    .main-content {
+      flex: 1;
+      padding: 40px 20px;
+      background: #f5f5f5;
+    }
 
+    .site-footer {
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      color: #ffffff;
+      padding: 80px 0 40px;
+      margin-top: auto;
+    }
+
+    .footer-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 40px;
+      text-align: center;
+    }
+
+    .footer-team {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 30px;
+      color: #fff;
+    }
+
+    .footer-links {
+      margin: 35px 0;
+    }
+
+    .footer-links a {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 1.1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 15px 30px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    .footer-links a:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .footer-links i {
+      font-size: 1.3rem;
+    }
+
+    .footer-quote {
+      font-size: 1.3rem;
+      font-style: italic;
+      margin: 40px 0;
+      color: rgba(255, 255, 255, 0.95);
+      padding: 25px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      border-left: 4px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .footer-copyright {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.85);
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    @media (max-width: 768px) {
+      .site-footer {
+        padding: 60px 0 30px;
+      }
+
+      .footer-content {
+        padding: 0 20px;
+      }
+
+      .footer-team {
+        font-size: 1.2rem;
+      }
+
+      .footer-links a {
+        font-size: 1rem;
+        padding: 12px 24px;
+      }
+
+      .footer-quote {
+        font-size: 1.1rem;
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-content">
+    <h1>Your Page Content Here</h1>
+    <p>This is where your main content goes. Scroll down to see the footer.</p>
   </div>
-</footer>
+
+  <footer class="site-footer">
+    <div class="footer-content">
+      
+      <p class="footer-team">
+        Team: Zakari, Kimia, Lawrence & Sukhman
+      </p>
+      
+      <p class="footer-links">
+        <a href="https://github.com/zakbillo/sports-betting" target="_blank">
+          <i class="fa fa-github fa-lg"></i> View Our Source Code
+        </a>
+      </p>
+      
+      <p class="footer-quote">
+        "The house always wins... usually."
+      </p>
+      
+      <div class="footer-copyright">
+        2025 Data Science I (P8105) Final Project
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
 
 
 </div>

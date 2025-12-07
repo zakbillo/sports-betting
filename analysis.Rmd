@@ -65,11 +65,7 @@ margin-right: auto;
 }
 </style>
 
-# Exploratory Data Analysis
-
-## Import Data
-
-```{r import-data}
+```{r import-data, echo=FALSE}
 total_state_revenue = read_csv("data/total_state_revenue.csv")
 model_clean_2024 = read_csv("data/model_clean_2024.csv")
 demographics_2024 = read_csv("data/demographics_2024.csv")

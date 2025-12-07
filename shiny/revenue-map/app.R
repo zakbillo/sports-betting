@@ -50,12 +50,13 @@ ui <- fluidPage(
       hr(),
       
       h5("Legend"),
+      p("Colors represent total revenue from sports betting."),
+      p(em("Legend scale is consistent across all years for easy comparison.")),
       
       hr(),
       
       h5("Data Source"),
-      p("State revenue data compiled from official reports. Although sports betting is legal in Florida, New Mexico, Missouri, North Dakota,
-        and Washington, those states were missing from the dataset."),
+      p("State revenue data compiled from official reports."),
       
       br(),
       
@@ -135,7 +136,15 @@ server <- function(input, output, session) {
       mutate(ID = stringr::str_remove(ID, ":.*"))
   })
   
-  # Prepare map data based on selected year
+  # Prepare ALL state boundaries (for states without data)
+  all_states_data <- reactive({
+    req(us_states_sf())
+    
+    us_states_sf() %>%
+      mutate(State = stringr::str_to_title(ID))
+  })
+  
+  # Prepare map data based on selected year (only states WITH data)
   map_data <- reactive({
     req(total_state_revenue())
     req(us_states_sf())
@@ -147,7 +156,7 @@ server <- function(input, output, session) {
     
     joined_data <- us_states_sf() %>%
       left_join(revenue_map_data, by = c("ID" = "match_name")) %>%
-      filter(Year == selected_year)
+      filter(Year == selected_year, !is.na(Revenue))  # Only keep states WITH data
     
     if(nrow(joined_data) == 0) {
       showNotification(
@@ -162,16 +171,8 @@ server <- function(input, output, session) {
         State = stringr::str_to_title(ID),
         Revenue = as.numeric(Revenue),
         Taxes = as.numeric(Taxes),
-        Revenue_formatted = ifelse(
-          is.na(Revenue), 
-          "No data", 
-          paste0("$", format(round(Revenue, 0), big.mark = ",", scientific = FALSE))
-        ),
-        Taxes_formatted = ifelse(
-          is.na(Taxes), 
-          "No data", 
-          paste0("$", format(round(Taxes, 0), big.mark = ",", scientific = FALSE))
-        )
+        Revenue_formatted = paste0("$", format(round(Revenue, 0), big.mark = ",", scientific = FALSE)),
+        Taxes_formatted = paste0("$", format(round(Taxes, 0), big.mark = ",", scientific = FALSE))
       )
   })
   
@@ -213,11 +214,14 @@ server <- function(input, output, session) {
   # Update map when data changes
   observe({
     req(map_data())
+    req(all_states_data())
     req(palette())
     
     data <- map_data()
+    all_states <- all_states_data()
     pal <- palette()
     
+    # Labels for states WITH data
     labels <- sprintf(
       "<strong>%s</strong><br/>
       Year: %s<br/>
@@ -229,21 +233,34 @@ server <- function(input, output, session) {
       data$Taxes_formatted
     ) %>% lapply(htmltools::HTML)
     
-    leafletProxy("revenue_map", data = data) %>%
+    leafletProxy("revenue_map") %>%
       clearShapes() %>%
       clearControls() %>%
+      # First, add ALL state borders (no fill, just outlines)
       addPolygons(
-        fillColor = ~ifelse(is.na(Revenue), "#cccccc", pal(Revenue)),
-        weight = 1,
-        opacity = 1,
-        color = "black",
+        data = all_states,
+        fillColor = "transparent",
+        fillOpacity = 0,
+        weight = 1.5,
+        opacity = 0.8,
+        color = "#666666",
         dashArray = "",
-        fillOpacity = 0.7,  # Increased from 0.1 for better visibility
+        layerId = ~paste0(ID, "_border")
+      ) %>%
+      # Then, add colored polygons for states WITH data
+      addPolygons(
+        data = data,
+        fillColor = ~pal(Revenue),
+        weight = 1.5,
+        opacity = 1,
+        color = "#333333",
+        dashArray = "",
+        fillOpacity = 0.7,
         highlightOptions = highlightOptions(
-          weight = 5,
-          color = "white",
+          weight = 3,
+          color = "#000000",
           dashArray = "",
-          fillOpacity = 0.9,  # Increased for better highlight
+          fillOpacity = 0.9,
           bringToFront = TRUE
         ),
         label = labels,
@@ -256,11 +273,10 @@ server <- function(input, output, session) {
       ) %>%
       addLegend(
         pal = pal,
-        values = ~Revenue,
+        values = data$Revenue,
         opacity = 0.7,
         title = "Revenue ($)",
         position = "bottomright",
-        na.label = "No data",
         labFormat = labelFormat(
           prefix = "$",
           big.mark = ",",
